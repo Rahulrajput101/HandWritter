@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_file_viewer_activity"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/toolbar_color_main_activity"
+                android:theme="@style/CustomToolBarTheme" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_long_pressed"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/toolbar_color_main_activity"
+                android:theme="@style/CustomToolBarTheme"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/file_view_activity_color">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    tools:listitem="@layout/item_page_viewer" />
+
+            </androidx.core.widget.NestedScrollView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_image_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="@dimen/floating_button_bottom_margin"
+                android:background="@drawable/button_ripple_effect"
+                android:backgroundTint="@android:color/white"
+                android:contentDescription="fab_button_to add_page"
+                android:elevation="5dp"
+                android:src="@drawable/baseline_add_24"
+                app:maxImageSize="35dp"
+                app:tint="@null" />
+
+
+        </FrameLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="floating_button_end_margin">20dp</dimen>
+    <dimen name="floating_button_bottom_margin">15dp</dimen>
+
+    <dimen name="progress_dialog_content_padding">10dp</dimen>
+    <dimen name="progress_bar_size">16dp</dimen>
+    <dimen name="progress_text_marginStart">16dp</dimen>
+    <dimen name="progress_text_size">16sp</dimen>
+    <dimen name="file_viewer_item_width">170dp</dimen>
+    <dimen name="fab_margin">145dp</dimen>
+
+</resources>

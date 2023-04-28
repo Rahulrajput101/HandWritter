@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="font_styles_array">
+        <item>Shadows Into Light Regular</item>
+        <item>Tillana Regular</item>
+        <item>Zeyada Regular</item>
+        <item>Indie Flower Regular</item>
+        <item>Caveat Variable Font</item>
+        <item>Dancing Script </item>
+        <item>Permanent Marker</item>
+        <item>Sedgwick Ave Display</item>
+        <item>Sacramento Regular</item>
+    </string-array>
+
+    <string-array name="font_sizes_array">
+        <item>12f</item>
+        <item>14f</item>
+        <item>16f</item>
+        <item>18f</item>
+        <item>20f</item>
+        <item>22f</item>
+        <item>24f</item>
+        <item>26f</item>
+        <item>28f</item>
+        <item>30f</item>
+    </string-array>
+
+
+    <string-array name="line_color_array">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Green</item>
+    </string-array>
+</resources>
