@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.elkdocs.handwritter.R
@@ -35,7 +36,10 @@ class PageViewerFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
 
-        adapter = PageViewerAdapter()
+        adapter = PageViewerAdapter{pageDetail ->
+            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
+        }
+
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
         binding.rvPages.layoutManager = GridLayoutManager(requireContext(),3)

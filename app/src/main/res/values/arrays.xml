@@ -25,6 +25,11 @@
         <item>30f</item>
     </string-array>
 
+    <string-array name="add_line_array">
+        <item>on</item>
+        <item>off</item>
+    </string-array>
+
 
     <string-array name="line_color_array">
         <item>Black</item>
