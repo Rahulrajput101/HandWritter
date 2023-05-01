@@ -48,11 +48,8 @@ class PageViewerAdapter(
         }
 
         fun bind(page : MyPageModel){
-          binding.ItemPageViewerCardView.setCardBackgroundColor(Color.BLUE)
+           // binding.ivTextEditView.text = page.notesText
         }
-
-
-
     }
 
 

@@ -16,20 +16,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_file_viewer_activity"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/toolbar_color_main_activity"
-                android:theme="@style/CustomToolBarTheme" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_long_pressed"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/page_viewer_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/toolbar_color_main_activity"
-                android:theme="@style/CustomToolBarTheme"
-                android:visibility="gone" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:background="@color/light_grey">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/delete_icon"
+                        android:layout_width="37dp"
+                        android:layout_height="45dp"
+                        android:layout_marginEnd="16dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:padding="5dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_delete_24" />
+
+                    <ImageView
+                        android:id="@+id/pdf_icon"
+                        android:layout_width="33dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/delete_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:srcCompat="@drawable/baseline_picture_as_pdf_24" />
+
+
+                    <ImageView
+                        android:id="@+id/back_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </FrameLayout>
 
@@ -66,8 +106,6 @@
                 android:src="@drawable/baseline_add_24"
                 app:maxImageSize="35dp"
                 app:tint="@null" />
-
-
         </FrameLayout>
     </LinearLayout>
 </layout>

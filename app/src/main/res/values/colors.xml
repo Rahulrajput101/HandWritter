@@ -71,6 +71,7 @@
     <color name="file_view_activity_color">#F1EEEE</color>
     <color name="edit_file_activity_color">#F1EEEE</color>
 
+    <color name ="light_grey">#E8E6E6</color>
 
     //ripple effect colors
     <color name="button_normal_background">#FEFEFE</color>

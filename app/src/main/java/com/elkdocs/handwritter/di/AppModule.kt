@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.elkdocs.handwritter.data.data_source.MyDatabase
 import com.elkdocs.handwritter.data.repository.MyFolderRepositoryImp
 import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,7 +34,11 @@ object AppModule {
         return MyFolderRepositoryImp(db.myFolderDao())
     }
 
-
+    @Provides
+    @Singleton
+    fun provideDrawLine(): DrawLine {
+        return DrawLine()
+    }
 
 //    @Provides
 //    @Singleton

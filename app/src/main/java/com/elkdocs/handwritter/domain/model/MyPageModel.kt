@@ -14,13 +14,12 @@ data class MyPageModel(
     val folderId: Long? = null,
     val uriIndex: Int,
     val notesText: String,
-    val fontStyle: Int,
-    val fontSize: String,
+    val fontStyle: Int? = null,
+    val fontSize: Float,
     val charSpace: String,
     val wordSpace: String,
-    val addHrLines: String,
-    val addVrLines: String,
-    val lineColor: String
+    val addLines: Boolean,
+    val lineColor: Int
 ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {
@@ -33,8 +32,7 @@ data class MyPageModel(
                 charSpace = pageDetail.charSpace,
                 fontSize = pageDetail.fontSize,
                 wordSpace = pageDetail.wordSpace,
-                addHrLines = pageDetail.addHrLines,
-                addVrLines = pageDetail.addVrLines,
+                addLines = pageDetail.addLines,
                 lineColor = pageDetail.lineColor
             )
         }

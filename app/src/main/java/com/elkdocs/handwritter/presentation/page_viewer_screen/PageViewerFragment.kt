@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.util.OtherUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -35,6 +37,8 @@ class PageViewerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
+        val primaryColor = OtherUtility.provideBackgroundColorPrimary(requireContext())
+        binding.pageViewerToolbar.setBackgroundColor(primaryColor)
 
         adapter = PageViewerAdapter{pageDetail ->
             findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
@@ -46,6 +50,10 @@ class PageViewerFragment : Fragment() {
         
         setClickListeners()
         setObserver()
+
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
         return binding.root
     }
 
@@ -65,13 +73,12 @@ class PageViewerFragment : Fragment() {
                     folderId = navArgs.folderId,
                     uriIndex = 0,
                     notesText = "",
-                    fontSize = "",
-                    fontStyle = 0,
+                    fontSize = 8f,
+                    fontStyle = null,
                     charSpace = "",
                     wordSpace = "",
-                    addHrLines = "",
-                    addVrLines = "",
-                    lineColor = ""
+                    addLines = false,
+                    lineColor = Color.BLACK
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))
         }
