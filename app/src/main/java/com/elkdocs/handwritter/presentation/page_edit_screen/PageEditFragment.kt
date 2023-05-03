@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,23 +14,21 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.createBitmap
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.PURPLE_LINE_COLOR
+import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.provideBackgroundColorPrimary
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PageEditFragment : Fragment() {
@@ -43,22 +42,55 @@ class PageEditFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPageEditBinding.inflate(layoutInflater)
-        //Toast.makeText(requireContext(),pageEditState.notesText,Toast.LENGTH_SHORT).show()
+
+
         val primaryColor = provideBackgroundColorPrimary(requireContext())
         binding.toolbarEditFileActivity.setBackgroundColor(primaryColor)
 
-        val page =navArgs.pageDetail
-        viewModel.setPageEditState(MyPageModel.fromMyPageModel(page))
+        val pageArgs =navArgs.pageDetail
+        viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
 
-        setInitialValues(page)
+        setInitialValues(pageArgs)
         fontStyleAdapter()
         fontSizeAdapter()
         addLineAdapter()
         lineColorAdapter()
 
-        binding.editBackButton.setOnClickListener{
-            findNavController().navigateUp()
+        val textFormatClickListener = View.OnClickListener { view ->
+            val isBold = binding.ivTextEditView.typeface.isBold
+            val isItalic = binding.ivTextEditView.typeface.isItalic
+            when (view.id) {
+                R.id.bold_text -> {
+                    binding.italicText.setTextColor(Color.BLACK)
+                    updateFontType(viewModel.state.value.fontStyle,if (isBold) Typeface.NORMAL else Typeface.BOLD)
+                    if(!isBold){
+                        binding.boldText.setTextColor(Color.BLUE)
+                    }else{
+                        binding.boldText.setTextColor(Color.BLACK)
+                    }
+                }
+
+                R.id.italic_text -> {
+                    binding.boldText.setTextColor(Color.BLACK)
+                    updateFontType(viewModel.state.value.fontStyle,if (isItalic)Typeface.NORMAL else Typeface.ITALIC)
+                    if(!isItalic){
+                        binding.italicText.setTextColor(Color.BLUE)
+
+                    }else{
+                        binding.italicText.setTextColor(Color.BLACK)
+                    }
+                }
+
+
+            }
         }
+
+        binding.boldText.setOnClickListener(textFormatClickListener)
+        binding.italicText.setOnClickListener(textFormatClickListener)
+
+
+        binding.editBackButton.setOnClickListener{ findNavController().navigateUp() }
+
         binding.editForwardButton.setOnClickListener {
             val noteText = binding.ivTextEditView.text.toString()
             if(noteText.isNotEmpty()){
@@ -73,15 +105,30 @@ class PageEditFragment : Fragment() {
             peekHeight = 100
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
         return binding.root
     }
 
+    private fun updateFontType(fontStyle : Int,fontType: Int){
+        val typeface = ResourcesCompat.getFont(requireContext(),fontStyle)
+        binding.ivTextEditView.setTypeface(typeface,fontType)
+        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
+    }
+
+
     private fun setInitialValues(page : MyPageModel) {
         binding.ivTextEditView.setText(page.notesText)
-        if(page.fontStyle != null ){
-            updateFontStyle(page.fontStyle)
+        when(page.fontType){
+            Typeface.NORMAL -> Toast.makeText(requireContext(),"Normal",Toast.LENGTH_SHORT).show()
+            Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
+            Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
-        //
+        binding.fontSizeAutoComplete.setText("${page.fontSize}")
+        binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
+        binding.addLinesAutoComplete.setText(if(page.addLines) "on" else "off")
+        updateFontStyle(page.fontStyle)
+        updateLine(page.addLines)
+        updateFontType(page.fontStyle,page.fontType)
     }
 
     private fun fontStyleAdapter() {
@@ -90,19 +137,12 @@ class PageEditFragment : Fragment() {
         binding.fontStyleAutoComplete.setAdapter(arrayAdapter)
         binding.fontStyleAutoComplete.setOnItemClickListener{parent, view, position, id ->
             val fontStyle = parent.getItemAtPosition(position).toString()
+            binding.boldText.setTextColor(Color.BLACK)
+            binding.italicText.setTextColor(Color.BLACK)
             Toast.makeText(requireContext(),fontStyle, Toast.LENGTH_SHORT).show()
             updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
         }
     }
-    private fun updateFontStyle(fontResourceId: Int?) {
-        if (fontResourceId != null) {
-            val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
-            binding.ivTextEditView.typeface = typeface
-            binding.demoStyleTextView.typeface = typeface
-            viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
-        }
-    }
-
     private fun fontSizeAdapter() {
         val fontStyles = resources.getStringArray(R.array.font_sizes_array)
         val arrayAdapter = ArrayAdapter(requireContext(),R.layout.item_drop_down, fontStyles)
@@ -113,13 +153,6 @@ class PageEditFragment : Fragment() {
             updateFontSize(Constant.FONT_SIZES_MAP[fontSize])
         }
     }
-    private fun updateFontSize(fontSizeValue: Float?){
-        if(fontSizeValue!=null){
-            binding.ivTextEditView.textSize = fontSizeValue
-            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
-        }
-    }
-
     private fun addLineAdapter() {
         val fontStyles = resources.getStringArray(R.array.add_line_array)
         val arrayAdapter = ArrayAdapter(requireContext(),R.layout.item_drop_down, fontStyles)
@@ -130,25 +163,6 @@ class PageEditFragment : Fragment() {
             updateLine(Constant.ADD_LINE_MAP[addLine])
         }
     }
-    private fun updateLine(hasLine : Boolean?){
-        if(hasLine != null){
-            when(hasLine){
-                true -> {
-                    val width = binding.ivImageEditView.width
-                    val height = binding.ivImageEditView.height
-                    val bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
-                    val canvas = Canvas(bitmap)
-                    viewModel.onEvent(PageEditEvent.UpdateAddLine(true))
-                    viewModel.onEvent(PageEditEvent.DrawLine(canvas))
-                    binding.ivImageEditView.setImageBitmap(bitmap)
-                }
-                false -> {
-                    Toast.makeText(requireContext(), "$hasLine",Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
     private fun lineColorAdapter() {
         val fontStyles = resources.getStringArray(R.array.line_color_array)
         val arrayAdapter = ArrayAdapter(requireContext(),R.layout.item_drop_down, fontStyles)
@@ -160,11 +174,101 @@ class PageEditFragment : Fragment() {
         }
     }
 
+    private fun updateFontStyle(fontResourceId: Int?) {
+        if (fontResourceId != null) {
+            Toast.makeText(requireContext(), "$fontResourceId",Toast.LENGTH_SHORT).show()
+            val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
+            binding.ivTextEditView.typeface = typeface
+            binding.demoStyleTextView.typeface = typeface
+            viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
+        }
+    }
+
+    private fun updateFontSize(fontSizeValue: Float?){
+        if(fontSizeValue!=null){
+            binding.ivTextEditView.textSize = fontSizeValue
+            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
+        }
+        updateLine(viewModel.state.value.addLines)
+    }
+
+    private fun updateLine(hasLine : Boolean?){
+        if(hasLine != null){
+            when(hasLine){
+                true -> {
+                    val width = 1024
+                    val height = 1845
+                    val bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
+                    val canvas = Canvas(bitmap)
+                    viewModel.onEvent(PageEditEvent.UpdateAddLine(true))
+                    //viewModel.onEvent(PageEditEvent.DrawLine(canvas))
+                    drawLines(canvas,viewModel.state.value.fontSize,PURPLE_LINE_COLOR,binding.ivTextEditView)
+                    verticalLine(canvas)
+                    binding.ivImageEditView.setImageBitmap(bitmap)
+                }
+                false -> {
+                    viewModel.onEvent(PageEditEvent.UpdateAddLine(false))
+                }
+            }
+        }
+    }
+
+
+
     private fun updateLineColor(color: Int?) {
         if(color != null){
             Toast.makeText(requireContext(),"$color",Toast.LENGTH_SHORT).show()
             viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
         }
+    }
+
+//    private fun updateFontType(fontType: Int,fontStyle: Int?){
+//        fontStyle?.let {
+//            Toast.makeText(requireContext(),"clicked78",Toast.LENGTH_SHORT).show()
+//            val typeFace = ResourcesCompat.getFont(requireContext(),it)
+//            typeFace?.let {typeface->
+//                binding.ivTextEditView.setTypeface(typeface,fontType)
+//                viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
+//            }
+//        } ?:  binding.ivTextEditView.setTypeface(null,fontType)
+//    }
+
+    private fun verticalLine(canvas: Canvas){
+        val paint = Paint()
+        paint.color = Color.parseColor("#D1C2E1")
+        paint.strokeWidth = 2f
+
+// Draw horizontal line
+//        val y = canvas.height * 0.10f // Change this value to adjust the y-coordinate of the line
+//        canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paint)
+
+        // Draw vertical line
+        val x = canvas.width * 0.15f // Change this value to adjust the x-coordinate of the line
+        canvas.drawLine(x.toFloat(), 0f, x.toFloat(), canvas.height.toFloat(), paint)
+    }
+
+    private fun drawLines(canvas: Canvas, fontSize: Float, lineColor: Int, editText: EditText?){
+
+        val lineSpacing = fontSize * 3f // or any other ratio you prefer
+        binding.ivTextEditView.setLineSpacing(lineSpacing,0f)
+        val linePaint = Paint()
+        linePaint.strokeWidth = 2f
+        linePaint.color = lineColor
+
+        val yOffset = (fontSize - lineSpacing) / 2 // Center the lines vertically
+
+        val paddingTop = canvas.height * 0.10f
+
+        for (i in paddingTop.toInt() until canvas.height step lineSpacing.toInt()) {
+            if (i == paddingTop.toInt()) {
+                linePaint.color = Color.parseColor("#D1C2E1")
+            } else {
+                linePaint.color = lineColor
+            }
+
+            canvas.drawLine(0f, i + yOffset, canvas.width.toFloat(), i + yOffset, linePaint)
+        }
+
     }
 
 

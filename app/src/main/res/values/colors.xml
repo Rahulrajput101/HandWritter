@@ -92,4 +92,7 @@
     <color name="crop_border_color">#023E8A</color>
     <color name="crop_guidelines_color">#90E0EF</color>
 
+    //lineColorOfPage
+    <color name="purple_line_color">#B2B1D3</color>
+
 </resources>

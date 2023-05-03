@@ -24,20 +24,29 @@ object Constant {
         SEDGWICK_AVE_DISPLAY to R.font.sedgwick_ave_display_regular,
         SACRAMENTO_REGULAR to R.font.sacramento_regular
     )
-
-    const val FONT_SIZE_12 = "12f"
-    const val FONT_SIZE_14 = "14f"
-    const val FONT_SIZE_16 = "16f"
-    const val FONT_SIZE_18 = "18f"
-    const val FONT_SIZE_20 = "20f"
-    const val FONT_SIZE_22 = "22f"
-    const val FONT_SIZE_24 = "24f"
-    const val FONT_SIZE_26 = "26f"
-    const val FONT_SIZE_28 = "28f"
-    const val FONT_SIZE_30 = "30f"
+   val REVERSE_FONT_STYLE_MAP = mapOf(
+       R.font.shadows_into_light_regular to SHADOWS_INTO_LIGHT_REGULAR,
+       R.font.tillana_regular to TILLANA_REGULAR,
+       R.font.zeyada_regular to INDIE_FLOWER_REGULAR,
+       R.font.caveat_variablefont_wght to CAVEAT_VARIABLE_FONT,
+       R.font.dancing_script_variablefont_wght to DANCING_SCRIPT,
+       R.font.permanent_marker_regular to PERMANENT_MARKER ,
+       R.font.sedgwick_ave_display_regular to SEDGWICK_AVE_DISPLAY,
+       R.font.sacramento_regular to SACRAMENTO_REGULAR
+   )
+    const val FONT_SIZE_12 = "12.0"
+    const val FONT_SIZE_14 = "14.0"
+    const val FONT_SIZE_16 = "16.0"
+    const val FONT_SIZE_18 = "18.0"
+    const val FONT_SIZE_20 = "20.0"
+    const val FONT_SIZE_22 = "22.0"
+    const val FONT_SIZE_24 = "24.0"
+    const val FONT_SIZE_26 = "26.0"
+    const val FONT_SIZE_28 = "28.0"
+    const val FONT_SIZE_30 = "30.0"
 
     val FONT_SIZES_MAP = mapOf(
-        FONT_SIZE_12 to 12f,
+        FONT_SIZE_12 to 12F,
         FONT_SIZE_14 to 14f,
         FONT_SIZE_16 to 16f,
         FONT_SIZE_18 to 18f,
@@ -48,6 +57,7 @@ object Constant {
         FONT_SIZE_28 to 28f,
         FONT_SIZE_30 to 30f
     )
+
 
     const val ADD_LINE_ON = "on"
     const val ADD_LINE_OFF = "off"
@@ -68,4 +78,13 @@ object Constant {
         LINE_COLOR_RED to Color.RED,
         LINE_COLOR_GREEN to Color.GREEN
     )
+
+
+    //color lines
+    const val PURPLE_LINE_COLOR = 0xFFB2B1D3.toInt()
+
+    //font type
+    const val NORMAL_FONT_TYPE = "Normal"
+    const val BOLD_FONT_TYPE = "Bold"
+    const val UNDERLINE_FONT_TYPE = "Underline"
 }

@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.domain.model
 
+import android.graphics.Typeface
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,7 +15,8 @@ data class MyPageModel(
     val folderId: Long? = null,
     val uriIndex: Int,
     val notesText: String,
-    val fontStyle: Int? = null,
+    val fontStyle: Int,
+    val fontType: Int ,
     val fontSize: Float,
     val charSpace: String,
     val wordSpace: String,

@@ -10,6 +10,7 @@ import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerState
+import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +57,9 @@ class PageEditViewModel @Inject constructor(
                 _state.value = _state.value.copy(notesText = event.text)
             }
 
+            is PageEditEvent.UpdateFontType -> {
+                _state.value =_state.value.copy(fontType = event.fontType)
+            }
             is PageEditEvent.UpdatePage -> {
                 viewModelScope.launch {
                     addNewPage(
@@ -65,6 +69,7 @@ class PageEditViewModel @Inject constructor(
                             uriIndex = state.value.uriIndex,
                             notesText = state.value.notesText,
                             fontStyle = state.value.fontStyle,
+                            fontType =state.value.fontType,
                             charSpace = state.value.charSpace,
                             fontSize = state.value.fontSize,
                             wordSpace = state.value.wordSpace,
@@ -79,7 +84,7 @@ class PageEditViewModel @Inject constructor(
                 drawLine(
                     canvas = event.canvas,
                     fontSize = state.value.fontSize,
-                    lineColor = Color.BLACK
+                    lineColor = Constant.PURPLE_LINE_COLOR
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -73,11 +74,12 @@ class PageViewerFragment : Fragment() {
                     folderId = navArgs.folderId,
                     uriIndex = 0,
                     notesText = "",
-                    fontSize = 8f,
-                    fontStyle = null,
+                    fontSize = 20f,
+                    fontStyle = R.font.caveat_variablefont_wght,
+                    fontType = Typeface.NORMAL,
                     charSpace = "",
                     wordSpace = "",
-                    addLines = false,
+                    addLines = true,
                     lineColor = Color.BLACK
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))
