@@ -12,6 +12,7 @@ class FolderAdapter(
 ) : RecyclerView.Adapter<FolderAdapter.MyViewHolder>() {
     
     private var folderListWithPages: List<MyFolderModel> = emptyList()
+
     
     fun setAllFolder(folders: List<MyFolderModel>){
         folderListWithPages = folders

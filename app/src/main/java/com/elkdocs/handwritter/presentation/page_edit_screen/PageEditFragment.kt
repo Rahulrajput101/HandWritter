@@ -12,29 +12,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.pageColorList
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.PURPLE_LINE_COLOR
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.provideBackgroundColorPrimary
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PageEditFragment : Fragment() {
      private lateinit var binding : FragmentPageEditBinding
      private val navArgs : PageEditFragmentArgs by navArgs()
      private val viewModel : PageEditViewModel by viewModels()
+     private lateinit var pageColorAdapter : PageColorAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +46,6 @@ class PageEditFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentPageEditBinding.inflate(layoutInflater)
 
-
         val primaryColor = provideBackgroundColorPrimary(requireContext())
         binding.toolbarEditFileActivity.setBackgroundColor(primaryColor)
 
@@ -51,46 +53,16 @@ class PageEditFragment : Fragment() {
         viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
 
         setInitialValues(pageArgs)
+        backgroundColorAdapter()
         fontStyleAdapter()
         fontSizeAdapter()
         addLineAdapter()
         lineColorAdapter()
 
-        val textFormatClickListener = View.OnClickListener { view ->
-            val isBold = binding.ivTextEditView.typeface.isBold
-            val isItalic = binding.ivTextEditView.typeface.isItalic
-            when (view.id) {
-                R.id.bold_text -> {
-                    binding.italicText.setTextColor(Color.BLACK)
-                    updateFontType(viewModel.state.value.fontStyle,if (isBold) Typeface.NORMAL else Typeface.BOLD)
-                    if(!isBold){
-                        binding.boldText.setTextColor(Color.BLUE)
-                    }else{
-                        binding.boldText.setTextColor(Color.BLACK)
-                    }
-                }
-
-                R.id.italic_text -> {
-                    binding.boldText.setTextColor(Color.BLACK)
-                    updateFontType(viewModel.state.value.fontStyle,if (isItalic)Typeface.NORMAL else Typeface.ITALIC)
-                    if(!isItalic){
-                        binding.italicText.setTextColor(Color.BLUE)
-
-                    }else{
-                        binding.italicText.setTextColor(Color.BLACK)
-                    }
-                }
-
-
-            }
-        }
-
         binding.boldText.setOnClickListener(textFormatClickListener)
         binding.italicText.setOnClickListener(textFormatClickListener)
 
-
         binding.editBackButton.setOnClickListener{ findNavController().navigateUp() }
-
         binding.editForwardButton.setOnClickListener {
             val noteText = binding.ivTextEditView.text.toString()
             if(noteText.isNotEmpty()){
@@ -108,6 +80,47 @@ class PageEditFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun backgroundColorAdapter() {
+        pageColorAdapter = PageColorAdapter(
+            onPageColorClick = {pageColor,adapterPostion ->
+                binding.ivImageEditView.setBackgroundColor(pageColor)
+
+            }
+        )
+        binding.selectPageColorRecyclerView.adapter = pageColorAdapter
+        binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
+    }
+
+    private val textFormatClickListener = View.OnClickListener { view ->
+        val isBold = binding.ivTextEditView.typeface.isBold
+        val isItalic = binding.ivTextEditView.typeface.isItalic
+        when (view.id) {
+            R.id.bold_text -> {
+                binding.italicText.setTextColor(Color.BLACK)
+                updateFontType(viewModel.state.value.fontStyle,if (isBold) Typeface.NORMAL else Typeface.BOLD)
+                if(!isBold){
+                    binding.boldText.setTextColor(Color.BLUE)
+                }else{
+                    binding.boldText.setTextColor(Color.BLACK)
+                }
+            }
+
+            R.id.italic_text -> {
+                binding.boldText.setTextColor(Color.BLACK)
+                updateFontType(viewModel.state.value.fontStyle,if (isItalic)Typeface.NORMAL else Typeface.ITALIC)
+                if(!isItalic){
+                    binding.italicText.setTextColor(Color.BLUE)
+
+                }else{
+                    binding.italicText.setTextColor(Color.BLACK)
+                }
+            }
+
+
+        }
+    }
+
 
     private fun updateFontType(fontStyle : Int,fontType: Int){
         val typeface = ResourcesCompat.getFont(requireContext(),fontStyle)
@@ -221,17 +234,6 @@ class PageEditFragment : Fragment() {
             viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
         }
     }
-
-//    private fun updateFontType(fontType: Int,fontStyle: Int?){
-//        fontStyle?.let {
-//            Toast.makeText(requireContext(),"clicked78",Toast.LENGTH_SHORT).show()
-//            val typeFace = ResourcesCompat.getFont(requireContext(),it)
-//            typeFace?.let {typeface->
-//                binding.ivTextEditView.setTypeface(typeface,fontType)
-//                viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
-//            }
-//        } ?:  binding.ivTextEditView.setTypeface(null,fontType)
-//    }
 
     private fun verticalLine(canvas: Canvas){
         val paint = Paint()
