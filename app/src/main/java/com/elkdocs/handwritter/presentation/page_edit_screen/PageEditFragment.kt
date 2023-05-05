@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
@@ -20,11 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
-import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.pageColorList
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.PURPLE_LINE_COLOR
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
@@ -53,11 +50,12 @@ class PageEditFragment : Fragment() {
         viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
 
         setInitialValues(pageArgs)
-        backgroundColorAdapter()
+        pageColorAdapter()
         fontStyleAdapter()
         fontSizeAdapter()
         addLineAdapter()
         lineColorAdapter()
+
 
         binding.boldText.setOnClickListener(textFormatClickListener)
         binding.italicText.setOnClickListener(textFormatClickListener)
@@ -77,17 +75,17 @@ class PageEditFragment : Fragment() {
             peekHeight = 100
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
-
         return binding.root
     }
 
-    private fun backgroundColorAdapter() {
+    private fun pageColorAdapter() {
         pageColorAdapter = PageColorAdapter(
             onPageColorClick = {pageColor,adapterPostion ->
                 binding.ivImageEditView.setBackgroundColor(pageColor)
-
+                viewModel.onEvent(PageEditEvent.UpdatePageColor(pageColor))
             }
         )
+
         binding.selectPageColorRecyclerView.adapter = pageColorAdapter
         binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
     }
@@ -116,8 +114,6 @@ class PageEditFragment : Fragment() {
                     binding.italicText.setTextColor(Color.BLACK)
                 }
             }
-
-
         }
     }
 
@@ -139,6 +135,7 @@ class PageEditFragment : Fragment() {
         binding.fontSizeAutoComplete.setText("${page.fontSize}")
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
         binding.addLinesAutoComplete.setText(if(page.addLines) "on" else "off")
+        binding.ivImageEditView.setBackgroundColor(page.pageColor)
         updateFontStyle(page.fontStyle)
         updateLine(page.addLines)
         updateFontType(page.fontStyle,page.fontType)

@@ -60,6 +60,11 @@ class PageEditViewModel @Inject constructor(
             is PageEditEvent.UpdateFontType -> {
                 _state.value =_state.value.copy(fontType = event.fontType)
             }
+
+            is PageEditEvent.UpdatePageColor -> {
+                _state.value = _state.value.copy(pageColor = event.pageColor)
+            }
+
             is PageEditEvent.UpdatePage -> {
                 viewModelScope.launch {
                     addNewPage(
@@ -74,7 +79,8 @@ class PageEditViewModel @Inject constructor(
                             fontSize = state.value.fontSize,
                             wordSpace = state.value.wordSpace,
                             addLines =state.value.addLines,
-                            lineColor = state.value.lineColor
+                            lineColor = state.value.lineColor,
+                            pageColor = state.value.pageColor
                         )
                     )
                 }
@@ -87,6 +93,8 @@ class PageEditViewModel @Inject constructor(
                     lineColor = Constant.PURPLE_LINE_COLOR
                 )
             }
+
+
         }
     }
 

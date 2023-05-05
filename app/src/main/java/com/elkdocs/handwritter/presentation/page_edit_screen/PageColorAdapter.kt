@@ -48,7 +48,7 @@ class PageColorAdapter(
             if (position == selectedPosition) {
                 binding.headerPageColorItemCardView.setCardBackgroundColor(Color.BLACK)
             } else {
-                binding.headerPageColorItemCardView.setCardBackgroundColor(Color.WHITE)
+                binding.headerPageColorItemCardView.setCardBackgroundColor(color)
             }
 
             binding.pageColorItemCardView.setOnClickListener {

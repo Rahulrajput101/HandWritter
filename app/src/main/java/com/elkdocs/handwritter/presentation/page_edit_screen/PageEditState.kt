@@ -20,7 +20,8 @@ data class PageEditState(
     val charSpace: String = "",
     val wordSpace: String = "",
     val addLines: Boolean = true,
-    val lineColor: Int = Color.BLACK
+    val lineColor: Int = Color.BLACK,
+    val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE
 ) {
     companion object{
         val pageColorList = mutableListOf(

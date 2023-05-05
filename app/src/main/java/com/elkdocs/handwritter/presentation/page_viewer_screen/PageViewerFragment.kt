@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -80,7 +82,8 @@ class PageViewerFragment : Fragment() {
                     charSpace = "",
                     wordSpace = "",
                     addLines = true,
-                    lineColor = Color.BLACK
+                    lineColor = Color.BLACK,
+                    pageColor = PAGE_COLOR_LIGHT_BEIGE
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))
         }

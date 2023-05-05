@@ -21,7 +21,8 @@ data class MyPageModel(
     val charSpace: String,
     val wordSpace: String,
     val addLines: Boolean,
-    val lineColor: Int
+    val lineColor: Int,
+    val pageColor: Int,
 ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {
