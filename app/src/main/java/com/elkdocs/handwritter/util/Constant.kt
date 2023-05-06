@@ -67,21 +67,21 @@ object Constant {
         ADD_LINE_OFF to false
     ).withDefault{true}
 
-    const val LINE_COLOR_BLACK = "Black"
     const val LINE_COLOR_BLUE = "Blue"
+    const val LINE_COLOR_BLACK = "Black"
     const val LINE_COLOR_RED = "Red"
     const val LINE_COLOR_GREEN = "Green"
 
     val LINE_COLOR_MAP = mapOf(
-        LINE_COLOR_BLACK to Color.BLACK,
-        LINE_COLOR_BLUE to Color.BLUE,
+        LINE_COLOR_BLUE to 0xFFB2B1D3.toInt(),
+        LINE_COLOR_BLACK to  0xFFBFBFBD.toInt(),
         LINE_COLOR_RED to Color.RED,
         LINE_COLOR_GREEN to Color.GREEN
     )
 
 
     //color lines
-    const val PURPLE_LINE_COLOR = 0xFFB2B1D3.toInt()
+    const val BLUE_LINE_COLOR = 0xFFB2B1D3.toInt()
 
     //font type
     const val NORMAL_FONT_TYPE = "Normal"

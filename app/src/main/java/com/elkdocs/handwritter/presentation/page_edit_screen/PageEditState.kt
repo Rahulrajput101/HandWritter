@@ -3,6 +3,7 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 import android.graphics.Color
 import android.graphics.Typeface
 import com.elkdocs.handwritter.R
+import com.elkdocs.handwritter.util.Constant.BLUE_LINE_COLOR
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_GRAY
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_OFF_WHITE
@@ -17,10 +18,10 @@ data class PageEditState(
     val fontStyle: Int = R.font.zeyada_regular,
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
-    val charSpace: String = "",
+    val letterSpace: Float = 3f,
     val wordSpace: String = "",
     val addLines: Boolean = true,
-    val lineColor: Int = Color.BLACK,
+    val lineColor: Int = BLUE_LINE_COLOR,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE
 ) {
     companion object{

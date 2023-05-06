@@ -20,6 +20,8 @@ import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.BLUE_LINE_COLOR
+import com.elkdocs.handwritter.util.Constant.LINE_COLOR_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,7 @@ class PageViewerFragment : Fragment() {
         val primaryColor = OtherUtility.provideBackgroundColorPrimary(requireContext())
         binding.pageViewerToolbar.setBackgroundColor(primaryColor)
 
+
         adapter = PageViewerAdapter{pageDetail ->
             findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
         }
@@ -50,14 +53,41 @@ class PageViewerFragment : Fragment() {
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
         binding.rvPages.layoutManager = GridLayoutManager(requireContext(),3)
-        
+
         setClickListeners()
         setObserver()
-
+        addingInitialPageForFirstTime()
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
         }
         return binding.root
+    }
+
+    private fun addingInitialPageForFirstTime() {
+        lifecycleScope.launch {
+            viewModel.allPages.collect{
+                if (it.isEmpty()){
+                    val page = MyPageModel(
+                        folderId = navArgs.folderId,
+                        uriIndex = 0,
+                        notesText = "",
+                        fontSize = 20f,
+                        fontStyle = R.font.caveat_variablefont_wght,
+                        fontType = Typeface.NORMAL,
+                        letterSpace = 0f,
+                        wordSpace = "",
+                        addLines = true,
+                        lineColor = BLUE_LINE_COLOR,
+                        pageColor = PAGE_COLOR_LIGHT_BEIGE
+                    )
+                    viewModel.onEvent(PageViewerEvent.AddPage(page))
+                }
+            }
+        }
+
+
+
+
     }
 
     private fun setObserver() {
@@ -79,10 +109,10 @@ class PageViewerFragment : Fragment() {
                     fontSize = 20f,
                     fontStyle = R.font.caveat_variablefont_wght,
                     fontType = Typeface.NORMAL,
-                    charSpace = "",
+                    letterSpace = 0f,
                     wordSpace = "",
                     addLines = true,
-                    lineColor = Color.BLACK,
+                    lineColor = BLUE_LINE_COLOR,
                     pageColor = PAGE_COLOR_LIGHT_BEIGE
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))

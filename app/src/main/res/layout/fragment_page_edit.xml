@@ -17,10 +17,10 @@
             android:id="@+id/toolbar_edit_file_activity"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            tools:background="@color/md_theme_light_primaryContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/md_theme_light_primaryContainer">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -30,8 +30,8 @@
                     android:id="@+id/edit_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:foreground="?attr/selectableItemBackground"
+                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -60,10 +60,10 @@
             android:id="@+id/basicFeaturesOfText"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@android:color/white"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@android:color/white"
             app:layout_constraintTop_toBottomOf="@id/toolbar_edit_file_activity">
 
             <LinearLayout
@@ -170,12 +170,12 @@
                         android:id="@+id/ivTextEditView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:hint="Enter the text"
-                        android:gravity="start|top"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
+                        android:gravity="start|top"
+                        android:hint="Enter the text"
                         android:inputType="textMultiLine"
                         app:layout_constraintBottom_toBottomOf="@id/iv_image_edit_view"
                         app:layout_constraintEnd_toEndOf="@+id/iv_image_edit_view"
@@ -189,6 +189,7 @@
 
         </FrameLayout>
 
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/sheet"
             android:layout_width="match_parent"
@@ -196,6 +197,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fl_image_view">
+
 
             <FrameLayout
                 android:id="@+id/bottomSheetLayout"
@@ -209,12 +211,16 @@
                     android:layout_height="8dp"
                     android:layout_gravity="center|top"
                     android:background="@drawable/dialog_bg2" />
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
+
 
                     <CheckedTextView
                         android:id="@+id/demoStyleTextView"
@@ -226,11 +232,18 @@
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Font Style" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="5dp">
 
                         <AutoCompleteTextView
                             android:id="@+id/fontStyleAutoComplete"
@@ -245,6 +258,13 @@
                             android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Font Size" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -266,25 +286,12 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Body2"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/addLinesAutoComplete"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:inputType="none"
-                            android:text="Add lines"
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="15dp"
+                        android:text="Line Color" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -300,34 +307,49 @@
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:inputType="none"
-                            android:text="Line color"
+                            android:text="Blue"
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
+                        style="@style/TextAppearance.AppCompat.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Background"
-                        style="@style/TextAppearance.AppCompat.Body2"
                         android:layout_marginTop="25dp"
-                        />
+                        android:text="Select Background" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/select_page_color_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal"
-                        />
+                        tools:listitem="@layout/item_page_color" />
+
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Spacing between letter and word" />
+
+                    <SeekBar
+                        android:id="@+id/seekbar_for_letter_and_word"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:max="100"
+                        android:progress="0" />
+
 
                 </LinearLayout>
-
+                </androidx.core.widget.NestedScrollView>
             </FrameLayout>
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

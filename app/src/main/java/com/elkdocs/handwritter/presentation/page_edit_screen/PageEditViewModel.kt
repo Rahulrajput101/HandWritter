@@ -1,21 +1,15 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
-import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
-import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerState
 import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -75,7 +69,7 @@ class PageEditViewModel @Inject constructor(
                             notesText = state.value.notesText,
                             fontStyle = state.value.fontStyle,
                             fontType =state.value.fontType,
-                            charSpace = state.value.charSpace,
+                            letterSpace = state.value.letterSpace,
                             fontSize = state.value.fontSize,
                             wordSpace = state.value.wordSpace,
                             addLines =state.value.addLines,
@@ -90,11 +84,13 @@ class PageEditViewModel @Inject constructor(
                 drawLine(
                     canvas = event.canvas,
                     fontSize = state.value.fontSize,
-                    lineColor = Constant.PURPLE_LINE_COLOR
+                    lineColor = Constant.BLUE_LINE_COLOR
                 )
             }
 
-
+            is PageEditEvent.UpdateLetterSpacing -> {
+                _state.value = _state.value.copy(letterSpace = event.letterSpacing)
+            }
         }
     }
 
