@@ -10,7 +10,9 @@ import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
 
 
-class PageViewerAdapter() : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>() {
+class PageViewerAdapter(
+    private val onPageClick : (MyPageModel) -> Unit
+) : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>() {
 
     private var pageList: List<MyPageModel> = emptyList()
 
@@ -28,7 +30,11 @@ class PageViewerAdapter() : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-       holder.bind(pageList[position])
+        val item = pageList[position]
+        holder.bind(item)
+       holder.itemView.setOnClickListener {
+           onPageClick(item)
+       }
     }
 
     class MyViewHolder(private val binding : ItemPageViewerBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -42,11 +48,8 @@ class PageViewerAdapter() : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>
         }
 
         fun bind(page : MyPageModel){
-          binding.ItemPageViewerCardView.setCardBackgroundColor(Color.BLUE)
+           // binding.ivTextEditView.text = page.notesText
         }
-
-
-
     }
 
 

@@ -12,11 +12,13 @@ class FolderAdapter(
 ) : RecyclerView.Adapter<FolderAdapter.MyViewHolder>() {
     
     private var folderListWithPages: List<MyFolderModel> = emptyList()
+
     
     fun setAllFolder(folders: List<MyFolderModel>){
         folderListWithPages = folders
         notifyDataSetChanged()
     }
+
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderAdapter.MyViewHolder {
        return MyViewHolder.from(parent)

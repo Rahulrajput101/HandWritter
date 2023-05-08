@@ -31,5 +31,9 @@
         android:id="@+id/pageEditFragment"
         android:name="com.elkdocs.handwritter.presentation.page_edit_screen.PageEditFragment"
         android:label="fragment_page_edit"
-        tools:layout="@layout/fragment_page_edit" />
+        tools:layout="@layout/fragment_page_edit" >
+        <argument
+            android:name="pageDetail"
+            app:argType="com.elkdocs.handwritter.domain.model.MyPageModel" />
+    </fragment>
 </navigation>

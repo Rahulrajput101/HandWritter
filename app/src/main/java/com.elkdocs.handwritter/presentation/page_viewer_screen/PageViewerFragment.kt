@@ -1,5 +1,7 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +13,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.BLUE_LINE_COLOR
+import com.elkdocs.handwritter.util.Constant.LINE_COLOR_BLUE
+import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
+import com.elkdocs.handwritter.util.OtherUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -34,15 +42,52 @@ class PageViewerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
+//        val primaryColor = OtherUtility.provideBackgroundColorPrimary(requireContext())
+//        binding.pageViewerToolbar.setBackgroundColor(primaryColor)
 
-        adapter = PageViewerAdapter()
+
+        adapter = PageViewerAdapter{pageDetail ->
+            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
+        }
+
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
         binding.rvPages.layoutManager = GridLayoutManager(requireContext(),3)
-        
+
         setClickListeners()
         setObserver()
+        addingInitialPageForFirstTime()
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
         return binding.root
+    }
+
+    private fun addingInitialPageForFirstTime() {
+        lifecycleScope.launch {
+            viewModel.allPages.collect{
+                if (it.isEmpty()){
+                    val page = MyPageModel(
+                        folderId = navArgs.folderId,
+                        uriIndex = 0,
+                        notesText = "",
+                        fontSize = 20f,
+                        fontStyle = R.font.caveat_variablefont_wght,
+                        fontType = Typeface.NORMAL,
+                        letterSpace = 0f,
+                        wordSpace = "",
+                        addLines = true,
+                        lineColor = BLUE_LINE_COLOR,
+                        pageColor = PAGE_COLOR_LIGHT_BEIGE,
+                    )
+                    viewModel.onEvent(PageViewerEvent.AddPage(page))
+                }
+            }
+        }
+
+
+
+
     }
 
     private fun setObserver() {
@@ -61,13 +106,14 @@ class PageViewerFragment : Fragment() {
                     folderId = navArgs.folderId,
                     uriIndex = 0,
                     notesText = "",
-                    fontSize = "",
-                    fontStyle = 0,
-                    charSpace = "",
+                    fontSize = 20f,
+                    fontStyle = R.font.caveat_variablefont_wght,
+                    fontType = Typeface.NORMAL,
+                    letterSpace = 0f,
                     wordSpace = "",
-                    addHrLines = "",
-                    addVrLines = "",
-                    lineColor = ""
+                    addLines = true,
+                    lineColor = BLUE_LINE_COLOR,
+                    pageColor = PAGE_COLOR_LIGHT_BEIGE,
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))
         }

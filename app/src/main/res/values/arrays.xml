@@ -13,16 +13,21 @@
     </string-array>
 
     <string-array name="font_sizes_array">
-        <item>12f</item>
-        <item>14f</item>
-        <item>16f</item>
-        <item>18f</item>
-        <item>20f</item>
-        <item>22f</item>
-        <item>24f</item>
-        <item>26f</item>
-        <item>28f</item>
-        <item>30f</item>
+        <item>12.0</item>
+        <item>14.0</item>
+        <item>16.0</item>
+        <item>18.0</item>
+        <item>20.0</item>
+        <item>22.0</item>
+        <item>24.0</item>
+        <item>26.0</item>
+        <item>28.0</item>
+        <item>30.0</item>
+    </string-array>
+
+    <string-array name="add_line_array">
+        <item>on</item>
+        <item>off</item>
     </string-array>
 
 
@@ -32,4 +37,10 @@
         <item>Red</item>
         <item>Green</item>
     </string-array>
+
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>Hindi</item>
+    </string-array>
+
 </resources>
