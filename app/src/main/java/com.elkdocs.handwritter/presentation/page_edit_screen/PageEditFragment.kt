@@ -54,7 +54,7 @@ class PageEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
 
         val primaryColor = provideBackgroundColorPrimary(requireContext())
