@@ -37,4 +37,10 @@
         <item>Red</item>
         <item>Green</item>
     </string-array>
+
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>Hindi</item>
+    </string-array>
+
 </resources>

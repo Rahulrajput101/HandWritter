@@ -74,7 +74,7 @@ class PageEditViewModel @Inject constructor(
                             wordSpace = state.value.wordSpace,
                             addLines =state.value.addLines,
                             lineColor = state.value.lineColor,
-                            pageColor = state.value.pageColor
+                            pageColor = state.value.pageColor,
                         )
                     )
                 }

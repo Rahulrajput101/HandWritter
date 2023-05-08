@@ -18,6 +18,7 @@ class FolderAdapter(
         folderListWithPages = folders
         notifyDataSetChanged()
     }
+
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderAdapter.MyViewHolder {
        return MyViewHolder.from(parent)

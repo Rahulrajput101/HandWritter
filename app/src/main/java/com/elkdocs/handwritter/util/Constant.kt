@@ -14,6 +14,9 @@ object Constant {
     const val SEDGWICK_AVE_DISPLAY ="Sedgwick Ave Display"
     const val SACRAMENTO_REGULAR ="Sacramento Regular"
 
+    const val ENGLISH ="English"
+    const val Hindi = "Hindi"
+
     val FONT_STYLES_MAP = mapOf(
         SHADOWS_INTO_LIGHT_REGULAR to R.font.shadows_into_light_regular,
         TILLANA_REGULAR to R.font.tillana_regular,
@@ -34,6 +37,16 @@ object Constant {
        R.font.sedgwick_ave_display_regular to SEDGWICK_AVE_DISPLAY,
        R.font.sacramento_regular to SACRAMENTO_REGULAR
    )
+
+    val LANGUAGE_MAP = mapOf(
+        ENGLISH to R.font.caveat_variablefont_wght,
+        Hindi to R.font.hindi
+    )
+    val REVERSE_LANGUAGE_MAP = mapOf(
+        R.font.caveat_variablefont_wght to ENGLISH ,
+        R.font.hindi to Hindi
+    )
+
     const val FONT_SIZE_12 = "12.0"
     const val FONT_SIZE_14 = "14.0"
     const val FONT_SIZE_16 = "16.0"

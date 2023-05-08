@@ -13,5 +13,6 @@ sealed interface PageEditEvent{
         data class UpdateLineColor(val lineColor: Int) : PageEditEvent
         data class UpdatePageColor(val pageColor: Int) : PageEditEvent
         data class UpdateNote(val text : String) : PageEditEvent
+
         data class DrawLine(val canvas: Canvas) : PageEditEvent
 }

@@ -42,8 +42,8 @@ class PageViewerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
-        val primaryColor = OtherUtility.provideBackgroundColorPrimary(requireContext())
-        binding.pageViewerToolbar.setBackgroundColor(primaryColor)
+//        val primaryColor = OtherUtility.provideBackgroundColorPrimary(requireContext())
+//        binding.pageViewerToolbar.setBackgroundColor(primaryColor)
 
 
         adapter = PageViewerAdapter{pageDetail ->
@@ -78,7 +78,7 @@ class PageViewerFragment : Fragment() {
                         wordSpace = "",
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
-                        pageColor = PAGE_COLOR_LIGHT_BEIGE
+                        pageColor = PAGE_COLOR_LIGHT_BEIGE,
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
                 }
@@ -113,7 +113,7 @@ class PageViewerFragment : Fragment() {
                     wordSpace = "",
                     addLines = true,
                     lineColor = BLUE_LINE_COLOR,
-                    pageColor = PAGE_COLOR_LIGHT_BEIGE
+                    pageColor = PAGE_COLOR_LIGHT_BEIGE,
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))
         }

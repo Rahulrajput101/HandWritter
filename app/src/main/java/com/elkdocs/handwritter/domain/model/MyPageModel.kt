@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState
+import com.google.mlkit.nl.translate.TranslateLanguage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,13 +17,14 @@ data class MyPageModel(
     val uriIndex: Int,
     val notesText: String,
     val fontStyle: Int,
-    val fontType: Int ,
+    val fontType: Int,
     val fontSize: Float,
     val letterSpace: Float,
     val wordSpace: String,
     val addLines: Boolean,
     val lineColor: Int,
     val pageColor: Int,
+
 ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {

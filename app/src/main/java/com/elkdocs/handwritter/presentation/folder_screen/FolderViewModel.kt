@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewFolder
 import com.elkdocs.handwritter.domain.use_cases.GetAllFolders
+import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FolderViewModel @Inject constructor(
     getAllFolders: GetAllFolders,
+    getAllPages: GetAllPages,
     private val addNewFolder: AddNewFolder
 ) : ViewModel() {
     
@@ -23,6 +25,10 @@ class FolderViewModel @Inject constructor(
     val state: StateFlow<FolderState> = _state
 
     val allFolders = getAllFolders().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+//    fun getAllPages(folderId : Long){
+//        getAllPages(folderId)
+//    }
+
 
     fun onEvent(event : FolderEvent,callback : (Long?) -> Unit ) {
         when(event){

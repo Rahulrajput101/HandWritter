@@ -59,6 +59,7 @@ class MainFragment : Fragment(),MenuProvider {
         adapter = FolderAdapter{
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
         }
+
         binding.rvMyFolderListView.adapter = adapter
         binding.rvMyFolderListView.layoutManager = LinearLayoutManager(requireContext())
 
