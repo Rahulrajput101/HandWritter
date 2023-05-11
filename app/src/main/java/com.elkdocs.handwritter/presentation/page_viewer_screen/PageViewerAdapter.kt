@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.ItemPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
@@ -48,7 +49,8 @@ class PageViewerAdapter(
         }
 
         fun bind(page : MyPageModel){
-           // binding.ivTextEditView.text = page.notesText
+                binding.ivItemImage.setImageBitmap(page.bitmap)
+
         }
     }
 

@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyPageModel
@@ -19,16 +20,25 @@ import javax.inject.Inject
 @HiltViewModel
 class PageViewerViewModel @Inject constructor(
     getAllPages: GetAllPages,
-    private val addNewPage: AddNewPage
+    private val addNewPage: AddNewPage,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PageViewerState())
     val state : StateFlow<PageViewerState> = _state
 
-    //val allPages = getAllPages(state.value.folderId)
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val allPages = state.flatMapLatest { it ->
-        getAllPages(it.folderId)
+
+    val folderId= savedStateHandle.get<Long>("folderId") ?: -1
+
+    val allPages = getAllPages.invoke(folderId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    init {
+        viewModelScope.launch {
+            allPages.collect{
+
+            }
+        }
     }
 
 

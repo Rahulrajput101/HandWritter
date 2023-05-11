@@ -42,6 +42,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/baseline_delete_outline_24" />
 
+
                     <ImageView
                         android:id="@+id/pdf_icon"
                         android:layout_width="33dp"

@@ -114,7 +114,7 @@
                 app:cardCornerRadius="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/edt_frame_layout"
+                    android:id="@+id/edt_page_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -153,21 +153,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <CheckedTextView
-                        android:id="@+id/iv_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@android:color/transparent"
-                        android:gravity="top|start"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="@+id/iv_image_edit_view"
-                        app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view" />
-
                     <EditText
                         android:id="@+id/ivTextEditView"
                         android:layout_width="0dp"
@@ -178,7 +163,8 @@
                         android:layout_marginBottom="10dp"
                         android:gravity="start|top"
                         android:hint="Enter the text"
-                        android:inputType="textMultiLine"
+                        android:background="@android:color/transparent"
+                        android:inputType="textVisiblePassword|textMultiLine"
                         app:layout_constraintBottom_toBottomOf="@id/iv_image_edit_view"
                         app:layout_constraintEnd_toEndOf="@+id/iv_image_edit_view"
                         app:layout_constraintStart_toEndOf="@+id/left_view"

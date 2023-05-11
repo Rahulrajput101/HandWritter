@@ -23,11 +23,6 @@ class PageEditViewModel @Inject constructor(
     private val _state = MutableStateFlow(PageEditState())
     val state : StateFlow<PageEditState> = _state
 
-//
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    val allPages = state.flatMapLatest { it ->
-//        getAllPages(it.folderId!!)
-//    }
 
     fun onEvent(event: PageEditEvent){
         when(event){
@@ -47,6 +42,7 @@ class PageEditViewModel @Inject constructor(
             is PageEditEvent.UpdateLineColor -> {
                 _state.value = _state.value.copy(lineColor = event.lineColor)
             }
+
             is PageEditEvent.UpdateNote -> {
                 _state.value = _state.value.copy(notesText = event.text)
             }
@@ -75,6 +71,7 @@ class PageEditViewModel @Inject constructor(
                             addLines =state.value.addLines,
                             lineColor = state.value.lineColor,
                             pageColor = state.value.pageColor,
+                            bitmap = state.value.pageBitmap
                         )
                     )
                 }
@@ -90,6 +87,10 @@ class PageEditViewModel @Inject constructor(
 
             is PageEditEvent.UpdateLetterSpacing -> {
                 _state.value = _state.value.copy(letterSpace = event.letterSpacing)
+            }
+
+            is PageEditEvent.UpdateBitmap -> {
+                _state.value = _state.value.copy(pageBitmap = event.bitmap)
             }
         }
     }

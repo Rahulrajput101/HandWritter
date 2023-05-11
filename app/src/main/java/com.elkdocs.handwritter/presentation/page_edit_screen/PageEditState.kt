@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import com.elkdocs.handwritter.R
@@ -24,6 +25,7 @@ data class PageEditState(
     val addLines: Boolean = true,
     val lineColor: Int = BLUE_LINE_COLOR,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
+    val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),
 
 ) {
     companion object{

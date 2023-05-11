@@ -20,7 +20,9 @@ import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.drawToBitmap
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,6 +34,8 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.BLUE_LINE_COLOR
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.OtherUtility.createBitmapFromCanvas
+import com.elkdocs.handwritter.util.OtherUtility.drawableToBitmap
 import com.elkdocs.handwritter.util.OtherUtility.provideBackgroundColorPrimary
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.mlkit.common.model.DownloadConditions
@@ -48,7 +52,6 @@ class PageEditFragment : Fragment() {
      private val navArgs : PageEditFragmentArgs by navArgs()
      private val viewModel : PageEditViewModel by viewModels()
      private lateinit var pageColorAdapter : PageColorAdapter
-     private var conditions = DownloadConditions.Builder().requireWifi().build()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,12 +75,21 @@ class PageEditFragment : Fragment() {
 
         binding.boldText.setOnClickListener(textFormatClickListener)
         binding.italicText.setOnClickListener(textFormatClickListener)
+
         binding.editBackButton.setOnClickListener{ findNavController().navigateUp() }
+
         binding.editForwardButton.setOnClickListener {
+
+            binding.ivTextEditView.clearFocus()
+
+            val bitmap = binding.edtPageLayout.drawToBitmap()
+            viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
+
             val noteText = binding.ivTextEditView.text.toString()
             if(noteText.isNotEmpty()){
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
+
             viewModel.onEvent(PageEditEvent.UpdatePage)
             Toast.makeText(requireContext(),"saved",Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
@@ -91,64 +103,8 @@ class PageEditFragment : Fragment() {
     }
 
 
-    private fun wordSpacing() {
-        binding.seekbarForLetterAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val spacingValue = progress.toFloat()/100
-                binding.ivTextEditView.letterSpacing = spacingValue
-                viewModel.onEvent(PageEditEvent.UpdateLetterSpacing(spacingValue))
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-        })
 
 
-    }
-//    private fun setLineSpacingRatio(padding : Int) {
-//        binding.ivTextEditView.setPadding(0,0,0,padding )
-//    }
-//
-//    private fun lineWordSpacing(){
-//        binding.seekbarForLineAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
-//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                // Convert the progress value to a ratio between 0.5 and 2.0
-//                val paddingBottom = progress
-//                setLineSpacingRatio(progress)
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-//
-//            }
-//
-//            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//
-//            }
-//
-//        })
-//
-//
-//
-//    }
-
-
-    private fun pageColorAdapter() {
-        pageColorAdapter = PageColorAdapter(
-            onPageColorClick = {pageColor,adapterPostion ->
-                binding.ivImageEditView.setBackgroundColor(pageColor)
-                viewModel.onEvent(PageEditEvent.UpdatePageColor(pageColor))
-            }
-        )
-
-        binding.selectPageColorRecyclerView.adapter = pageColorAdapter
-        binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
-    }
 
     private val textFormatClickListener = View.OnClickListener { view ->
         val isBold = binding.ivTextEditView.typeface.isBold
@@ -178,13 +134,6 @@ class PageEditFragment : Fragment() {
     }
 
 
-    private fun updateFontType(fontStyle : Int,fontType: Int){
-        val typeface = ResourcesCompat.getFont(requireContext(),fontStyle)
-        binding.ivTextEditView.setTypeface(typeface,fontType)
-        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
-    }
-
-
     private fun setInitialValues(page : MyPageModel) {
         binding.ivTextEditView.apply {
             setText(page.notesText)
@@ -203,6 +152,18 @@ class PageEditFragment : Fragment() {
         updateFontStyle(page.fontStyle)
         updateFontType(page.fontStyle,page.fontType)
         updateLine(page.addLines,page.fontSize,page.lineColor)
+    }
+
+    private fun pageColorAdapter() {
+        pageColorAdapter = PageColorAdapter(
+            onPageColorClick = {pageColor,adapterPostion ->
+                binding.ivImageEditView.setBackgroundColor(pageColor)
+                viewModel.onEvent(PageEditEvent.UpdatePageColor(pageColor))
+            }
+        )
+
+        binding.selectPageColorRecyclerView.adapter = pageColorAdapter
+        binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
     }
 
     private fun fontStyleAdapter() {
@@ -288,6 +249,7 @@ class PageEditFragment : Fragment() {
                     drawLines(canvas,fontSize,lineColor)
                     verticalLine(canvas)
                     binding.ivImageEditView.setImageBitmap(bitmap)
+
                 }
                 false -> {
                     viewModel.onEvent(PageEditEvent.UpdateAddLine(false))
@@ -302,6 +264,12 @@ class PageEditFragment : Fragment() {
             viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
             updateLine(viewModel.state.value.addLines,viewModel.state.value.fontSize,color)
         }
+    }
+
+    private fun updateFontType(fontStyle : Int,fontType: Int){
+        val typeface = ResourcesCompat.getFont(requireContext(),fontStyle)
+        binding.ivTextEditView.setTypeface(typeface,fontType)
+        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
 
     private fun verticalLine(canvas: Canvas){
@@ -339,5 +307,41 @@ class PageEditFragment : Fragment() {
 
             canvas.drawLine(0f, i + yOffset, canvas.width.toFloat(), i + yOffset, linePaint)
         }
+    }
+
+
+    private fun wordSpacing() {
+        binding.seekbarForLetterAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val spacingValue = progress.toFloat()/100
+                binding.ivTextEditView.letterSpacing = spacingValue
+                viewModel.onEvent(PageEditEvent.UpdateLetterSpacing(spacingValue))
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+        })
+
+
+    }
+
+    private fun createBitmapFromView(view: View): Bitmap {
+
+        // Create a new bitmap with the desired dimensions
+        val bitmap = Bitmap.createBitmap(1024, 1845, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val bg = view.background
+        if(bg != null) {
+            bg.draw(canvas)
+        }
+        view.draw(canvas)
+        // Return the finished bitmap
+        return bitmap
     }
 }

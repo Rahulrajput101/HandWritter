@@ -10,9 +10,7 @@ import javax.inject.Inject
 class GetAllPages @Inject constructor(
     private val repository: MyFolderRepository
 ) {
-
     operator fun invoke(folderId : Long) : Flow<List<MyPageModel>> {
-        Log.d("TAG","$folderId r")
         return repository.getAllPages(folderId)
     }
 }

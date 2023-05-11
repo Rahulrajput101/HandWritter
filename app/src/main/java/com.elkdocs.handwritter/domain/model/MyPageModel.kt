@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.domain.model
 
+import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.os.Parcelable
 import androidx.room.Entity
@@ -24,8 +25,8 @@ data class MyPageModel(
     val addLines: Boolean,
     val lineColor: Int,
     val pageColor: Int,
-
-) : Parcelable{
+    val bitmap: Bitmap
+    ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {
             return PageEditState(
@@ -38,7 +39,8 @@ data class MyPageModel(
                 fontSize = pageDetail.fontSize,
                 wordSpace = pageDetail.wordSpace,
                 addLines = pageDetail.addLines,
-                lineColor = pageDetail.lineColor
+                lineColor = pageDetail.lineColor,
+                pageBitmap = pageDetail.bitmap
             )
         }
     }

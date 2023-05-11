@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.elkdocs.handwritter.domain.model.MyPageModel
 
@@ -13,6 +14,6 @@ sealed interface PageEditEvent{
         data class UpdateLineColor(val lineColor: Int) : PageEditEvent
         data class UpdatePageColor(val pageColor: Int) : PageEditEvent
         data class UpdateNote(val text : String) : PageEditEvent
-
+        data class UpdateBitmap(val bitmap: Bitmap) : PageEditEvent
         data class DrawLine(val canvas: Canvas) : PageEditEvent
 }
