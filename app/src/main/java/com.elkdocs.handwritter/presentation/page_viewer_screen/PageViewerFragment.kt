@@ -46,6 +46,7 @@ import com.itextpdf.text.pdf.PdfWriter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -90,7 +91,6 @@ class PageViewerFragment : Fragment() {
         binding.pdfIcon.setOnClickListener {
 
             lifecycleScope.launch {
-
                         val bitmap = viewModel.allPages.value.map {
                             saveImageToInternalStorage(it.bitmap, it.pageId.toString())
                             it.bitmap
@@ -102,14 +102,21 @@ class PageViewerFragment : Fragment() {
         return binding.root
     }
 
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    }
+
     private fun addingInitialPageForFirstTime() {
 
         val pageBitmap = drawableToBitmap(
-            ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
-                lifecycleScope.launch {
+            ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
+        )
+        lifecycleScope.launch {
 
-            viewModel.allPages.collect{
-                if (it.isEmpty()){
+            viewModel.allPages2.collectLatest {
+                if (it.isEmpty()) {
                     val page = MyPageModel(
                         folderId = navArgs.folderId,
                         uriIndex = 0,
@@ -118,7 +125,7 @@ class PageViewerFragment : Fragment() {
                         fontStyle = R.font.caveat_variablefont_wght,
                         fontType = Typeface.NORMAL,
                         letterSpace = 0f,
-                        wordSpace = "",
+                        textAndLineSpace = 0.105f,
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
@@ -151,7 +158,7 @@ class PageViewerFragment : Fragment() {
                     fontStyle = R.font.caveat_variablefont_wght,
                     fontType = Typeface.NORMAL,
                     letterSpace = 0f,
-                    wordSpace = "",
+                    textAndLineSpace = 0.105f,
                     addLines = true,
                     lineColor = BLUE_LINE_COLOR,
                     pageColor = PAGE_COLOR_LIGHT_BEIGE,

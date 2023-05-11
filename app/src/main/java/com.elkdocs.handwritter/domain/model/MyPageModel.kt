@@ -21,7 +21,7 @@ data class MyPageModel(
     val fontType: Int,
     val fontSize: Float,
     val letterSpace: Float,
-    val wordSpace: String,
+    val textAndLineSpace: Float,
     val addLines: Boolean,
     val lineColor: Int,
     val pageColor: Int,
@@ -37,7 +37,7 @@ data class MyPageModel(
                 fontStyle = pageDetail.fontStyle,
                 letterSpace = pageDetail.letterSpace,
                 fontSize = pageDetail.fontSize,
-                wordSpace = pageDetail.wordSpace,
+                textAndLineSpace = pageDetail.textAndLineSpace,
                 addLines = pageDetail.addLines,
                 lineColor = pageDetail.lineColor,
                 pageBitmap = pageDetail.bitmap

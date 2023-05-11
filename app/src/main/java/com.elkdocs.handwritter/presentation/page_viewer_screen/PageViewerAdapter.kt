@@ -1,6 +1,8 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -49,6 +51,7 @@ class PageViewerAdapter(
         }
 
         fun bind(page : MyPageModel){
+               //binding.imagePagePreviewFrameLayout.background
                 binding.ivItemImage.setImageBitmap(page.bitmap)
 
         }

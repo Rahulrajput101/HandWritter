@@ -67,7 +67,7 @@ class PageEditViewModel @Inject constructor(
                             fontType =state.value.fontType,
                             letterSpace = state.value.letterSpace,
                             fontSize = state.value.fontSize,
-                            wordSpace = state.value.wordSpace,
+                            textAndLineSpace = state.value.textAndLineSpace,
                             addLines =state.value.addLines,
                             lineColor = state.value.lineColor,
                             pageColor = state.value.pageColor,
@@ -91,6 +91,10 @@ class PageEditViewModel @Inject constructor(
 
             is PageEditEvent.UpdateBitmap -> {
                 _state.value = _state.value.copy(pageBitmap = event.bitmap)
+            }
+
+            is PageEditEvent.UpdateTextAndLineSpacing ->{
+                _state.value = _state.value.copy(textAndLineSpace = event.textAndLineSpacing)
             }
         }
     }

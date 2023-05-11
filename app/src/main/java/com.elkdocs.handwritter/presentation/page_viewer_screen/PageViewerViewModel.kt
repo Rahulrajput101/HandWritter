@@ -1,16 +1,22 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
+import android.graphics.Bitmap
+import android.graphics.Typeface
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
+import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
@@ -33,9 +39,14 @@ class PageViewerViewModel @Inject constructor(
     val allPages = getAllPages.invoke(folderId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val allPages2 = state.flatMapLatest { it ->
+        getAllPages(it.folderId)
+    }
+
     init {
         viewModelScope.launch {
-            allPages.collect{
+            allPages.collect { pages ->
 
             }
         }
@@ -53,8 +64,12 @@ class PageViewerViewModel @Inject constructor(
         }
     }
 
+
+
     fun updateFolderId(folderId: Long) {
         _state.value = state.value.copy(folderId = folderId)
     }
+
+
 
 }

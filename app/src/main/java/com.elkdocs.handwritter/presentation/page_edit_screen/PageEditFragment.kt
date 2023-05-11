@@ -59,14 +59,14 @@ class PageEditFragment : Fragment() {
             edtPageLayoutView = it
             setInitialValues(pageArgs, it)
             languageAdapter()
-            pageColorAdapter()
             fontStyleAdapter()
             fontSizeAdapter()
             lineColorAdapter()
             wordSpacing()
+            lineWordSpacing(it)
         }
-        binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-
+       // binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        pageColorAdapter()
         binding.boldText.setOnClickListener(textFormatClickListener)
         binding.italicText.setOnClickListener(textFormatClickListener)
 
@@ -131,6 +131,7 @@ class PageEditFragment : Fragment() {
             letterSpacing = page.letterSpace
         }
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
+        binding.seekbarForLineAndWord.progress =  ((page.textAndLineSpace - 0.095f) / 0.020f * 100).toInt()
         when (page.fontType) {
             Typeface.NORMAL -> Toast.makeText(requireContext(), "Normal", Toast.LENGTH_SHORT).show()
             Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
@@ -288,7 +289,7 @@ class PageEditFragment : Fragment() {
         linePaint.strokeWidth = 2f
         linePaint.color = lineColor
 
-        val paddingTop = canvas.height * 0.105f
+        val paddingTop = canvas.height * (viewModel.state.value.textAndLineSpace)
 
         for (i in paddingTop.toInt() until canvas.height step lineSpacing.toInt()) {
             if (i == paddingTop.toInt()) {
@@ -300,6 +301,7 @@ class PageEditFragment : Fragment() {
             canvas.drawLine(0f, i.toFloat(), canvas.width.toFloat(), i.toFloat(), linePaint)
         }
     }
+
 
     private fun spToPx(sp: Float, context: Context): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
@@ -321,6 +323,28 @@ class PageEditFragment : Fragment() {
 
             }
 
+        })
+    }
+
+        private fun lineWordSpacing(view: View){
+
+        binding.seekbarForLineAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Convert the progress value to a ratio between 0.5 and 2.0
+                //val textAndLineSpacingValue = 0.1f + progress.toFloat() / 1000f
+                val textAndLineSpacingValue = 0.095f + (0.020f * progress / 100)
+                viewModel.onEvent(PageEditEvent.UpdateTextAndLineSpacing(textAndLineSpacingValue))
+                val currentState = viewModel.state.value
+              updateLine(currentState.addLines,currentState.fontSize,currentState.lineColor,view)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
         })
     }
 

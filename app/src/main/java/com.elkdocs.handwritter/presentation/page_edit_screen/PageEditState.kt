@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
@@ -21,7 +22,7 @@ data class PageEditState(
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
     val letterSpace: Float = 3f,
-    val wordSpace: String = "",
+    val textAndLineSpace : Float = 0.105f,
     val addLines: Boolean = true,
     val lineColor: Int = BLUE_LINE_COLOR,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,

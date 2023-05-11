@@ -89,7 +89,6 @@
                     android:textSize="18sp" />
 
 
-
             </LinearLayout>
 
         </HorizontalScrollView>
@@ -160,9 +159,9 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
+                        android:background="@android:color/transparent"
                         android:gravity="start|top"
                         android:hint="Enter the text"
-                        android:background="@android:color/transparent"
                         android:inputType="textVisiblePassword|textMultiLine"
                         app:layout_constraintBottom_toBottomOf="@id/iv_image_edit_view"
                         app:layout_constraintEnd_toEndOf="@+id/iv_image_edit_view"
@@ -198,6 +197,7 @@
                     android:layout_height="8dp"
                     android:layout_gravity="center|top"
                     android:background="@drawable/dialog_bg2" />
+
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -356,24 +356,25 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="8dp"
                             android:max="100"
                             android:progress="0" />
 
-                        <!--                    <TextView-->
-                        <!--                        style="@style/TextAppearance.AppCompat.Body2"-->
-                        <!--                        android:layout_width="wrap_content"-->
-                        <!--                        android:layout_height="wrap_content"-->
-                        <!--                        android:text="Spacing between line and word" />-->
+                        <TextView
+                            style="@style/TextAppearance.AppCompat.Body2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="Spacing between line and word" />
 
-                        <!--                    <SeekBar-->
-                        <!--                        android:id="@+id/seekbar_for_line_and_word"-->
-                        <!--                        android:layout_width="match_parent"-->
-                        <!--                        android:layout_height="wrap_content"-->
-                        <!--                        android:layout_marginTop="5dp"-->
-                        <!--                        android:layout_marginBottom="5dp"-->
-                        <!--                        android:max="100"-->
-                        <!--                        android:progress="0" />-->
+                        <SeekBar
+                            android:id="@+id/seekbar_for_line_and_word"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:max="100"
+                            android:progress="0" />
 
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
