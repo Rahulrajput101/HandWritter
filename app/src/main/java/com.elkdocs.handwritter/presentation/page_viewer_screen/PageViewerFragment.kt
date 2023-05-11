@@ -58,9 +58,9 @@ import java.util.concurrent.Executors
 @AndroidEntryPoint
 class PageViewerFragment : Fragment() {
 
-    private lateinit var binding: FragmentPageViewerBinding
+    private lateinit var binding : FragmentPageViewerBinding
     private val viewModel: PageViewerViewModel by viewModels()
-    private lateinit var adapter: PageViewerAdapter
+    private lateinit var adapter : PageViewerAdapter
 
     private val navArgs: PageViewerFragmentArgs by navArgs()
 
@@ -72,17 +72,13 @@ class PageViewerFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
 
-        adapter = PageViewerAdapter { pageDetail ->
-            findNavController().navigate(
-                PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(
-                    pageDetail
-                )
-            )
+        adapter = PageViewerAdapter{pageDetail ->
+            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
         }
 
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
-        binding.rvPages.layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.rvPages.layoutManager = GridLayoutManager(requireContext(),3)
 
         setClickListeners()
         setObserver()
@@ -94,13 +90,14 @@ class PageViewerFragment : Fragment() {
         binding.pdfIcon.setOnClickListener {
 
             lifecycleScope.launch {
-                val bitmap = viewModel.allPages.value.map {
-                    saveImageToInternalStorage(it.bitmap, it.pageId.toString())
-                    it.bitmap
-                }
-                createPdf(bitmap)
-            }
-        }
+
+                        val bitmap = viewModel.allPages.value.map {
+                            saveImageToInternalStorage(it.bitmap, it.pageId.toString())
+                            it.bitmap
+                        }
+                        createPdf(bitmap)
+                    }
+              }
 
         return binding.root
     }
@@ -108,12 +105,11 @@ class PageViewerFragment : Fragment() {
     private fun addingInitialPageForFirstTime() {
 
         val pageBitmap = drawableToBitmap(
-            ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
-        )
+            ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
+                lifecycleScope.launch {
 
-        lifecycleScope.launch {
-            viewModel.allPages.collect {
-                if (it.isEmpty()) {
+            viewModel.allPages.collect{
+                if (it.isEmpty()){
                     val page = MyPageModel(
                         folderId = navArgs.folderId,
                         uriIndex = 0,
@@ -145,24 +141,23 @@ class PageViewerFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-        val pageBitmap =
-            drawableToBitmap(ContextCompat.getDrawable(requireContext(), R.drawable.page_image))
+        val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
         binding.fabImagePicker.setOnClickListener {
-            val page = MyPageModel(
-                folderId = navArgs.folderId,
-                uriIndex = 0,
-                notesText = "",
-                fontSize = 20f,
-                fontStyle = R.font.caveat_variablefont_wght,
-                fontType = Typeface.NORMAL,
-                letterSpace = 0f,
-                wordSpace = "",
-                addLines = true,
-                lineColor = BLUE_LINE_COLOR,
-                pageColor = PAGE_COLOR_LIGHT_BEIGE,
-                bitmap = pageBitmap!!
-            )
-            viewModel.onEvent(PageViewerEvent.AddPage(page))
+                val page = MyPageModel(
+                    folderId = navArgs.folderId,
+                    uriIndex = 0,
+                    notesText = "",
+                    fontSize = 20f,
+                    fontStyle = R.font.caveat_variablefont_wght,
+                    fontType = Typeface.NORMAL,
+                    letterSpace = 0f,
+                    wordSpace = "",
+                    addLines = true,
+                    lineColor = BLUE_LINE_COLOR,
+                    pageColor = PAGE_COLOR_LIGHT_BEIGE,
+                    bitmap = pageBitmap!!
+                )
+                viewModel.onEvent(PageViewerEvent.AddPage(page))
         }
     }
 
@@ -204,11 +199,7 @@ class PageViewerFragment : Fragment() {
             writer.close()
             val intent = Intent(Intent.ACTION_VIEW)
             val uri =
-                FileProvider.getUriForFile(
-                    requireContext(),
-                    "com.elkdocs.handwriter.fileprovider",
-                    pdfFile
-                )
+                FileProvider.getUriForFile(requireContext(), "com.elkdocs.handwriter.fileprovider", pdfFile)
             intent.setDataAndType(uri, "application/pdf")
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(intent)
@@ -216,7 +207,6 @@ class PageViewerFragment : Fragment() {
         handler.post(Runnable {
         })
     }
-
     private fun saveImageToInternalStorage(bitmap: Bitmap, imageCount: String): Uri {
         //creating file that is only accessible with this app , other app and user cant interact with it
         val file = File(
@@ -233,13 +223,10 @@ class PageViewerFragment : Fragment() {
             e.printStackTrace()
         }
         //Log.e("myTag ss", Uri.parse((file.absolutePath)).toString())
-        val uri = FileProvider.getUriForFile(
-            requireActivity(),
-            "com.elkdocs.handwriter.fileprovider",
-            file
-        )
+        val uri = FileProvider.getUriForFile(requireActivity(), "com.elkdocs.handwriter.fileprovider", file)
         return uri
     }
+
 
 
 }
