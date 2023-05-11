@@ -25,7 +25,8 @@ data class MyPageModel(
     val addLines: Boolean,
     val lineColor: Int,
     val pageColor: Int,
-    val bitmap: Bitmap
+    val bitmap: Bitmap,
+    var isSelected: Boolean = false,
     ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {

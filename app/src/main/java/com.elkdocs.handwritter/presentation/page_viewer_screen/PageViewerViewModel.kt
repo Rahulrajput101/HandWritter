@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
+import com.elkdocs.handwritter.domain.use_cases.DeletePage
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,12 +28,12 @@ import javax.inject.Inject
 class PageViewerViewModel @Inject constructor(
     getAllPages: GetAllPages,
     private val addNewPage: AddNewPage,
+    private val deletePage: DeletePage,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PageViewerState())
     val state : StateFlow<PageViewerState> = _state
-
 
     val folderId= savedStateHandle.get<Long>("folderId") ?: -1
 
@@ -60,7 +61,11 @@ class PageViewerViewModel @Inject constructor(
                   addNewPage(event.page)
                 }
             }
-            is PageViewerEvent.DeletePage -> TODO()
+            is PageViewerEvent.DeletePage -> {
+                viewModelScope.launch {
+                    deletePage(event.page)
+                }
+            }
         }
     }
 

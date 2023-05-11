@@ -88,8 +88,8 @@ object Constant {
     val LINE_COLOR_MAP = mapOf(
         LINE_COLOR_BLUE to 0xFFB2B1D3.toInt(),
         LINE_COLOR_BLACK to  0xFFBFBFBD.toInt(),
-        LINE_COLOR_RED to 0xFFA07E82.toInt(),
-        LINE_COLOR_GREEN to Color.GREEN
+        LINE_COLOR_RED to  0xFFCCAAC0.toInt(),
+        LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
     )
 
 

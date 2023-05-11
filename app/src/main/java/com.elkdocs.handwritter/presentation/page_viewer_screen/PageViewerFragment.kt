@@ -41,6 +41,7 @@ import com.elkdocs.handwritter.util.Constant.LINE_COLOR_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import com.elkdocs.handwritter.util.OtherUtility.drawableToBitmap
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.itextpdf.text.Document
 import com.itextpdf.text.pdf.PdfWriter
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,9 +74,31 @@ class PageViewerFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
 
-        adapter = PageViewerAdapter{pageDetail ->
-            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
-        }
+//        adapter = PageViewerAdapter({
+//
+//            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
+//        })
+
+        adapter = PageViewerAdapter(
+            onPageClick = { pageDetail ->
+                //handle item click click on item
+                findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
+            },
+            onDeleteClick = { qrData ->
+                Toast.makeText(requireContext(),"onDeleteCalled",Toast.LENGTH_SHORT).show()
+                //showDeleteConfirmationDialog(qrData)
+            },
+            onPageLongClick = { qrData ->
+                if (!adapter.isSelectModeEnabled){
+                    adapter.setIsSelectedModeEnabled(true)
+                    binding.deleteIcon.visibility = View.VISIBLE
+                    binding.pdfIcon.visibility = View.INVISIBLE
+                    adapter.notifyDataSetChanged()
+                }
+
+            },
+        )
+
 
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
@@ -99,13 +122,23 @@ class PageViewerFragment : Fragment() {
                     }
               }
 
+        binding.deleteIcon.setOnClickListener {
+            if (adapter.selectedItems.isEmpty()) {
+                adapter.setIsSelectedModeEnabled(true)
+
+                adapter.notifyDataSetChanged()
+            } else {
+                showDeleteAllDailog()
+
+            }
+        }
+
         return binding.root
     }
 
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+    private fun selectAllItems() {
+        adapter.toggleSelectAll()
+        adapter.notifyDataSetChanged()
     }
 
     private fun addingInitialPageForFirstTime() {
@@ -232,6 +265,31 @@ class PageViewerFragment : Fragment() {
         //Log.e("myTag ss", Uri.parse((file.absolutePath)).toString())
         val uri = FileProvider.getUriForFile(requireActivity(), "com.elkdocs.handwriter.fileprovider", file)
         return uri
+    }
+
+
+    private fun showDeleteAllDailog() {
+        val dialogDeleteAll = MaterialAlertDialogBuilder(requireContext()).apply {
+            setMessage("Are you sure you want to delete selected items?")
+            setPositiveButton("Delete") { dialog, which ->
+                adapter.selectedItems.let {
+                    if (it.isNotEmpty()) {
+                        it.forEach { page ->
+                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
+                        }
+                    }
+                    adapter.clearSelectedItems()
+                    adapter.setIsSelectedModeEnabled(false)
+                    binding.pdfIcon.visibility = View.VISIBLE
+                }
+            }
+            setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+                // handle the cancel
+            }
+        }
+        val dialog = dialogDeleteAll.create()
+        dialog.show()
     }
 
 

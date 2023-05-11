@@ -224,33 +224,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="Font Style" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/fontStyleAutoComplete"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:inputType="none"
-                                android:text="Font Style: Normal"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView
-                            style="@style/TextAppearance.AppCompat.Body2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
                             android:text="Language" />
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -268,6 +241,34 @@
                                 android:focusableInTouchMode="true"
                                 android:inputType="none"
                                 android:text="English"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <TextView
+                            style="@style/TextAppearance.AppCompat.Body2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Font Style" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/fontStyleAutoComplete"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:inputType="none"
+                                android:text="Font Style: Normal"
                                 android:textColor="@android:color/black"
                                 android:textSize="16sp" />
 
@@ -364,8 +365,9 @@
                             style="@style/TextAppearance.AppCompat.Body2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:layout_marginEnd="8dp"
-                            android:text="Spacing between line and word" />
+                            android:text="Spacing between line and text" />
 
                         <SeekBar
                             android:id="@+id/seekbar_for_line_and_word"

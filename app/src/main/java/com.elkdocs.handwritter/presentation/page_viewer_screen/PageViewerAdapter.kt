@@ -5,7 +5,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.ItemPageViewerBinding
@@ -14,10 +16,19 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 
 
 class PageViewerAdapter(
+    val onDeleteClick: (myPageModel :MyPageModel) -> Unit,
+    val onPageLongClick: (myPageModel : MyPageModel) -> Unit,
     private val onPageClick : (MyPageModel) -> Unit
 ) : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>() {
 
     private var pageList: List<MyPageModel> = emptyList()
+
+    var selectedItems = ArrayList<MyPageModel>()
+    var isSelectModeEnabled = false
+
+    fun setIsSelectedModeEnabled(enabled: Boolean) {
+        isSelectModeEnabled = enabled
+    }
 
     fun setAllPages(pages: List<MyPageModel>){
         pageList = pages
@@ -25,7 +36,10 @@ class PageViewerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder.from(parent)
+
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemPageViewerBinding.inflate(inflater,parent,false)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -34,26 +48,62 @@ class PageViewerAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = pageList[position]
-        holder.bind(item)
-       holder.itemView.setOnClickListener {
-           onPageClick(item)
-       }
-    }
+//        holder.bind(item)
+//       holder.itemView.setOnClickListener {
+//           onPageClick(item)
+//       }
 
-    class MyViewHolder(private val binding : ItemPageViewerBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        companion object{
-            fun from(parent: ViewGroup) : MyViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val binding = ItemPageViewerBinding.inflate(inflater,parent,false)
-                return MyViewHolder(binding)
+        holder.itemView.rootView.findViewById<CardView>(R.id.setImageCardView).setOnClickListener {
+            if (isSelectModeEnabled) {
+                item.isSelected = !item.isSelected // toggle isSelected state
+                holder.bind(item, onDeleteClick, isSelectModeEnabled) // re-bind the view to update the checkbox state
+            } else {
+                onPageClick(item)
             }
         }
 
-        fun bind(page : MyPageModel){
+        holder.itemView.rootView.findViewById<CardView>(R.id.setImageCardView).setOnLongClickListener {
+            onPageLongClick(item)
+            true
+        }
+        holder.bind(item, onDeleteClick, isSelectModeEnabled)
+    }
+
+    fun clearSelectedItems() {
+        selectedItems.clear()
+    }
+
+    fun toggleSelectAll(){
+        if(selectedItems.size == pageList.size){
+            pageList.forEach {
+                it.isSelected = false
+            }
+            selectedItems.clear()
+        }else{
+            pageList.forEach {
+                it.isSelected = true
+            }
+        }
+    }
+
+    inner class MyViewHolder(private val binding : ItemPageViewerBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(page : MyPageModel,onDeleteClick: (myPageModel: MyPageModel) -> Unit,isSelectModeEnabled: Boolean ){
                //binding.imagePagePreviewFrameLayout.background
                 binding.ivItemImage.setImageBitmap(page.bitmap)
 
+            if (isSelectModeEnabled) {
+                binding.checkBox.visibility = View.VISIBLE
+            } else {
+                binding.checkBox.visibility = View.GONE
+            }
+
+            binding.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    selectedItems.add(page)
+                } else {
+                    selectedItems.remove(page)
+                }
+            }
         }
     }
 
