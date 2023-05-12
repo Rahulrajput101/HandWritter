@@ -42,6 +42,7 @@ import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import com.elkdocs.handwritter.util.OtherUtility.drawableToBitmap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.itextpdf.text.Document
 import com.itextpdf.text.pdf.PdfWriter
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,74 +73,125 @@ class PageViewerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
-
-//        adapter = PageViewerAdapter({
-//
-//            findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
-//        })
 
         adapter = PageViewerAdapter(
             onPageClick = { pageDetail ->
-                //handle item click click on item
-                findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail))
+                findNavController().navigate(
+                    PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail)
+                )
             },
             onDeleteClick = { qrData ->
-                Toast.makeText(requireContext(),"onDeleteCalled",Toast.LENGTH_SHORT).show()
                 //showDeleteConfirmationDialog(qrData)
             },
             onPageLongClick = { qrData ->
-                if (!adapter.isSelectModeEnabled){
-                    adapter.setIsSelectedModeEnabled(true)
-                    binding.deleteIcon.visibility = View.VISIBLE
-                    binding.pdfIcon.visibility = View.INVISIBLE
-                    adapter.notifyDataSetChanged()
+                if (!adapter.isSelectModeEnabled) {
+                    setSelectModeEnabled(true)
                 }
-
-            },
+            }
         )
-
 
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
-        binding.rvPages.layoutManager = GridLayoutManager(requireContext(),3)
+        binding.rvPages.layoutManager = GridLayoutManager(requireContext(), 3)
 
         setClickListeners()
+        setIconClickListeners()
         setObserver()
         addingInitialPageForFirstTime()
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.pdfIcon.setOnClickListener {
-
-            lifecycleScope.launch {
-                        val bitmap = viewModel.allPages.value.map {
-                            saveImageToInternalStorage(it.bitmap, it.pageId.toString())
-                            it.bitmap
-                        }
-                        createPdf(bitmap)
-                    }
-              }
-
-        binding.deleteIcon.setOnClickListener {
-            if (adapter.selectedItems.isEmpty()) {
-                adapter.setIsSelectedModeEnabled(true)
-
-                adapter.notifyDataSetChanged()
-            } else {
-                showDeleteAllDailog()
-
-            }
-        }
 
         return binding.root
     }
 
-    private fun selectAllItems() {
-        adapter.toggleSelectAll()
-        adapter.notifyDataSetChanged()
+    private fun setIconClickListeners() {
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.closeButton.setOnClickListener {
+            setSelectModeEnabled(false)
+            adapter.clearSelectedItems()
+        }
+
+        binding.pdfIcon.setOnClickListener {
+            createPdfFromAllPages()
+        }
+
+        binding.deleteIcon.setOnClickListener {
+            if (adapter.selectedItems.isEmpty()) {
+                setSelectModeEnabled(true)
+                Snackbar.make(requireView(),"Please select item to delete",Snackbar.LENGTH_SHORT).show()
+            } else {
+                showDeleteAllDialog()
+            }
+        }
+
+        binding.selectAll.setOnClickListener {
+            adapter.toggleSelectAll()
+            adapter.notifyDataSetChanged()
+        }
     }
+
+    private fun createPdfFromAllPages() {
+        lifecycleScope.launch {
+            val bitmapList = viewModel.allPages.value.map { page ->
+                saveImageToInternalStorage(page.bitmap, page.pageId.toString())
+                page.bitmap
+            }
+            createPdf(bitmapList)
+        }
+    }
+
+    private fun showDeleteAllDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Are you sure you want to delete selected items?")
+            .setPositiveButton("Delete") { dialog, which ->
+                adapter.selectedItems.let {
+                    if (it.isNotEmpty()) {
+                        it.forEach { page ->
+                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
+                        }
+                    }
+                    setSelectModeEnabled(false)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
+//    private fun showDeleteAllDailog() {
+//        val dialogDeleteAll = MaterialAlertDialogBuilder(requireContext()).apply {
+//            setMessage("Are you sure you want to delete selected items?")
+//            setPositiveButton("Delete") { dialog, which ->
+//                adapter.selectedItems.let {
+//                    if (it.isNotEmpty()) {
+//                        it.forEach { page ->
+//                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
+//                        }
+//                    }
+//                    adapter.clearSelectedItems()
+//                    adapter.setIsSelectedModeEnabled(false)
+//                    binding.selectAll.visibility = View.GONE
+//                    binding.pdfIcon.visibility = View.VISIBLE
+//                    binding.closeButton.visibility = View.GONE
+//                    binding.backButton.visibility = View.VISIBLE
+//                }
+//            }
+//            setNegativeButton("Cancel") { dialog, which ->
+//                dialog.dismiss()
+//                // handle the cancel
+//            }
+//        }
+//        val dialog = dialogDeleteAll.create()
+//        dialog.show()
+//    }
+
+
 
     private fun addingInitialPageForFirstTime() {
 
@@ -267,31 +319,13 @@ class PageViewerFragment : Fragment() {
         return uri
     }
 
-
-    private fun showDeleteAllDailog() {
-        val dialogDeleteAll = MaterialAlertDialogBuilder(requireContext()).apply {
-            setMessage("Are you sure you want to delete selected items?")
-            setPositiveButton("Delete") { dialog, which ->
-                adapter.selectedItems.let {
-                    if (it.isNotEmpty()) {
-                        it.forEach { page ->
-                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
-                        }
-                    }
-                    adapter.clearSelectedItems()
-                    adapter.setIsSelectedModeEnabled(false)
-                    binding.pdfIcon.visibility = View.VISIBLE
-                }
-            }
-            setNegativeButton("Cancel") { dialog, which ->
-                dialog.dismiss()
-                // handle the cancel
-            }
-        }
-        val dialog = dialogDeleteAll.create()
-        dialog.show()
+    private fun setSelectModeEnabled(isEnabled: Boolean) {
+        adapter.setIsSelectedModeEnabled(isEnabled)
+        binding.pdfIcon.isVisible = !isEnabled
+        binding.selectAll.isVisible = isEnabled
+        binding.backButton.isVisible = !isEnabled
+        binding.closeButton.isVisible = isEnabled
+        adapter.notifyDataSetChanged()
     }
-
-
 
 }

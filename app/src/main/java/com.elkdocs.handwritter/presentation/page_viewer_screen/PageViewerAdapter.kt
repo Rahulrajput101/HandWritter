@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_viewer_screen
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.ItemPageViewerBinding
@@ -39,7 +41,7 @@ class PageViewerAdapter(
 
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPageViewerBinding.inflate(inflater,parent,false)
-        return MyViewHolder(binding)
+        return MyViewHolder(binding,parent.context)
     }
 
     override fun getItemCount(): Int {
@@ -53,7 +55,7 @@ class PageViewerAdapter(
 //           onPageClick(item)
 //       }
 
-        holder.itemView.rootView.findViewById<CardView>(R.id.setImageCardView).setOnClickListener {
+        holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnClickListener {
             if (isSelectModeEnabled) {
                 item.isSelected = !item.isSelected // toggle isSelected state
                 holder.bind(item, onDeleteClick, isSelectModeEnabled) // re-bind the view to update the checkbox state
@@ -62,7 +64,7 @@ class PageViewerAdapter(
             }
         }
 
-        holder.itemView.rootView.findViewById<CardView>(R.id.setImageCardView).setOnLongClickListener {
+        holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnLongClickListener {
             onPageLongClick(item)
             true
         }
@@ -86,10 +88,12 @@ class PageViewerAdapter(
         }
     }
 
-    inner class MyViewHolder(private val binding : ItemPageViewerBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MyViewHolder(private val binding : ItemPageViewerBinding,val context: Context) : RecyclerView.ViewHolder(binding.root) {
         fun bind(page : MyPageModel,onDeleteClick: (myPageModel: MyPageModel) -> Unit,isSelectModeEnabled: Boolean ){
                //binding.imagePagePreviewFrameLayout.background
-                binding.ivItemImage.setImageBitmap(page.bitmap)
+            binding.imageCardView.background = BitmapDrawable(context.resources,page.bitmap)
+                //binding.ivItemImage.setImageBitmap(page.bitmap)
+            binding.checkBox.isChecked = page.isSelected
 
             if (isSelectModeEnabled) {
                 binding.checkBox.visibility = View.VISIBLE
