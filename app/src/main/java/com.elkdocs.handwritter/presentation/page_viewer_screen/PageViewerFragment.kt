@@ -32,6 +32,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageViewerBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
@@ -55,6 +57,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Collections
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -95,6 +98,33 @@ class PageViewerFragment : Fragment() {
         viewModel.updateFolderId(navArgs.folderId)
         binding.rvPages.adapter = adapter
         binding.rvPages.layoutManager = GridLayoutManager(requireContext(), 3)
+
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper
+        .SimpleCallback(
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT  or ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            ,0){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source : RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val sourcePosition = source.adapterPosition
+                val targetPosition = target.adapterPosition
+                val list = viewModel.allPages.value
+
+                Collections.swap(list,sourcePosition,targetPosition)
+                adapter.notifyItemMoved(sourcePosition,targetPosition)
+
+               return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            }
+
+        })
+
+        itemTouchHelper.attachToRecyclerView(binding.rvPages)
 
         setClickListeners()
         setIconClickListeners()
@@ -162,34 +192,6 @@ class PageViewerFragment : Fragment() {
             .create()
             .show()
     }
-
-
-//    private fun showDeleteAllDailog() {
-//        val dialogDeleteAll = MaterialAlertDialogBuilder(requireContext()).apply {
-//            setMessage("Are you sure you want to delete selected items?")
-//            setPositiveButton("Delete") { dialog, which ->
-//                adapter.selectedItems.let {
-//                    if (it.isNotEmpty()) {
-//                        it.forEach { page ->
-//                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
-//                        }
-//                    }
-//                    adapter.clearSelectedItems()
-//                    adapter.setIsSelectedModeEnabled(false)
-//                    binding.selectAll.visibility = View.GONE
-//                    binding.pdfIcon.visibility = View.VISIBLE
-//                    binding.closeButton.visibility = View.GONE
-//                    binding.backButton.visibility = View.VISIBLE
-//                }
-//            }
-//            setNegativeButton("Cancel") { dialog, which ->
-//                dialog.dismiss()
-//                // handle the cancel
-//            }
-//        }
-//        val dialog = dialogDeleteAll.create()
-//        dialog.show()
-//    }
 
 
 
@@ -324,6 +326,7 @@ class PageViewerFragment : Fragment() {
         binding.pdfIcon.isVisible = !isEnabled
         binding.selectAll.isVisible = isEnabled
         binding.backButton.isVisible = !isEnabled
+        binding.fabImagePicker.isVisible = !isEnabled
         binding.closeButton.isVisible = isEnabled
         adapter.notifyDataSetChanged()
     }

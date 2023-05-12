@@ -8,10 +8,9 @@
         <item>Caveat Variable Font</item>
         <item>Dancing Script </item>
         <item>Permanent Marker</item>
-        <item>Sedgwick Ave Display</item>
         <item>Sacramento Regular</item>
-    </string-array>
 
+    </string-array>
     <string-array name="font_sizes_array">
         <item>12.0</item>
         <item>14.0</item>

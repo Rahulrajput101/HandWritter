@@ -99,8 +99,9 @@ class MainFragment : Fragment(),MenuProvider {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allFolders.collect {
-                    binding.noDocuments.isVisible = it.isEmpty()
-                    adapter.setAllFolder(it)
+                    val sortedList = it.reversed()
+                    binding.noDocuments.isVisible = sortedList.isEmpty()
+                    adapter.setAllFolder(sortedList)
                 }
             }
         }

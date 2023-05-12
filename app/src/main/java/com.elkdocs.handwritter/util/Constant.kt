@@ -11,7 +11,6 @@ object Constant {
     const val CAVEAT_VARIABLE_FONT ="Caveat Variable Font"
     const val DANCING_SCRIPT ="Dancing Script"
     const val PERMANENT_MARKER ="Permanent Marker"
-    const val SEDGWICK_AVE_DISPLAY ="Sedgwick Ave Display"
     const val SACRAMENTO_REGULAR ="Sacramento Regular"
 
     const val ENGLISH ="English"
@@ -24,7 +23,6 @@ object Constant {
         CAVEAT_VARIABLE_FONT to R.font.caveat_variablefont_wght,
         DANCING_SCRIPT to R.font.dancing_script_variablefont_wght,
         PERMANENT_MARKER to R.font.permanent_marker_regular,
-        SEDGWICK_AVE_DISPLAY to R.font.sedgwick_ave_display_regular,
         SACRAMENTO_REGULAR to R.font.sacramento_regular
     )
    val REVERSE_FONT_STYLE_MAP = mapOf(
@@ -34,7 +32,6 @@ object Constant {
        R.font.caveat_variablefont_wght to CAVEAT_VARIABLE_FONT,
        R.font.dancing_script_variablefont_wght to DANCING_SCRIPT,
        R.font.permanent_marker_regular to PERMANENT_MARKER ,
-       R.font.sedgwick_ave_display_regular to SEDGWICK_AVE_DISPLAY,
        R.font.sacramento_regular to SACRAMENTO_REGULAR
    )
 

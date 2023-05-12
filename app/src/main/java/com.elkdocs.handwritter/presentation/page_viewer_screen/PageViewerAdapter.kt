@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawable
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.ItemPageViewerBinding
@@ -64,10 +66,10 @@ class PageViewerAdapter(
             }
         }
 
-        holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnLongClickListener {
-            onPageLongClick(item)
-            true
-        }
+//        holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnLongClickListener {
+//            onPageLongClick(item)
+//            true
+//        }
         holder.bind(item, onDeleteClick, isSelectModeEnabled)
     }
 
@@ -91,8 +93,16 @@ class PageViewerAdapter(
     inner class MyViewHolder(private val binding : ItemPageViewerBinding,val context: Context) : RecyclerView.ViewHolder(binding.root) {
         fun bind(page : MyPageModel,onDeleteClick: (myPageModel: MyPageModel) -> Unit,isSelectModeEnabled: Boolean ){
                //binding.imagePagePreviewFrameLayout.background
-            binding.imageCardView.background = BitmapDrawable(context.resources,page.bitmap)
-                //binding.ivItemImage.setImageBitmap(page.bitmap)
+//            binding.imageCardView.background = BitmapDrawable(context.resources,page.bitmap)
+
+            //binding.imageView.setImageBitmap(page.bitmap)
+            //binding.imageCardView.radius = 6F
+
+            val bitmapDrawable = BitmapDrawable(context.resources, page.bitmap)
+//             val roundBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources,page.bitmap)
+//            roundBitmapDrawable.cornerRadius = 8F
+//            binding.imageView.setImageDrawable(roundBitmapDrawable)
+            binding.imageView.background =bitmapDrawable
             binding.checkBox.isChecked = page.isSelected
 
             if (isSelectModeEnabled) {
