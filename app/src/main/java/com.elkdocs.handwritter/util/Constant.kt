@@ -112,4 +112,8 @@ object Constant {
     const val PAGE_COLOR_OFF_WHITE = 0xFFE1E2E4.toInt()
     const val PAGE_COLOR_PALE_BLUE = 0xFFEBDECD.toInt()
     const val PAGE_COLOR_LIGHT_BEIGE = 0xFFDADCF1.toInt()
+
+    //sharedPref
+    const val SHARED_PREFERENCE_NAME ="shared_pref"
+    const val IS_LINEAR = " KEY_LOOK"
 }

@@ -1,14 +1,19 @@
 package com.elkdocs.handwritter.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.elkdocs.handwritter.data.data_source.MyDatabase
 import com.elkdocs.handwritter.data.repository.MyFolderRepositoryImp
 import com.elkdocs.handwritter.domain.repository.MyFolderRepository
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
+import com.elkdocs.handwritter.util.Constant.IS_LINEAR
+import com.elkdocs.handwritter.util.Constant.SHARED_PREFERENCE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
@@ -39,6 +44,17 @@ object AppModule {
     fun provideDrawLine(): DrawLine {
         return DrawLine()
     }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferneces(
+        @ApplicationContext app : Context
+    ) = app.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+
+    @Provides
+    @Singleton
+    fun provideTypeofRecyclerView(sharedPreferences: SharedPreferences) =
+        sharedPreferences.getBoolean(IS_LINEAR,true)
 
 //    @Provides
 //    @Singleton

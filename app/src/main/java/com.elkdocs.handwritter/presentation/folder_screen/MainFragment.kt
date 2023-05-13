@@ -1,6 +1,7 @@
 package com.elkdocs.handwritter.presentation.folder_screen
 
 import android.app.usage.UsageEvents.Event
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,13 +20,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.presentation.MainActivity
+import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -36,7 +40,9 @@ class MainFragment : Fragment(),MenuProvider {
     private lateinit var toggle : ActionBarDrawerToggle
     private val viewModel: FolderViewModel by viewModels()
     private var menu : Menu? = null
-    
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,21 +53,22 @@ class MainFragment : Fragment(),MenuProvider {
         val menuHost : MenuHost = requireActivity()
         menuHost.addMenuProvider(this,viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        val state = viewModel.state.value
         toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         requireActivity().actionBar?.setDisplayHomeAsUpEnabled(true)
+        val isLinear = sharedPreferences.getBoolean(IS_LINEAR, false)
         binding.menuIcon.setOnClickListener {
             (requireActivity() as MainActivity).openDrawer()
         }
         
-        adapter = FolderAdapter{
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
-        }
-
-        binding.rvMyFolderListView.adapter = adapter
-        binding.rvMyFolderListView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = FolderAdapter(
+            onFolderClick = {
+                findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
+            },
+            isLinear = isLinear)
+         binding.rvMyFolderListView.adapter = adapter
+         setViewType(isLinear)
 
         binding.navigationView.setNavigationItemSelectedListener {
             when(it.itemId){
@@ -75,9 +82,34 @@ class MainFragment : Fragment(),MenuProvider {
         binding.fabMain.setOnClickListener {addFolderAndNavigate()}
         
         setObservers()
+
+        binding.gridImageView.setOnClickListener {
+            val newIsLinear = !sharedPreferences.getBoolean(IS_LINEAR, false)
+            setViewType(newIsLinear)
+            adapter = FolderAdapter(
+                onFolderClick = {
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
+                },
+                isLinear = newIsLinear
+            )
+            binding.rvMyFolderListView.adapter = adapter
+            setObservers()
+        }
+
+
         
         return binding.root
     }
+
+    private fun setViewType(isLinear : Boolean){
+        sharedPreferences.edit().putBoolean(IS_LINEAR, isLinear).apply()
+        if (isLinear) {
+            binding.rvMyFolderListView.layoutManager = LinearLayoutManager(requireContext())
+        } else {
+            binding.rvMyFolderListView.layoutManager = GridLayoutManager(requireContext(), 2)
+        }
+    }
+
 
     private fun addFolderAndNavigate(){
         val folder = MyFolderModel(
