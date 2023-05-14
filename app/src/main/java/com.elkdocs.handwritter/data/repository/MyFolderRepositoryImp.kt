@@ -41,12 +41,18 @@ class MyFolderRepositoryImp(
         myFolderDao.deleteMyPage(myPageModel)
     }
 
+
+
     override  fun getAllPages(folderId: Long): Flow<List<MyPageModel>> {
       return myFolderDao.getAllPages(folderId)
     }
 
     override fun getPages(): Flow<List<MyPageModel>> {
         return myFolderDao.getPages()
+    }
+
+    override suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel) {
+        myFolderDao.deleteMyFolderWithPages(myFolderModel)
     }
 
 

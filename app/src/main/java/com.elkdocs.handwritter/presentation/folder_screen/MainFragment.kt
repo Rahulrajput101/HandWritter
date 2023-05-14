@@ -26,7 +26,10 @@ import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.presentation.MainActivity
+import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerEvent
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -65,8 +68,14 @@ class MainFragment : Fragment(),MenuProvider {
         adapter = FolderAdapter(
             onFolderClick = {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
+            }
+            , onFolderLongClick = {
+                if (!adapter.isSelectModeEnabled) {
+                    setSelectModeEnabled(true)
+                }
             },
-            isLinear = isLinear)
+            isLinear = isLinear
+        )
          binding.rvMyFolderListView.adapter = adapter
          setViewType(isLinear)
 
@@ -90,16 +99,69 @@ class MainFragment : Fragment(),MenuProvider {
                 onFolderClick = {
                     findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
                 },
+                onFolderLongClick = {
+                    if (!adapter.isSelectModeEnabled) {
+                        setSelectModeEnabled(true)
+                    }
+                },
                 isLinear = newIsLinear
             )
             binding.rvMyFolderListView.adapter = adapter
             setObservers()
         }
+        setClickListeners()
 
 
         
         return binding.root
     }
+
+
+    private fun setClickListeners(){
+
+        binding.folderDeleteImageView.setOnClickListener {
+            if (adapter.selectedItems.isEmpty()) {
+                setSelectModeEnabled(true)
+                Snackbar.make(requireView(),"Please select item to delete", Snackbar.LENGTH_SHORT).show()
+            } else {
+                showDeleteAllDialog()
+            }
+        }
+
+        binding.selectAllImageView.setOnClickListener {
+            adapter.toggleSelectAll()
+            adapter.notifyDataSetChanged()
+        }
+
+        binding.closeImageView.setOnClickListener {
+            setSelectModeEnabled(false)
+            adapter.clearSelectedItems()
+        }
+
+
+    }
+    private fun showDeleteAllDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Are you sure you want to delete selected items?")
+            .setPositiveButton("Delete") { dialog, which ->
+                adapter.selectedItems.let {
+                    if (it.isNotEmpty()) {
+                        it.forEach { folder ->
+                           viewModel.onEvent(FolderEvent.DeleteFolderWithPages(folder)){
+                               Toast.makeText(requireContext(),"$it",Toast.LENGTH_SHORT).show()
+                           }
+                        }
+                    }
+                    setSelectModeEnabled(false)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
 
     private fun setViewType(isLinear : Boolean){
         sharedPreferences.edit().putBoolean(IS_LINEAR, isLinear).apply()
@@ -149,6 +211,18 @@ class MainFragment : Fragment(),MenuProvider {
             return true
         }
         return true
+    }
+
+    private fun setSelectModeEnabled(isEnabled: Boolean) {
+        adapter.setIsSelectedModeEnabled(isEnabled)
+        binding.checkFolderImageView.isVisible = !isEnabled
+        binding.gridImageView.isVisible = !isEnabled
+        binding.addFolderImageView.isVisible = !isEnabled
+        binding.allDocsHeadingTextView.isVisible =!isEnabled
+        binding.folderDeleteImageView.isVisible = isEnabled
+        binding.selectAllImageView.isVisible = isEnabled
+        binding.closeImageView.isVisible = isEnabled
+        adapter.notifyDataSetChanged()
     }
 
 }

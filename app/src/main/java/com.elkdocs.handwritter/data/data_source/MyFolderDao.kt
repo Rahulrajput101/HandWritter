@@ -29,11 +29,22 @@ interface MyFolderDao {
     
     @Delete
     suspend fun deleteMyPage(myPageModel: MyPageModel)
+
+    @Query("DELETE FROM my_pages WHERE folderId = :folderId")
+    suspend fun deletePagesByFolderId(folderId: Long)
     
     @Query("SELECT * FROM my_pages WHERE folderId = :folderId")
     fun getAllPages(folderId: Long): Flow<List<MyPageModel>>
 
     @Query("SELECT * FROM my_pages")
     fun getPages() : Flow<List<MyPageModel>>
+
+    @Transaction
+    suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel) {
+        // Delete all pages associated with the folder
+        deletePagesByFolderId(myFolderModel.folderId!!)
+        // Delete the folder itself
+        deleteMyFolder(myFolderModel)
+    }
     
 }

@@ -147,6 +147,16 @@
             android:src="@drawable/ic_check_24"
             android:visibility="gone" />
 
+        <CheckBox
+            android:id = "@+id/list_main_checkbox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="3dp"
+            android:visibility="gone"
+            />
+
 
     </FrameLayout>
 </layout>

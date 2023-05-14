@@ -1,6 +1,7 @@
 package com.elkdocs.handwritter.domain.repository
 
 
+import androidx.room.Transaction
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,10 @@ interface MyFolderRepository {
 
     suspend fun addMyPage(myPageModel: MyPageModel) : Long
     suspend fun deleteMyPage(myPageModel: MyPageModel)
+
     fun  getAllPages(folderId : Long) : Flow<List<MyPageModel>>
     fun getPages() : Flow<List<MyPageModel>>
+
+
+    suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel)
 }
