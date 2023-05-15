@@ -25,8 +25,8 @@ class MyFolderRepositoryImp(
     }
     
 
-    override suspend fun getMyFolder(id: Int): MyFolderModel {
-        TODO("Not yet implemented")
+    override suspend fun getMyFolder(id: Long): MyFolderModel {
+       return myFolderDao.getMyFolder(id)
     }
 
     override suspend fun getMyFolderByName(folderName: String): MyFolderModel {
@@ -53,6 +53,10 @@ class MyFolderRepositoryImp(
 
     override suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel) {
         myFolderDao.deleteMyFolderWithPages(myFolderModel)
+    }
+
+    override suspend fun updateFolderPageCount(folderId: Long, pageCount: Int) {
+        myFolderDao.updateFolderPageCount(folderId,pageCount)
     }
 
 

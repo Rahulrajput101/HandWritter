@@ -8,5 +8,4 @@ sealed interface FolderEvent{
     data class DeleteFolderWithPages(val FolderModel : MyFolderModel) : FolderEvent
 
 
-
 }

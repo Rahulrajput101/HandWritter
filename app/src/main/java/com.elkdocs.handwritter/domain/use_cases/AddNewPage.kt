@@ -10,6 +10,11 @@ class AddNewPage @Inject constructor(
     
     suspend operator fun invoke(page: MyPageModel) {
         repository.addMyPage(page)
+
+        // Increment the folder's page count
+        val folder = repository.getMyFolder(page.folderId!!)
+        val updatedFolder = folder.copy(pageCount = folder.pageCount + 1)
+        repository.updateFolderPageCount(folder.folderId!!,folder.pageCount+1)
     }
     
 }

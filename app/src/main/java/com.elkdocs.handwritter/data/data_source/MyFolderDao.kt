@@ -19,7 +19,7 @@ interface MyFolderDao {
     fun getAllFolder(): Flow<List<MyFolderModel>>
     
     @Query("SELECT * FROM my_folders WHERE folderId = :id")
-    suspend fun getMyFolder(id: Int): MyFolderModel
+    suspend fun getMyFolder(id: Long): MyFolderModel
     
     @Query("SELECT * FROM my_folders WHERE folderName = :folderName")
     suspend fun getMyFolderByName(folderName: String): MyFolderModel
@@ -46,5 +46,9 @@ interface MyFolderDao {
         // Delete the folder itself
         deleteMyFolder(myFolderModel)
     }
+    @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")
+    suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
+
+
     
 }

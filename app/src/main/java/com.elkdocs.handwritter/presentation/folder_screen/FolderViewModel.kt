@@ -26,6 +26,7 @@ class FolderViewModel @Inject constructor(
     val allFolders = getAllFolders().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
 
+
     fun onEvent(event : FolderEvent,callback : (Long?) -> Unit ) {
         when(event){
             is FolderEvent.AddFolder -> {
@@ -40,6 +41,9 @@ class FolderViewModel @Inject constructor(
                     deleteMyFolderWithPages(event.FolderModel)
                 }
             }
+
         }
     }
+
+
 }

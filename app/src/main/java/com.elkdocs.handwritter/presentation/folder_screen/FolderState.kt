@@ -4,5 +4,5 @@ import com.elkdocs.handwritter.domain.model.MyFolderModel
 
 
 data class FolderState(
-    val folderListWithPages : List<MyFolderModel> = emptyList()
+    val folderListWithPages : List<MyFolderModel> = emptyList(),
 )

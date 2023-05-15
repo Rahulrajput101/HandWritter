@@ -19,6 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,7 +65,7 @@ class MainFragment : Fragment(),MenuProvider {
         binding.menuIcon.setOnClickListener {
             (requireActivity() as MainActivity).openDrawer()
         }
-        
+
         adapter = FolderAdapter(
             onFolderClick = {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
@@ -91,6 +92,7 @@ class MainFragment : Fragment(),MenuProvider {
         binding.fabMain.setOnClickListener {addFolderAndNavigate()}
         
         setObservers()
+
 
         binding.gridImageView.setOnClickListener {
             val newIsLinear = !sharedPreferences.getBoolean(IS_LINEAR, false)
@@ -141,6 +143,8 @@ class MainFragment : Fragment(),MenuProvider {
             setSelectModeEnabled(false)
             adapter.clearSelectedItems()
         }
+
+
 
 
     }
@@ -196,10 +200,9 @@ class MainFragment : Fragment(),MenuProvider {
     private fun setObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.allFolders.collect {
-                    val sortedList = it.reversed()
-                    binding.noDocuments.isVisible = sortedList.isEmpty()
-                    adapter.setAllFolder(sortedList)
+                viewModel.allFolders.collect { foldersList->
+                    binding.noDocuments.isVisible = foldersList.isEmpty()
+                    adapter.setAllFolder(foldersList.reversed())
                 }
             }
         }
