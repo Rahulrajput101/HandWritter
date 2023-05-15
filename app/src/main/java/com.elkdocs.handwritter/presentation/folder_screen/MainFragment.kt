@@ -128,6 +128,10 @@ class MainFragment : Fragment(),MenuProvider {
             }
         }
 
+        binding.checkFolderImageView.setOnClickListener {
+            setSelectModeEnabled(true)
+        }
+
         binding.selectAllImageView.setOnClickListener {
             adapter.toggleSelectAll()
             adapter.notifyDataSetChanged()
@@ -219,6 +223,7 @@ class MainFragment : Fragment(),MenuProvider {
         binding.gridImageView.isVisible = !isEnabled
         binding.addFolderImageView.isVisible = !isEnabled
         binding.allDocsHeadingTextView.isVisible =!isEnabled
+        binding.fabMain.isVisible = !isEnabled
         binding.folderDeleteImageView.isVisible = isEnabled
         binding.selectAllImageView.isVisible = isEnabled
         binding.closeImageView.isVisible = isEnabled
