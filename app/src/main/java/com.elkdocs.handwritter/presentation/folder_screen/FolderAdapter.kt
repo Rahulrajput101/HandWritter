@@ -13,6 +13,9 @@ import com.elkdocs.handwritter.databinding.ItemFolderListViewBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerAdapter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class FolderAdapter(
     val  onFolderClick : (folderId : Long) -> Unit,
@@ -101,7 +104,13 @@ class FolderAdapter(
 
                     binding.tvFolderNameListView.text = folder.folderName
                     binding.tvFolderItemCountListView.text = folder.pageCount.toString()
-                    binding.tvFolderLastUpdatedListView.text = folder.lastUpdated.toString()
+
+                    val calendar = Calendar.getInstance().apply {
+                        timeInMillis = folder.lastUpdated
+                    }
+                    val date = SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(calendar.time)
+
+                    binding.tvFolderLastUpdatedListView.text = date
                     binding.listMainCheckbox.isChecked = folder.isSelected
                     binding.ivMoreOptionsListView.isVisible = !isSelectModeEnabled
 
@@ -126,9 +135,15 @@ class FolderAdapter(
 
                     binding.tvFolderNameGridView.text = folder.folderName
                     binding.tvFolderItemCountGridView.text = folder.pageCount.toString()
-                    binding.tvFolderLastUpdatedGridView.text = folder.lastUpdated.toString()
 
+                    val calendar = Calendar.getInstance().apply {
+                        timeInMillis = folder.lastUpdated
+                    }
+
+                    val date = SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(calendar.time)
+                    binding.tvFolderLastUpdatedGridView.text = date
                     binding.gridMainCheckbox.isChecked = folder.isSelected
+                    binding.ivMoreOptions.isVisible =!isSelectModeEnabled
 
                     if (isSelectModeEnabled) {
                         binding.gridMainCheckbox.visibility = View.VISIBLE

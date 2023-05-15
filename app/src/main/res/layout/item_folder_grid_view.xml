@@ -68,6 +68,9 @@
                                 android:id="@+id/tv_folder_name_grid_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:maxWidth="120dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:gravity="start"
                                 android:text="folderName" />
 

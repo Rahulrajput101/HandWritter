@@ -8,6 +8,6 @@ class AddNewFolder @Inject constructor(
     private val repository: MyFolderRepository
 ) {
     suspend operator fun invoke(folder: MyFolderModel): Long {
-        return repository.addMyFolder(folder.copy(folderName = System.currentTimeMillis().toString()))
+        return repository.addMyFolder(folder.copy(folderName = "Docs"+System.currentTimeMillis().toString()))
     }
 }

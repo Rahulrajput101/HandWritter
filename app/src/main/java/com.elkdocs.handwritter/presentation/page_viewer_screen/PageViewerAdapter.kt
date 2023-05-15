@@ -90,19 +90,15 @@ class PageViewerAdapter(
         }
     }
 
-    inner class MyViewHolder(private val binding : ItemPageViewerBinding,val context: Context) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(page : MyPageModel,onDeleteClick: (myPageModel: MyPageModel) -> Unit,isSelectModeEnabled: Boolean ){
-               //binding.imagePagePreviewFrameLayout.background
-//            binding.imageCardView.background = BitmapDrawable(context.resources,page.bitmap)
-
-            //binding.imageView.setImageBitmap(page.bitmap)
-            //binding.imageCardView.radius = 6F
-
+    inner class MyViewHolder(private val binding: ItemPageViewerBinding, val context: Context) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            page: MyPageModel,
+            onDeleteClick: (myPageModel: MyPageModel) -> Unit,
+            isSelectModeEnabled: Boolean
+        ) {
             val bitmapDrawable = BitmapDrawable(context.resources, page.bitmap)
-//             val roundBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources,page.bitmap)
-//            roundBitmapDrawable.cornerRadius = 8F
-//            binding.imageView.setImageDrawable(roundBitmapDrawable)
-            binding.imageView.background =bitmapDrawable
+            binding.imageView.background = bitmapDrawable
             binding.checkBox.isChecked = page.isSelected
 
             if (isSelectModeEnabled) {
@@ -120,6 +116,4 @@ class PageViewerAdapter(
             }
         }
     }
-
-
 }
