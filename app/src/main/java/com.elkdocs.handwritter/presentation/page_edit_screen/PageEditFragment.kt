@@ -29,7 +29,9 @@ import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.OtherUtility
 import com.elkdocs.handwritter.util.OtherUtility.provideBackgroundColorPrimary
+import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,9 +51,7 @@ class PageEditFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
-
-        val primaryColor = provideBackgroundColorPrimary(requireContext())
-        binding.toolbarEditFileActivity.setBackgroundColor(primaryColor)
+        //taking the saved details of the page for setup the ui
         val pageArgs = navArgs.pageDetail
         viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
 
@@ -72,31 +72,30 @@ class PageEditFragment : Fragment() {
 
         binding.editBackButton.setOnClickListener { findNavController().navigateUp() }
 
+        //This will first saved the user input in database and then it will go to the viewer screen
         binding.editForwardButton.setOnClickListener {
-
             binding.ivTextEditView.clearFocus()
-
             val bitmap = binding.edtPageLayout.drawToBitmap()
             viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
-
             val noteText = binding.ivTextEditView.text.toString()
             if (noteText.isNotEmpty()) {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
-
             viewModel.onEvent(PageEditEvent.UpdatePage)
             Toast.makeText(requireContext(), "saved", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
         }
 
+        //set up of bottom sheet
         BottomSheetBehavior.from(binding.bottomSheetLayout).apply {
             peekHeight = 100
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
         return binding.root
     }
 
-
+    //This will called when user select one of the font type and it will update the font type and ui for selection
     private val textFormatClickListener = View.OnClickListener { view ->
         val isBold = binding.ivTextEditView.typeface.isBold
         val isItalic = binding.ivTextEditView.typeface.isItalic
@@ -130,16 +129,19 @@ class PageEditFragment : Fragment() {
             setText(page.notesText)
             letterSpacing = page.letterSpace
         }
+        //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
-        binding.seekbarForLineAndWord.progress =  ((page.textAndLineSpace - 0.095f) / 0.020f * 100).toInt()
+        binding.seekbarForLineAndWord.progress =
+            ((page.textAndLineSpace - 0.095f) / 0.020f * 100).toInt()
+
         when (page.fontType) {
             Typeface.NORMAL -> Toast.makeText(requireContext(), "Normal", Toast.LENGTH_SHORT).show()
             Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
             Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
+
         binding.fontSizeAutoComplete.setText("${page.fontSize}")
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
-        // binding.addLinesAutoComplete.setText(if(page.addLines) "on" else "off")
         binding.ivImageEditView.setBackgroundColor(page.pageColor)
         updateFontStyle(page.fontStyle)
         updateFontType(page.fontStyle, page.fontType)
@@ -154,9 +156,12 @@ class PageEditFragment : Fragment() {
                 viewModel.onEvent(PageEditEvent.UpdatePageColor(pageColor))
             }
         )
-
         binding.selectPageColorRecyclerView.adapter = pageColorAdapter
-        binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.selectPageColorRecyclerView.layoutManager = LinearLayoutManager(
+            requireContext(),
+            RecyclerView.HORIZONTAL,
+            false
+        )
     }
 
     private fun fontStyleAdapter() {
@@ -202,6 +207,13 @@ class PageEditFragment : Fragment() {
             updateFontSize(Constant.FONT_SIZES_MAP[fontSize])
         }
     }
+    private fun updateFontSize(fontSizeValue: Float?) {
+        if (fontSizeValue != null) {
+            binding.ivTextEditView.textSize = fontSizeValue
+            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
+            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
+        }
+    }
 
     private fun lineColorAdapter() {
         val fontStyles = resources.getStringArray(R.array.line_color_array)
@@ -210,6 +222,14 @@ class PageEditFragment : Fragment() {
         binding.lineColorAutoComplete.setOnItemClickListener { parent, view, position, id ->
             val lineColor = parent.getItemAtPosition(position).toString()
             updateLineColor(Constant.LINE_COLOR_MAP[lineColor])
+        }
+    }
+
+    private fun updateLineColor(color: Int?) {
+        if (color != null) {
+            Toast.makeText(requireContext(), "$color", Toast.LENGTH_SHORT).show()
+            viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
+            updateLine(viewModel.state.value.addLines, viewModel.state.value.fontSize, color, edtPageLayoutView)
         }
     }
 
@@ -222,12 +242,10 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun updateFontSize(fontSizeValue: Float?) {
-        if (fontSizeValue != null) {
-            binding.ivTextEditView.textSize = fontSizeValue
-            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
-            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
-        }
+    private fun updateFontType(fontStyle: Int, fontType: Int) {
+        val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
+        binding.ivTextEditView.setTypeface(typeface, fontType)
+        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
 
     private fun updateLine(hasLine: Boolean?, fontSize: Float, lineColor: Int, view: View) {
@@ -252,29 +270,15 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun updateLineColor(color: Int?) {
-        if (color != null) {
-            Toast.makeText(requireContext(), "$color", Toast.LENGTH_SHORT).show()
-            viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
-            updateLine(viewModel.state.value.addLines, viewModel.state.value.fontSize, color, edtPageLayoutView)
-        }
-    }
-
-    private fun updateFontType(fontStyle: Int, fontType: Int) {
-        val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
-        binding.ivTextEditView.setTypeface(typeface, fontType)
-        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
-    }
-
 
     private fun verticalLine(canvas: Canvas) {
         val paint = Paint()
         paint.color = Color.parseColor("#D1C2E1")
         paint.strokeWidth = 2f
 
-// Draw horizontal line
-//        val y = canvas.height * 0.10f // Change this value to adjust the y-coordinate of the line
-//        canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paint)
+        // Draw horizontal line
+        // val y = canvas.height * 0.10f // Change this value to adjust the y-coordinate of the line
+        //canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paint)
 
         // Draw vertical line
         val x = canvas.width * 0.15f // Change this value to adjust the x-coordinate of the line
@@ -282,7 +286,6 @@ class PageEditFragment : Fragment() {
     }
 
     private fun drawLines(canvas: Canvas, fontSize: Float, lineColor: Int) {
-
         val lineSpacing = spToPx(fontSize, requireContext()).toFloat() // or any other ratio you prefer
         binding.ivTextEditView.setLineSpacing(lineSpacing, 0f)
         val linePaint = Paint()
@@ -303,10 +306,7 @@ class PageEditFragment : Fragment() {
     }
 
 
-    private fun spToPx(sp: Float, context: Context): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
-    }
-
+  //it will give the spacing between letters and word
     private fun wordSpacing() {
         binding.seekbarForLetterAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -315,36 +315,23 @@ class PageEditFragment : Fragment() {
                 viewModel.onEvent(PageEditEvent.UpdateLetterSpacing(spacingValue))
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
     }
 
+    //it will give the spacing between line and text
         private fun lineWordSpacing(view: View){
-
         binding.seekbarForLineAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Convert the progress value to a ratio between 0.5 and 2.0
-                //val textAndLineSpacingValue = 0.1f + progress.toFloat() / 1000f
                 val textAndLineSpacingValue = 0.095f + (0.020f * progress / 100)
                 viewModel.onEvent(PageEditEvent.UpdateTextAndLineSpacing(textAndLineSpacingValue))
                 val currentState = viewModel.state.value
               updateLine(currentState.addLines,currentState.fontSize,currentState.lineColor,view)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
     }
 

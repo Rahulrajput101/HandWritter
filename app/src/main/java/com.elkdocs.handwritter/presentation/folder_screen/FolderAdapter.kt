@@ -42,7 +42,6 @@ class FolderAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderAdapter.MyViewHolder {
 
        return if(isLinear){
-
            val inflater = LayoutInflater.from(parent.context)
            val binding = ItemFolderListViewBinding.inflate(inflater, parent, false)
            MyViewHolder(binding)

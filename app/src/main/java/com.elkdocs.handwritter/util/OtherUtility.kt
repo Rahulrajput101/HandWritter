@@ -55,6 +55,11 @@ object OtherUtility {
         return Environment.MEDIA_MOUNTED == state
     }
 
+  fun spToPx(sp: Float, context: Context): Int {
+      return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
+  }
+
+
 
 
 }
