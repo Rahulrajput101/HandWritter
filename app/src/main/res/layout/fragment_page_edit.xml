@@ -52,6 +52,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/baseline_check_24" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -226,7 +227,8 @@
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingTop="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -234,16 +236,45 @@
                         android:layout_marginTop="10dp"
                         android:orientation="vertical">
 
-
-                        <CheckedTextView
-                            android:id="@+id/demoStyleTextView"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/demo_parent_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:padding="10dp"
-                            android:text="@string/demo_style_text"
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp" />
+                            android:layout_height="70dp">
+
+                            <ImageView
+                                android:id="@+id/iv_image_demo_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="10dp"
+                                android:scaleType="centerCrop"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <View
+                                android:id="@+id/demo_top_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.1dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.04000002" />
+
+                            <TextView
+                                android:id="@+id/demoStyleTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:paddingStart="10dp"
+                                android:text="@string/demo_style_text"
+                                android:textColor="@android:color/black"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/demo_top_view" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         <TextView
                             style="@style/TextAppearance.AppCompat.Body2"

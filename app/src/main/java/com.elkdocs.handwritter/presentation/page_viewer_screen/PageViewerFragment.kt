@@ -212,7 +212,7 @@ class PageViewerFragment : Fragment() {
                         fontStyle = R.font.caveat_variablefont_wght,
                         fontType = Typeface.NORMAL,
                         letterSpace = 0f,
-                        textAndLineSpace = 0.105f,
+                        textAndLineSpace = 10f,
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,

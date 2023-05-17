@@ -11,6 +11,7 @@ import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_GRAY
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_OFF_WHITE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_LAVENDER
+import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_WHITE
 import com.google.mlkit.nl.translate.TranslateLanguage
 
 data class PageEditState(
@@ -22,7 +23,7 @@ data class PageEditState(
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
     val letterSpace: Float = 3f,
-    val textAndLineSpace : Float = 0.105f,
+    val textAndLineSpace : Float = 10f,
     val addLines: Boolean = true,
     val lineColor: Int = BLUE_LINE_COLOR,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
@@ -35,7 +36,8 @@ data class PageEditState(
             PAGE_COLOR_LIGHT_GRAY,
             PAGE_COLOR_OFF_WHITE,
             PAGE_COLOR_PALE_BLUE,
-            PAGE_COLOR_PALE_LAVENDER
+            PAGE_COLOR_PALE_LAVENDER,
+            PAGE_COLOR_WHITE,
         )
     }
 }

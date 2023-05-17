@@ -1,13 +1,12 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,8 +28,6 @@ import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
-import com.elkdocs.handwritter.util.OtherUtility
-import com.elkdocs.handwritter.util.OtherUtility.provideBackgroundColorPrimary
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,6 +62,8 @@ class PageEditFragment : Fragment() {
             wordSpacing()
             lineWordSpacing(it)
         }
+
+
        // binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         pageColorAdapter()
         binding.boldText.setOnClickListener(textFormatClickListener)
@@ -123,6 +122,17 @@ class PageEditFragment : Fragment() {
         }
     }
 
+    //setting demo text
+    private fun demoTextLine(){
+        val width = binding.ivImageDemoView.measuredWidth
+        val height = binding.ivImageDemoView.measuredHeight
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        demoViewHorizontalLine(canvas,viewModel.state.value.fontSize, viewModel.state.value.lineColor)
+        //drawLines(canvas,viewModel.state.value.fontSize,viewModel.state.value.lineColor)
+          binding.ivImageDemoView.setImageBitmap(bitmap)
+        //.demoStyleTextView.background = BitmapDrawable(requireContext().resources,bitmap)
+    }
 
     private fun setInitialValues(page: MyPageModel, view: View) {
         binding.ivTextEditView.apply {
@@ -132,7 +142,8 @@ class PageEditFragment : Fragment() {
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
         binding.seekbarForLineAndWord.progress =
-            ((page.textAndLineSpace - 0.095f) / 0.020f * 100).toInt()
+            //((page.textAndLineSpace - 0.095f) / 0.020f * 100).toInt()
+            ((page.textAndLineSpace + 5f) / 30f * 100).toInt()
 
         when (page.fontType) {
             Typeface.NORMAL -> Toast.makeText(requireContext(), "Normal", Toast.LENGTH_SHORT).show()
@@ -176,6 +187,15 @@ class PageEditFragment : Fragment() {
         }
     }
 
+    private fun updateFontStyle(fontResourceId: Int?) {
+        if (fontResourceId != null) {
+            val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
+            binding.ivTextEditView.typeface = typeface
+            binding.demoStyleTextView.typeface = typeface
+            viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
+        }
+    }
+
     private fun languageAdapter() {
         val fontStyles = resources.getStringArray(R.array.languages_array)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
@@ -210,7 +230,9 @@ class PageEditFragment : Fragment() {
     private fun updateFontSize(fontSizeValue: Float?) {
         if (fontSizeValue != null) {
             binding.ivTextEditView.textSize = fontSizeValue
+            binding.demoStyleTextView.textSize = fontSizeValue
             viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
+            demoTextLine()
             updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
         }
     }
@@ -233,14 +255,6 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun updateFontStyle(fontResourceId: Int?) {
-        if (fontResourceId != null) {
-            val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
-            binding.ivTextEditView.typeface = typeface
-            binding.demoStyleTextView.typeface = typeface
-            viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
-        }
-    }
 
     private fun updateFontType(fontStyle: Int, fontType: Int) {
         val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
@@ -252,6 +266,8 @@ class PageEditFragment : Fragment() {
         if (hasLine != null) {
             when (hasLine) {
                 true -> {
+                    //updating demo text
+
                     val width = view.measuredWidth
                     val height = view.measuredHeight
                     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -260,7 +276,9 @@ class PageEditFragment : Fragment() {
                     drawLines(canvas, fontSize, lineColor)
                     verticalLine(canvas)
                     binding.ivImageEditView.setImageBitmap(bitmap)
-
+                     binding.demoParentLayout.doOnLayout {
+                         demoTextLine()
+                     }
                 }
 
                 false -> {
@@ -273,30 +291,60 @@ class PageEditFragment : Fragment() {
 
     private fun verticalLine(canvas: Canvas) {
         val paint = Paint()
-        paint.color = Color.parseColor("#D1C2E1")
-        paint.strokeWidth = 2f
+        //for blue color we are giving different color to vertical line
+        if (viewModel.state.value.lineColor == 0xFFB2B1D3.toInt()) {
+            paint.color = Color.parseColor("#D1C2E1")
+        } else {
+            paint.color = viewModel.state.value.lineColor
+        }
 
-        // Draw horizontal line
-        // val y = canvas.height * 0.10f // Change this value to adjust the y-coordinate of the line
-        //canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paint)
+        paint.strokeWidth = 2f
 
         // Draw vertical line
         val x = canvas.width * 0.15f // Change this value to adjust the x-coordinate of the line
         canvas.drawLine(x.toFloat(), 0f, x.toFloat(), canvas.height.toFloat(), paint)
     }
 
-    private fun drawLines(canvas: Canvas, fontSize: Float, lineColor: Int) {
-        val lineSpacing = spToPx(fontSize, requireContext()).toFloat() // or any other ratio you prefer
-        binding.ivTextEditView.setLineSpacing(lineSpacing, 0f)
+    private fun demoViewHorizontalLine(canvas: Canvas, fontSize: Float , lineColor: Int){
+
+        val lineSpacing = spToPx(fontSize, requireContext()).toFloat()
+        binding.demoStyleTextView.setLineSpacing(lineSpacing,0f)
+
         val linePaint = Paint()
         linePaint.strokeWidth = 2f
         linePaint.color = lineColor
 
-        val paddingTop = canvas.height * (viewModel.state.value.textAndLineSpace)
+        val paddingTop = viewModel.state.value.textAndLineSpace
+
+        for(i in paddingTop.toInt() until canvas.height step lineSpacing.toInt()){
+            linePaint.color = lineColor
+            canvas.drawLine(0f, i.toFloat(), canvas.width.toFloat(), i.toFloat() , linePaint)
+        }
+
+    }
+
+
+    private fun drawLines(canvas: Canvas, fontSize: Float, lineColor: Int) {
+        val lineSpacing = spToPx(fontSize, requireContext()).toFloat() // or any other ratio you prefer
+        binding.ivTextEditView.setLineSpacing(lineSpacing, 0f)
+
+        val linePaint = Paint()
+        linePaint.strokeWidth = 2f
+        linePaint.color = lineColor
+
+        //val paddingTop = canvas.height * (viewModel.state.value.textAndLineSpace )
+        val pageHeaderSpace = 0.10
+        val paddingTop = (canvas.height * pageHeaderSpace) + viewModel.state.value.textAndLineSpace
 
         for (i in paddingTop.toInt() until canvas.height step lineSpacing.toInt()) {
             if (i == paddingTop.toInt()) {
-                linePaint.color = Color.parseColor("#D1C2E1")
+                //for blue color we are giving different color to first line
+                if(lineColor == 0xFFB2B1D3.toInt()){
+                    linePaint.color = Color.parseColor("#D1C2E1")
+                }else {
+                    linePaint.color = lineColor
+                }
+
             } else {
                 linePaint.color = lineColor
             }
@@ -312,6 +360,7 @@ class PageEditFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val spacingValue = progress.toFloat() / 100
                 binding.ivTextEditView.letterSpacing = spacingValue
+                binding.demoStyleTextView.letterSpacing = spacingValue
                 viewModel.onEvent(PageEditEvent.UpdateLetterSpacing(spacingValue))
             }
 
@@ -324,10 +373,11 @@ class PageEditFragment : Fragment() {
         private fun lineWordSpacing(view: View){
         binding.seekbarForLineAndWord.setOnSeekBarChangeListener(object : OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val textAndLineSpacingValue = 0.095f + (0.020f * progress / 100)
+                //val textAndLineSpacingValue = 0.095f + (0.020f * progress / 100)
+                val textAndLineSpacingValue = (-5f + (30f * progress / 100))
                 viewModel.onEvent(PageEditEvent.UpdateTextAndLineSpacing(textAndLineSpacingValue))
                 val currentState = viewModel.state.value
-              updateLine(currentState.addLines,currentState.fontSize,currentState.lineColor,view)
+                updateLine(currentState.addLines,currentState.fontSize,currentState.lineColor,view)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

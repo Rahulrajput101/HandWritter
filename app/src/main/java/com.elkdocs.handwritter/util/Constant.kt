@@ -89,30 +89,18 @@ object Constant {
         LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
     )
 
-
     //color lines
     const val BLUE_LINE_COLOR = 0xFFB2B1D3.toInt()
 
-    //font type
-    const val NORMAL_FONT_TYPE = "Normal"
-    const val BOLD_FONT_TYPE = "Bold"
-    const val UNDERLINE_FONT_TYPE = "Underline"
 
-
-
-    //background page color
-//    const val PAGE_COLOR_PALE_LAVENDER: Int = 0xDADCF1
-//    const val PAGE_COLOR_LIGHT_GRAY: Int = 0xE3E3E5
-//    const val PAGE_COLOR_OFF_WHITE: Int = 0xEDEBDF
-//    const val PAGE_COLOR_PALE_BLUE: Int = 0xE1E2E4
-//    const val PAGE_COLOR_LIGHT_BEIGE: Int = 0xEBDECD
 
     const val PAGE_COLOR_PALE_LAVENDER= 0xFFE3E3E5.toInt()
     const val PAGE_COLOR_LIGHT_GRAY = 0xFFEDEBDF.toInt()
     const val PAGE_COLOR_OFF_WHITE = 0xFFE1E2E4.toInt()
     const val PAGE_COLOR_PALE_BLUE = 0xFFEBDECD.toInt()
     const val PAGE_COLOR_LIGHT_BEIGE = 0xFFDADCF1.toInt()
-
+    const val PAGE_COLOR_WHITE = Color.WHITE
+    //FAFBFB
     //sharedPref
     const val SHARED_PREFERENCE_NAME ="shared_pref"
     const val IS_LINEAR = " KEY_LOOK"
