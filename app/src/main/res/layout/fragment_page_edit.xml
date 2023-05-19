@@ -179,7 +179,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <EditText
+                    <com.elkdocs.handwritter.presentation.page_edit_screen.CustomEditText
                         android:id="@+id/ivTextEditView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -188,6 +188,8 @@
                         android:layout_marginBottom="10dp"
                         android:background="@android:color/transparent"
                         android:gravity="start|top"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:hint="Enter the text"
                         android:inputType="textVisiblePassword|textMultiLine"
                         app:layout_constraintBottom_toBottomOf="@id/iv_image_edit_view"

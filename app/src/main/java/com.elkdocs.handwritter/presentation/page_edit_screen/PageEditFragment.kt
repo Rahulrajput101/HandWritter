@@ -5,12 +5,16 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
@@ -63,7 +67,6 @@ class PageEditFragment : Fragment() {
             lineWordSpacing(it)
         }
 
-
        // binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         pageColorAdapter()
         binding.boldText.setOnClickListener(textFormatClickListener)
@@ -94,6 +97,8 @@ class PageEditFragment : Fragment() {
         return binding.root
     }
 
+
+
     //This will called when user select one of the font type and it will update the font type and ui for selection
     private val textFormatClickListener = View.OnClickListener { view ->
         val isBold = binding.ivTextEditView.typeface.isBold
@@ -122,23 +127,19 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    //setting demo text
-    private fun demoTextLine(){
-        val width = binding.ivImageDemoView.measuredWidth
-        val height = binding.ivImageDemoView.measuredHeight
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        demoViewHorizontalLine(canvas,viewModel.state.value.fontSize, viewModel.state.value.lineColor)
-        //drawLines(canvas,viewModel.state.value.fontSize,viewModel.state.value.lineColor)
-          binding.ivImageDemoView.setImageBitmap(bitmap)
-        //.demoStyleTextView.background = BitmapDrawable(requireContext().resources,bitmap)
-    }
 
     private fun setInitialValues(page: MyPageModel, view: View) {
-        binding.ivTextEditView.apply {
-            setText(page.notesText)
-            letterSpacing = page.letterSpace
+        //setting up initial text
+        if (page.notesText.isEmpty()) {
+            //This will fill the edit text with space
+            creatingEmptyLine()
+        } else {
+            binding.ivTextEditView.apply {
+                setText(page.notesText)
+                letterSpacing = page.letterSpace
+            }
         }
+
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
         binding.seekbarForLineAndWord.progress =
@@ -159,6 +160,17 @@ class PageEditFragment : Fragment() {
         updateFontSize(page.fontSize)
         updateLine(page.addLines, page.fontSize, page.lineColor, view)
     }
+
+    //setting demo text
+    private fun demoTextLine(){
+        val width = binding.ivImageDemoView.measuredWidth
+        val height = binding.ivImageDemoView.measuredHeight
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        demoViewHorizontalLine(canvas,viewModel.state.value.fontSize, viewModel.state.value.lineColor)
+        binding.ivImageDemoView.setImageBitmap(bitmap)
+    }
+
 
     private fun pageColorAdapter() {
         pageColorAdapter = PageColorAdapter(
@@ -383,6 +395,26 @@ class PageEditFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+    }
+
+    private fun creatingEmptyLine(){
+        val text = StringBuilder()
+        val lineHeight = binding.ivTextEditView.lineHeight
+        val editTextHeight = binding.ivTextEditView.height
+
+        // Total number of lines in edit text
+        val totalLines = editTextHeight / lineHeight
+        for( i in 0 until totalLines){
+            for(j in 0 until binding.ivTextEditView.width){
+                text.append(" ")
+            }
+            //changing the line until he reaches at the last line
+            if(i < totalLines - 1){
+                text.append("\n")
+            }
+        }
+        //finally setting up the result to edit text
+        binding.ivTextEditView.setText(text)
     }
 
 }
