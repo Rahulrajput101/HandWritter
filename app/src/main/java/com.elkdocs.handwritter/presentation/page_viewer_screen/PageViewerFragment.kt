@@ -216,6 +216,7 @@ class PageViewerFragment : Fragment() {
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
+                        underline = false,
                         bitmap = pageBitmap!!
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
@@ -249,6 +250,7 @@ class PageViewerFragment : Fragment() {
                     addLines = true,
                     lineColor = BLUE_LINE_COLOR,
                     pageColor = PAGE_COLOR_LIGHT_BEIGE,
+                    underline = false,
                     bitmap = pageBitmap!!
                 )
                 viewModel.onEvent(PageViewerEvent.AddPage(page))

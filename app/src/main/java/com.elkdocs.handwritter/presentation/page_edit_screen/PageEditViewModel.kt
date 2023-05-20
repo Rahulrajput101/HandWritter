@@ -71,6 +71,7 @@ class PageEditViewModel @Inject constructor(
                             addLines =state.value.addLines,
                             lineColor = state.value.lineColor,
                             pageColor = state.value.pageColor,
+                            underline = state.value.underline,
                             bitmap = state.value.pageBitmap
                         )
                     )
@@ -96,6 +97,11 @@ class PageEditViewModel @Inject constructor(
             is PageEditEvent.UpdateTextAndLineSpacing ->{
                 _state.value = _state.value.copy(textAndLineSpace = event.textAndLineSpacing)
             }
+
+            is PageEditEvent.UpdateUnderLine -> {
+                _state.value = _state.value.copy(underline = event.underLine)
+            }
+
         }
     }
 

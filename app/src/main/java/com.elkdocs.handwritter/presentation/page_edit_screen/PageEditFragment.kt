@@ -7,11 +7,14 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
-import android.view.MotionEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -65,12 +68,11 @@ class PageEditFragment : Fragment() {
             lineColorAdapter()
             wordSpacing()
             lineWordSpacing(it)
+
         }
 
-       // binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        horizontalScrollViewItems()
         pageColorAdapter()
-        binding.boldText.setOnClickListener(textFormatClickListener)
-        binding.italicText.setOnClickListener(textFormatClickListener)
 
         binding.editBackButton.setOnClickListener { findNavController().navigateUp() }
 
@@ -79,7 +81,7 @@ class PageEditFragment : Fragment() {
             binding.ivTextEditView.clearFocus()
             val bitmap = binding.edtPageLayout.drawToBitmap()
             viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
-            val noteText = binding.ivTextEditView.text.toString()
+            val noteText = viewModel.state.value.notesText
             if (noteText.isNotEmpty()) {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
@@ -94,7 +96,53 @@ class PageEditFragment : Fragment() {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+
         return binding.root
+    }
+
+    private fun horizontalScrollViewItems() {
+
+        binding.boldText.setOnClickListener(textFormatClickListener)
+        binding.italicText.setOnClickListener(textFormatClickListener)
+        binding.underlineText.setOnClickListener {
+            val isUnderlined = viewModel.state.value.underline
+            updateUnderlineText(!isUnderlined)
+
+
+        }
+    }
+
+    private fun updateUnderlineText(underline: Boolean) {
+        val start =binding.ivTextEditView.selectionStart
+        val end = binding.ivTextEditView.selectionEnd
+        if(start != end){
+            updateSelectedUnderlineText(start,end)
+        } else {
+            if (underline) {
+                // Add underline
+                binding.ivTextEditView.paintFlags =binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            } else {
+                // Remove underline
+                binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
+            }
+        }
+
+        viewModel.onEvent(PageEditEvent.UpdateUnderLine(underline))
+    }
+
+
+   private fun updateSelectedUnderlineText(  start : Int ,end : Int ){
+
+        val spannableString = SpannableString(binding.ivTextEditView.text)
+        spannableString.setSpan(
+            UnderlineSpan(),
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        Toast.makeText(requireContext(),spannableString,Toast.LENGTH_SHORT).show()
+        binding.ivTextEditView.setText(spannableString)
     }
 
 
@@ -132,7 +180,7 @@ class PageEditFragment : Fragment() {
         //setting up initial text
         if (page.notesText.isEmpty()) {
             //This will fill the edit text with space
-            creatingEmptyLine()
+            //creatingEmptyLine()
         } else {
             binding.ivTextEditView.apply {
                 setText(page.notesText)
@@ -159,6 +207,10 @@ class PageEditFragment : Fragment() {
         updateFontType(page.fontStyle, page.fontType)
         updateFontSize(page.fontSize)
         updateLine(page.addLines, page.fontSize, page.lineColor, view)
+
+        //Horizontal scroll view
+        //Initially we are not give the underline
+         updateUnderlineText(page.underline)
     }
 
     //setting demo text
@@ -399,6 +451,7 @@ class PageEditFragment : Fragment() {
 
     private fun creatingEmptyLine(){
         val text = StringBuilder()
+        text.append("Enter the text")
         val lineHeight = binding.ivTextEditView.lineHeight
         val editTextHeight = binding.ivTextEditView.height
 

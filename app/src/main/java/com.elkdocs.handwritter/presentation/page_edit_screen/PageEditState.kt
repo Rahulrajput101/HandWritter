@@ -27,6 +27,7 @@ data class PageEditState(
     val addLines: Boolean = true,
     val lineColor: Int = BLUE_LINE_COLOR,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
+    val underline : Boolean = false,
     val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),
 
 ) {

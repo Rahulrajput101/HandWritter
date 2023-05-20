@@ -26,6 +26,7 @@ data class MyPageModel(
     val lineColor: Int,
     val pageColor: Int,
     val bitmap: Bitmap,
+    val underline : Boolean,
     var isSelected: Boolean = false
     ) : Parcelable{
     companion object {
