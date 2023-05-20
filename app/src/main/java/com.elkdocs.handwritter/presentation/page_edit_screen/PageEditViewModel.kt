@@ -72,7 +72,8 @@ class PageEditViewModel @Inject constructor(
                             lineColor = state.value.lineColor,
                             pageColor = state.value.pageColor,
                             underline = state.value.underline,
-                            bitmap = state.value.pageBitmap
+                            bitmap = state.value.pageBitmap,
+                            date = state.value.date
                         )
                     )
                 }
@@ -102,6 +103,9 @@ class PageEditViewModel @Inject constructor(
                 _state.value = _state.value.copy(underline = event.underLine)
             }
 
+            is PageEditEvent.UpdateDate -> {
+                _state.value = _state.value.copy(date = event.date)
+            }
         }
     }
 

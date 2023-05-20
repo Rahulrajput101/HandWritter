@@ -1,5 +1,7 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -33,11 +35,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 @AndroidEntryPoint
@@ -46,7 +53,6 @@ class PageEditFragment : Fragment() {
     private val navArgs: PageEditFragmentArgs by navArgs()
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
-
     private lateinit var edtPageLayoutView: View
 
     override fun onCreateView(
@@ -96,7 +102,6 @@ class PageEditFragment : Fragment() {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-
         return binding.root
     }
 
@@ -107,8 +112,27 @@ class PageEditFragment : Fragment() {
         binding.underlineText.setOnClickListener {
             val isUnderlined = viewModel.state.value.underline
             updateUnderlineText(!isUnderlined)
+        }
+        binding.dateTextButton.setOnClickListener {
+            updateDate(binding.dateText.text.toString())
+        }
+    }
 
-
+    private fun updateDate(addDate : String){
+        if(addDate.isEmpty()){
+            pickDate {
+                val date = inputDateFormat.parse(it)
+                date?.let {
+                    val formattedDate = outputDateFormat.format(date)
+                    binding.dateTextButton.setTextColor(Color.BLUE)
+                    binding.dateText.text = formattedDate
+                    viewModel.onEvent(PageEditEvent.UpdateDate(formattedDate))
+                }?: Toast.makeText(requireContext(), "Select Date ", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            binding.dateTextButton.setTextColor(Color.BLACK)
+            binding.dateText.text =""
+            viewModel.onEvent(PageEditEvent.UpdateDate(""))
         }
     }
 
@@ -120,9 +144,11 @@ class PageEditFragment : Fragment() {
         } else {
             if (underline) {
                 // Add underline
+                binding.underlineText.setTextColor(Color.BLUE)
                 binding.ivTextEditView.paintFlags =binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             } else {
                 // Remove underline
+                binding.underlineText.setTextColor(Color.BLACK)
                 binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
             }
         }
@@ -188,6 +214,9 @@ class PageEditFragment : Fragment() {
             }
         }
 
+        //saved date
+        binding.dateText.text = page.date
+
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
         binding.seekbarForLineAndWord.progress =
@@ -211,6 +240,10 @@ class PageEditFragment : Fragment() {
         //Horizontal scroll view
         //Initially we are not give the underline
          updateUnderlineText(page.underline)
+
+         //if(page.date.isEmpty()) updateDate(false) else updateDate(true)
+        // updateDate(page.date.isEmpty())
+
     }
 
     //setting demo text
@@ -255,6 +288,7 @@ class PageEditFragment : Fragment() {
         if (fontResourceId != null) {
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
+            binding.dateText.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
@@ -277,6 +311,7 @@ class PageEditFragment : Fragment() {
             Toast.makeText(requireContext(), "$fontResourceId", Toast.LENGTH_SHORT).show()
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
+            binding.dateText.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
@@ -323,6 +358,7 @@ class PageEditFragment : Fragment() {
     private fun updateFontType(fontStyle: Int, fontType: Int) {
         val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
         binding.ivTextEditView.setTypeface(typeface, fontType)
+        binding.dateText.setTypeface(typeface, fontType)
         viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
 
@@ -468,6 +504,23 @@ class PageEditFragment : Fragment() {
         }
         //finally setting up the result to edit text
         binding.ivTextEditView.setText(text)
+    }
+
+
+    private fun pickDate(callback: (dateTime: String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val currentYear = calendar.get(Calendar.YEAR)
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(requireContext(), { _, year, month, day ->
+            val selectedCalendar = Calendar.getInstance()
+            selectedCalendar.set(year, month, day)
+            val dateTime = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(selectedCalendar.time)
+            callback(dateTime) // call the callback function after completing the work
+        }, currentYear, currentMonth, currentDay)
+
+        datePickerDialog.show()
     }
 
 }

@@ -13,6 +13,8 @@ import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_LAVENDER
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_WHITE
 import com.google.mlkit.nl.translate.TranslateLanguage
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 data class PageEditState(
     val pageId: Long? = null,
@@ -29,7 +31,7 @@ data class PageEditState(
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
     val underline : Boolean = false,
     val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),
-
+    val date :String = ""
 ) {
     companion object{
         val pageColorList = mutableListOf(
@@ -40,5 +42,8 @@ data class PageEditState(
             PAGE_COLOR_PALE_LAVENDER,
             PAGE_COLOR_WHITE,
         )
+
+        val inputDateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val outputDateFormat = SimpleDateFormat("dd-MM-yy", Locale.getDefault())
     }
 }

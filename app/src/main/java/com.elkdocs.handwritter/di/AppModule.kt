@@ -54,7 +54,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTypeofRecyclerView(sharedPreferences: SharedPreferences) =
-        sharedPreferences.getBoolean(IS_LINEAR,true)
+        sharedPreferences.getBoolean(IS_LINEAR,false)
 
 //    @Provides
 //    @Singleton

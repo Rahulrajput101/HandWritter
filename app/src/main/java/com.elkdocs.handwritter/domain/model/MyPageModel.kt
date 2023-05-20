@@ -27,7 +27,9 @@ data class MyPageModel(
     val pageColor: Int,
     val bitmap: Bitmap,
     val underline : Boolean,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val date : String = ""
+    //val underlineSpans: MutableList<Pair<Int, Int>> = mutableListOf()
     ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {

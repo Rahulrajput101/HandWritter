@@ -104,4 +104,5 @@ object Constant {
     //sharedPref
     const val SHARED_PREFERENCE_NAME ="shared_pref"
     const val IS_LINEAR = " KEY_LOOK"
+
 }

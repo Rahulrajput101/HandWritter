@@ -89,6 +89,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:padding="8dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:text="Bold"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
@@ -112,7 +113,8 @@
                         android:padding="8dp"
                         android:text="Italic"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:foreground="?attr/selectableItemBackground"/>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -132,7 +134,29 @@
                         android:padding="8dp"
                         android:text="Underline"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:foreground="?attr/selectableItemBackground"/>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="@color/light_gre2"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp">
+
+                    <CheckedTextView
+                        android:id="@+id/dateTextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Date"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:foreground="?attr/selectableItemBackground"/>
 
                 </androidx.cardview.widget.CardView>
 
@@ -175,6 +199,7 @@
                         app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view"
                         app:layout_constraintVertical_bias="0.100000000" />
 
+
                     <View
                         android:id="@+id/left_view"
                         android:layout_width="2dp"
@@ -207,18 +232,33 @@
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@android:color/transparent"
-                        android:gravity="start|top"
                         android:focusable="true"
-                        android:textIsSelectable="true"
-                        android:longClickable="true"
                         android:focusableInTouchMode="true"
+                        android:gravity="start|top"
                         android:hint="Enter the text"
                         android:inputType="textVisiblePassword|textMultiLine"
+                        android:longClickable="true"
+                        android:textIsSelectable="true"
                         app:layout_constraintBottom_toBottomOf="@id/iv_image_edit_view"
                         app:layout_constraintEnd_toEndOf="@+id/iv_image_edit_view"
                         app:layout_constraintStart_toEndOf="@+id/left_view"
                         app:layout_constraintTop_toBottomOf="@+id/top_view"
                         app:layout_constraintVertical_bias="0.5" />
+
+                    <TextView
+                        android:id="@+id/dateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        android:maxLines="1"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/left_view"
+                        app:layout_constraintHorizontal_bias="0.52"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.089999974" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
