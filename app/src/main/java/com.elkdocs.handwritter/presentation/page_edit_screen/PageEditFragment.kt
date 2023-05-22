@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Bitmap
@@ -16,6 +17,7 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -55,6 +57,12 @@ class PageEditFragment : Fragment() {
     private lateinit var pageColorAdapter: PageColorAdapter
     private lateinit var edtPageLayoutView: View
 
+
+    private var offsetX: Float = 0f
+    private var offsetY: Float = 0f
+    private var startX: Float = 0f
+    private var startY: Float = 0f
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -74,7 +82,7 @@ class PageEditFragment : Fragment() {
             lineColorAdapter()
             wordSpacing()
             lineWordSpacing(it)
-
+            dateTextTouchListener()
         }
 
         horizontalScrollViewItems()
@@ -87,12 +95,14 @@ class PageEditFragment : Fragment() {
             binding.ivTextEditView.clearFocus()
             val bitmap = binding.edtPageLayout.drawToBitmap()
             viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
-            val noteText = viewModel.state.value.notesText
+            val noteText = binding.ivTextEditView.text.toString()
             if (noteText.isNotEmpty()) {
+
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
+            Toast.makeText(requireContext(),"${viewModel.state.value.dateTextViewX}",Toast.LENGTH_LONG).show()
             viewModel.onEvent(PageEditEvent.UpdatePage)
-            Toast.makeText(requireContext(), "saved", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "saved", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
         }
 
@@ -102,8 +112,53 @@ class PageEditFragment : Fragment() {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        binding.dateText.setOnLongClickListener {
+            val layoutParams = binding.dateText.layoutParams
+            layoutParams.width += 50
+            layoutParams.height += 50
+            binding.dateText.layoutParams = layoutParams
+            true
+        }
+
         return binding.root
     }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun dateTextTouchListener(){
+        val parentView = binding.edtPageLayout
+        binding.dateText.setOnTouchListener { v, event ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> {
+                    offsetX = event.rawX - v.x
+                    offsetY = event.rawY - v.y
+                     startX = v.x
+                     startY = v.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val newX = event.rawX - offsetX
+                    val newY = event.rawY - offsetY
+
+                    // Calculate the boundaries based on the parent view's dimensions
+                    val minX = 0f
+                    val maxX = parentView.width - v.width
+                    val minY = 0f
+                    val maxY = parentView.height - v.height
+
+                    // Constrain the new coordinates within the boundaries
+                    val constrainedX = newX.coerceIn(minX, maxX.toFloat())
+                    val constrainedY = newY.coerceIn(minY, maxY.toFloat())
+
+                    v.x = constrainedX
+                    v.y = constrainedY
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(v.x,v.y))
+                    // Implement any additional logic after dragging ends
+                }
+            }
+            true
+        }
+    }
+
 
     private fun horizontalScrollViewItems() {
 
@@ -117,6 +172,14 @@ class PageEditFragment : Fragment() {
             updateDate(binding.dateText.text.toString())
         }
     }
+
+    private fun updateDatePosition(x : Float , y : Float){
+        binding.dateText.x = x
+        binding.dateText.y = y
+        viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(x,y))
+
+    }
+
 
     private fun updateDate(addDate : String){
         if(addDate.isEmpty()){
@@ -214,8 +277,10 @@ class PageEditFragment : Fragment() {
             }
         }
 
+
         //saved date
         binding.dateText.text = page.date
+        viewModel.onEvent(PageEditEvent.UpdateDate(page.date))
 
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
@@ -237,13 +302,12 @@ class PageEditFragment : Fragment() {
         updateFontSize(page.fontSize)
         updateLine(page.addLines, page.fontSize, page.lineColor, view)
 
-        //Horizontal scroll view
+        /**Horizontal scroll views */
         //Initially we are not give the underline
          updateUnderlineText(page.underline)
 
-         //if(page.date.isEmpty()) updateDate(false) else updateDate(true)
-        // updateDate(page.date.isEmpty())
-
+        // Set the position of the TextView based on the retrieved values
+        updateDatePosition(page.dateTextViewX,page.dateTextViewY)
     }
 
     //setting demo text

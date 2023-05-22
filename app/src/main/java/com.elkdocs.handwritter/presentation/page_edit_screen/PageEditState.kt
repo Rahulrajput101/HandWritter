@@ -31,7 +31,9 @@ data class PageEditState(
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
     val underline : Boolean = false,
     val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),
-    val date :String = ""
+    val date :String = "",
+    val dateTextViewX : Float = 0f,
+    val dateTextViewY : Float = 0f,
 ) {
     companion object{
         val pageColorList = mutableListOf(

@@ -19,5 +19,6 @@ sealed interface PageEditEvent{
         data class UpdateBitmap(val bitmap: Bitmap) : PageEditEvent
         data class UpdateUnderLine(val underLine: Boolean) : PageEditEvent
         data class UpdateDate(val date : String) : PageEditEvent
+        data class UpdateDateTextPosition(val dateTextViewX : Float , val dateTextViewY : Float) : PageEditEvent
         data class DrawLine(val canvas: Canvas) : PageEditEvent
 }

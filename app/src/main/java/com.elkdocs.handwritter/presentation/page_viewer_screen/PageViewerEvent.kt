@@ -7,4 +7,6 @@ import com.elkdocs.handwritter.presentation.folder_screen.FolderEvent
 sealed interface PageViewerEvent{
     data class AddPage(val page: MyPageModel) : PageViewerEvent
     data class DeletePage(val page: MyPageModel) : PageViewerEvent
+
+   // data class DeleteFolder(val folderId : Float)
 }

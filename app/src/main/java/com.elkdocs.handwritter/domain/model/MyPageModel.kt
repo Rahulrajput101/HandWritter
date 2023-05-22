@@ -28,7 +28,10 @@ data class MyPageModel(
     val bitmap: Bitmap,
     val underline : Boolean,
     var isSelected: Boolean = false,
-    val date : String = ""
+    val date : String = "",
+    val dateTextViewX : Float = 0f,
+    val dateTextViewY: Float = 0f
+
     //val underlineSpans: MutableList<Pair<Int, Int>> = mutableListOf()
     ) : Parcelable{
     companion object {
