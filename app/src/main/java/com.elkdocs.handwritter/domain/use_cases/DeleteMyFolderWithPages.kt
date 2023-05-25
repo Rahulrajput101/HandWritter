@@ -7,7 +7,7 @@ import javax.inject.Inject
 class DeleteMyFolderWithPages  @Inject constructor(
     private val repository: MyFolderRepository
 ){
-    suspend operator fun invoke(folder: MyFolderModel){
-        repository.deleteMyFolderWithPages(folder)
+    suspend operator fun invoke(folderId : Long){
+        repository.deleteMyFolderWithPages(folderId)
     }
 }

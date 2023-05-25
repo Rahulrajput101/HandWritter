@@ -8,24 +8,34 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.text.LineBreaker
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.Fragment
@@ -37,6 +47,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.alignmentOptions
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
@@ -56,7 +67,6 @@ class PageEditFragment : Fragment() {
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
     private lateinit var edtPageLayoutView: View
-
 
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
@@ -83,6 +93,7 @@ class PageEditFragment : Fragment() {
             wordSpacing()
             lineWordSpacing(it)
             dateTextTouchListener()
+            textAlignmentAdapter()
         }
 
         horizontalScrollViewItems()
@@ -302,13 +313,55 @@ class PageEditFragment : Fragment() {
         updateFontSize(page.fontSize)
         updateLine(page.addLines, page.fontSize, page.lineColor, view)
 
-        /**Horizontal scroll views */
-        //Initially we are not give the underline
-         updateUnderlineText(page.underline)
+        /** Horizontal scroll views **/
 
+         updateUnderlineText(page.underline)
         // Set the position of the TextView based on the retrieved values
         updateDatePosition(page.dateTextViewX,page.dateTextViewY)
+        //This block is executed after the layout is inflated
+        binding.dropdownAlignment.post {
+                updateTextAlignment(page.textAlignment)
+            
+
+            binding.dropdownAlignment.setSelection(page.textAlignment)
+        }
     }
+
+    private fun textAlignmentAdapter(){
+
+        val iconAdapter = IconAdapter(requireContext(), alignmentOptions)
+        binding.dropdownAlignment.adapter = iconAdapter
+
+        binding.dropdownAlignment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    updateTextAlignment(position)
+                viewModel.onEvent(PageEditEvent.UpdateTextAlignment(position))
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateTextAlignment(position: Int) {
+        val text = binding.ivTextEditView
+        when (position) {
+            0 -> {
+                // Original position
+                // Left alignment
+                text.gravity = Gravity.START
+            }
+            1 -> {
+                // Center alignment
+               text.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+            }
+            2 -> {
+                // Right alignment
+                text.gravity = Gravity.END
+
+            }
+        }
+    }
+
+
 
     //setting demo text
     private fun demoTextLine(){

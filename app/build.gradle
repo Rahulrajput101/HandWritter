@@ -82,4 +82,5 @@ dependencies {
 
     implementation "com.google.mlkit:translate:17.0.1"
     implementation 'com.itextpdf:itextpdf:5.5.13.2'
+
 }

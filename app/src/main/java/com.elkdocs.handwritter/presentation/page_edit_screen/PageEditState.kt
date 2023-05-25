@@ -21,6 +21,7 @@ data class PageEditState(
     val folderId: Long? = null,
     val uriIndex: Int =0,
     val notesText: String ="",
+    val textAlignment : Int = 0,
     val fontStyle: Int = R.font.caveat_variablefont_wght,
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
@@ -43,6 +44,12 @@ data class PageEditState(
             PAGE_COLOR_PALE_BLUE,
             PAGE_COLOR_PALE_LAVENDER,
             PAGE_COLOR_WHITE,
+        )
+
+        val alignmentOptions = arrayOf(
+            R.drawable.baseline_format_align_left_24,
+            R.drawable.baseline_format_align_center_24,
+            R.drawable.baseline_format_align_right_24,
         )
 
         val inputDateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())

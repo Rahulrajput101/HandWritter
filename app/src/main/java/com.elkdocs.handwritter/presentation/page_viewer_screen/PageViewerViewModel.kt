@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
+import com.elkdocs.handwritter.domain.use_cases.DeleteMyFolderWithPages
 import com.elkdocs.handwritter.domain.use_cases.DeletePage
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import com.elkdocs.handwritter.util.Constant
@@ -29,6 +30,7 @@ class PageViewerViewModel @Inject constructor(
     getAllPages: GetAllPages,
     private val addNewPage: AddNewPage,
     private val deletePage: DeletePage,
+    val deleteMyFolderWithPages: DeleteMyFolderWithPages,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -58,7 +60,7 @@ class PageViewerViewModel @Inject constructor(
         when(event){
             is PageViewerEvent.AddPage -> {
                 viewModelScope.launch {
-                  addNewPage(event.page)
+                    addNewPage(event.page)
                 }
             }
             is PageViewerEvent.DeletePage -> {
@@ -66,7 +68,18 @@ class PageViewerViewModel @Inject constructor(
                     deletePage(event.page)
                 }
             }
+
+            is PageViewerEvent.DeleteFolder -> {
+                viewModelScope.launch {
+                    deleteMyFolderWithPages(event.folderId)
+                }
+            }
+
         }
+    }
+
+    suspend fun deleteFolder(folderId: Long){
+        deleteMyFolderWithPages(folderId)
     }
 
 

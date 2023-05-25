@@ -63,6 +63,7 @@ class PageEditViewModel @Inject constructor(
                             folderId = state.value.folderId,
                             uriIndex = state.value.uriIndex,
                             notesText = state.value.notesText,
+                            textAlignment = state.value.textAlignment,
                             fontStyle = state.value.fontStyle,
                             fontType =state.value.fontType,
                             letterSpace = state.value.letterSpace,
@@ -114,6 +115,10 @@ class PageEditViewModel @Inject constructor(
                     dateTextViewX = event.dateTextViewX,
                     dateTextViewY = event.dateTextViewY
                     )
+            }
+
+            is PageEditEvent.UpdateTextAlignment -> {
+                _state.value = _state.value.copy(textAlignment = event.alignment)
             }
 
             else -> {}

@@ -30,7 +30,7 @@ interface MyFolderRepository {
 
     fun  getAllPages(folderId : Long) : Flow<List<MyPageModel>>
     fun getPages() : Flow<List<MyPageModel>>
-    suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel)
+    suspend fun deleteMyFolderWithPages(folderId : Long)
 
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
 }

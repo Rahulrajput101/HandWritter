@@ -8,5 +8,6 @@ sealed interface PageViewerEvent{
     data class AddPage(val page: MyPageModel) : PageViewerEvent
     data class DeletePage(val page: MyPageModel) : PageViewerEvent
 
-   // data class DeleteFolder(val folderId : Float)
+    data class DeleteFolder(val folderId : Long) : PageViewerEvent
+
 }

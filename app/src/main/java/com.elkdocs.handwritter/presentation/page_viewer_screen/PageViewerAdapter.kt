@@ -20,12 +20,13 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 
 
 class PageViewerAdapter(
-    val onDeleteClick: (myPageModel :MyPageModel) -> Unit,
-    val onPageLongClick: (myPageModel : MyPageModel) -> Unit,
-    private val onPageClick : (MyPageModel) -> Unit
+    val onDeleteClick: (myPageModel: MyPageModel) -> Unit,
+    val onPageLongClick: (myPageModel: MyPageModel) -> Unit,
+    private val onPageClick: (MyPageModel) -> Unit
 ) : RecyclerView.Adapter<PageViewerAdapter.MyViewHolder>() {
 
-    private var pageList: List<MyPageModel> = emptyList()
+    var pageList: List<MyPageModel> = emptyList()
+        private set
 
     var selectedItems = ArrayList<MyPageModel>()
     var isSelectModeEnabled = false
@@ -34,7 +35,7 @@ class PageViewerAdapter(
         isSelectModeEnabled = enabled
     }
 
-    fun setAllPages(pages: List<MyPageModel>){
+    fun setAllPages(pages: List<MyPageModel>) {
         pageList = pages
         notifyDataSetChanged()
     }
@@ -42,12 +43,12 @@ class PageViewerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemPageViewerBinding.inflate(inflater,parent,false)
-        return MyViewHolder(binding,parent.context)
+        val binding = ItemPageViewerBinding.inflate(inflater, parent, false)
+        return MyViewHolder(binding, parent.context)
     }
 
     override fun getItemCount(): Int {
-       return pageList.size
+        return pageList.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -77,15 +78,19 @@ class PageViewerAdapter(
         selectedItems.clear()
     }
 
-    fun toggleSelectAll(){
-        if(selectedItems.size == pageList.size){
+    fun toggleSelectAll() {
+        Log.v("MYTAG", "Selected Item: ${selectedItems.size} Total Item: ${pageList.size}")
+        if (selectedItems.size == pageList.size) {
             pageList.forEach {
                 it.isSelected = false
             }
             selectedItems.clear()
-        }else{
-            pageList.forEach {
-                it.isSelected = true
+        } else {
+
+            clearSelectedItems()
+            pageList.forEach { page ->
+                page.isSelected = true
+                selectedItems.add(page)
             }
         }
     }
@@ -109,7 +114,8 @@ class PageViewerAdapter(
 
             binding.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-                    selectedItems.add(page)
+                    if (!selectedItems.any { it.pageId == page.pageId })
+                        selectedItems.add(page)
                 } else {
                     selectedItems.remove(page)
                 }

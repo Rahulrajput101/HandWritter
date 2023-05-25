@@ -51,8 +51,8 @@ class MyFolderRepositoryImp(
         return myFolderDao.getPages()
     }
 
-    override suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel) {
-        myFolderDao.deleteMyFolderWithPages(myFolderModel)
+    override suspend fun deleteMyFolderWithPages(folderId : Long) {
+        myFolderDao.deleteMyFolderWithPages(folderId)
     }
 
     override suspend fun updateFolderPageCount(folderId: Long, pageCount: Int) {

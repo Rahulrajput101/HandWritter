@@ -19,7 +19,7 @@ class FolderViewModel @Inject constructor(
     val deleteMyFolderWithPages: DeleteMyFolderWithPages,
     private val addNewFolder: AddNewFolder
 ) : ViewModel() {
-    
+
     private val _state = MutableStateFlow(FolderState())
     val state: StateFlow<FolderState> = _state
 
@@ -32,13 +32,13 @@ class FolderViewModel @Inject constructor(
             is FolderEvent.AddFolder -> {
                 viewModelScope.launch {
                     val  id =addNewFolder(event.myFolderModel)
-                   callback(id)
+                    callback(id)
                 }
             }
 
             is FolderEvent.DeleteFolderWithPages -> {
                 viewModelScope.launch {
-                    deleteMyFolderWithPages(event.FolderModel)
+                    deleteMyFolderWithPages(event.FolderModel.folderId!!)
                 }
             }
 

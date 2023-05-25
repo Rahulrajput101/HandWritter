@@ -16,6 +16,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,10 +49,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.itextpdf.text.Document
 import com.itextpdf.text.pdf.PdfWriter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -115,7 +121,7 @@ class PageViewerFragment : Fragment() {
                 Collections.swap(list,sourcePosition,targetPosition)
                 adapter.notifyItemMoved(sourcePosition,targetPosition)
 
-               return true
+                return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -178,11 +184,25 @@ class PageViewerFragment : Fragment() {
             .setMessage("Are you sure you want to delete selected items?")
             .setPositiveButton("Delete") { dialog, which ->
                 adapter.selectedItems.let {
-                    if (it.isNotEmpty()) {
-                        it.forEach { page ->
-                            viewModel.onEvent(PageViewerEvent.DeletePage(page))
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        if (it.isNotEmpty()) {
+                            if (it.size == adapter.itemCount) {
+//                                viewModel.onEvent(PageViewerEvent.DeleteFolder(navArgs.folderId))
+                                viewModel.deleteFolder(navArgs.folderId)
+                                adapter.clearSelectedItems()
+                                withContext(Dispatchers.Main) {
+                                    findNavController().navigateUp()
+                                }
+                            } else {
+                                it.forEach { page ->
+                                    viewModel.onEvent(PageViewerEvent.DeletePage(page))
+                                }
+
+                            }
+
                         }
                     }
+
                     setSelectModeEnabled(false)
                 }
             }
@@ -194,6 +214,34 @@ class PageViewerFragment : Fragment() {
     }
 
 
+//    private fun showDeleteAllDialog() {
+//        MaterialAlertDialogBuilder(requireContext())
+//            .setMessage("Are you sure you want to delete selected items?")
+//            .setPositiveButton("Delete") { dialog, which ->
+//                adapter.selectedItems.let { selectedItems ->
+//                        if (selectedItems.isNotEmpty()) {
+//                            if (selectedItems.size == adapter.itemCount) {
+////                                val folderId = selectedItems[0].folderId
+//                                viewModel.onEvent(PageViewerEvent.DeleteFolder(navArgs.folderId))
+//
+//                            } else {
+//                                selectedItems.forEach { page ->
+//                                    viewModel.onEvent(PageViewerEvent.DeletePage(page))
+//                                }
+//                            }
+//
+//
+//                        }
+//
+//                    setSelectModeEnabled(false)
+//                }
+//            }
+//            .setNegativeButton("Cancel") { dialog, which ->
+//                dialog.dismiss()
+//            }
+//            .create()
+//            .show()
+//    }
 
     private fun addingInitialPageForFirstTime() {
 
@@ -208,6 +256,7 @@ class PageViewerFragment : Fragment() {
                         folderId = navArgs.folderId,
                         uriIndex = 0,
                         notesText = "",
+                        textAlignment = 0,
                         fontSize = 20f,
                         fontStyle = R.font.caveat_variablefont_wght,
                         fontType = Typeface.NORMAL,
@@ -216,8 +265,8 @@ class PageViewerFragment : Fragment() {
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
-                        underline = false,
                         bitmap = pageBitmap!!,
+                        underline = false
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
                 }
@@ -238,22 +287,23 @@ class PageViewerFragment : Fragment() {
     private fun setClickListeners() {
         val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
         binding.fabImagePicker.setOnClickListener {
-                val page = MyPageModel(
-                    folderId = navArgs.folderId,
-                    uriIndex = 0,
-                    notesText = "",
-                    fontSize = 20f,
-                    fontStyle = R.font.caveat_variablefont_wght,
-                    fontType = Typeface.NORMAL,
-                    letterSpace = 0f,
-                    textAndLineSpace = 0.105f,
-                    addLines = true,
-                    lineColor = BLUE_LINE_COLOR,
-                    pageColor = PAGE_COLOR_LIGHT_BEIGE,
-                    underline = false,
-                    bitmap = pageBitmap!!
-                )
-                viewModel.onEvent(PageViewerEvent.AddPage(page))
+            val page = MyPageModel(
+                folderId = navArgs.folderId,
+                uriIndex = 0,
+                notesText = "",
+                textAlignment = 0,
+                fontSize = 20f,
+                fontStyle = R.font.caveat_variablefont_wght,
+                fontType = Typeface.NORMAL,
+                letterSpace = 0f,
+                textAndLineSpace = 0.105f,
+                addLines = true,
+                lineColor = BLUE_LINE_COLOR,
+                pageColor = PAGE_COLOR_LIGHT_BEIGE,
+                bitmap = pageBitmap!!,
+                underline = false
+            )
+            viewModel.onEvent(PageViewerEvent.AddPage(page))
         }
     }
 
@@ -332,5 +382,4 @@ class PageViewerFragment : Fragment() {
         binding.closeButton.isVisible = isEnabled
         adapter.notifyDataSetChanged()
     }
-
 }

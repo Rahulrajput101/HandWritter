@@ -22,7 +22,7 @@ class FolderAdapter(
     val onFolderLongClick : (folder: MyFolderModel) -> Unit,
     private val isLinear : Boolean,
 ) : RecyclerView.Adapter<FolderAdapter.MyViewHolder>() {
-    
+
     private var folderListWithPages: List<MyFolderModel> = emptyList()
 
     var selectedItems = ArrayList<MyFolderModel>()
@@ -38,17 +38,17 @@ class FolderAdapter(
         notifyDataSetChanged()
     }
 
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderAdapter.MyViewHolder {
 
-       return if(isLinear){
-           val inflater = LayoutInflater.from(parent.context)
-           val binding = ItemFolderListViewBinding.inflate(inflater, parent, false)
-           MyViewHolder(binding)
-       } else {
-           val inflater = LayoutInflater.from(parent.context)
-           val binding = ItemFolderGridViewBinding.inflate(inflater, parent, false)
-           MyViewHolder(binding)
+        return if(isLinear){
+            val inflater = LayoutInflater.from(parent.context)
+            val binding = ItemFolderListViewBinding.inflate(inflater, parent, false)
+            MyViewHolder(binding)
+        } else {
+            val inflater = LayoutInflater.from(parent.context)
+            val binding = ItemFolderGridViewBinding.inflate(inflater, parent, false)
+            MyViewHolder(binding)
         }
     }
 
@@ -89,8 +89,10 @@ class FolderAdapter(
             }
             selectedItems.clear()
         }else{
+            clearSelectedItems()
             folderListWithPages.forEach {
                 it.isSelected = true
+                selectedItems.add(it)
             }
         }
     }
@@ -123,7 +125,8 @@ class FolderAdapter(
 
                     binding.listMainCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
                         if (isChecked) {
-                            selectedItems.add(folder)
+                            if(!selectedItems.any { it.folderId == folder.folderId})
+                                selectedItems.add(folder)
                         } else {
                             selectedItems.remove(folder)
                         }

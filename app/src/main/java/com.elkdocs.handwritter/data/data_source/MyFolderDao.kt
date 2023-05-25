@@ -40,11 +40,14 @@ interface MyFolderDao {
     fun getPages() : Flow<List<MyPageModel>>
 
     @Transaction
-    suspend fun deleteMyFolderWithPages(myFolderModel: MyFolderModel) {
+    suspend fun deleteMyFolderWithPages(folderId: Long) {
         // Delete all pages associated with the folder
-        deletePagesByFolderId(myFolderModel.folderId!!)
+        deletePagesByFolderId(folderId)
         // Delete the folder itself
-        deleteMyFolder(myFolderModel)
+        // Delete the folder itself
+        val folder = getMyFolder(folderId)
+        deleteMyFolder(folder)
+
     }
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)

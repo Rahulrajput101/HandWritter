@@ -42,4 +42,11 @@
         <item>Hindi</item>
     </string-array>
 
+    <string-array name="alignment_array">
+        <item>align_justify</item>
+        <item>align_centre</item>
+        <item>align_left</item>
+        <item>align_right</item>
+    </string-array>
+
 </resources>
