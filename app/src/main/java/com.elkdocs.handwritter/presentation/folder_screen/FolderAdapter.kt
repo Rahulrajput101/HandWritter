@@ -155,6 +155,7 @@ class FolderAdapter(
 
                     binding.gridMainCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
                         if (isChecked) {
+                            if(!selectedItems.any { it.folderId == folder.folderId})
                             selectedItems.add(folder)
                         } else {
                             selectedItems.remove(folder)

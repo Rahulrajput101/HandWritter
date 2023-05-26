@@ -88,12 +88,17 @@ object Constant {
         LINE_COLOR_RED to  0xFFCCAAC0.toInt(),
         LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
     )
+    const val INK_COLOR_BLACK = "Black"
+    const val INK_COLOR_BLUE = "Blue"
+    const val INK_COLOR_RED = "Red"
+    const val INK_COLOR_GREEN = "Green"
+
 
     val INK_COLOR_MAP = mapOf(
-        LINE_COLOR_BLUE to 0xFFB2B1D3.toInt(),
-        LINE_COLOR_BLACK to  0xFFBFBFBD.toInt(),
-        LINE_COLOR_RED to  0xFFCCAAC0.toInt(),
-        LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
+        INK_COLOR_BLACK to 0xFF333333.toInt(),
+        INK_COLOR_BLUE to   0xFF191970.toInt(),
+        INK_COLOR_RED to   0xFF800000.toInt(),
+        INK_COLOR_GREEN to  0xFF006400.toInt()
     )
 
     //color lines
@@ -111,5 +116,25 @@ object Constant {
     //sharedPref
     const val SHARED_PREFERENCE_NAME ="shared_pref"
     const val IS_LINEAR = " KEY_LOOK"
+
+//    For Black:
+//
+//    Jet Black: 0xFF000000.toInt()
+//    Midnight Black: 0xFF0C0C0C.toInt()
+//    Charcoal Black: 0xFF333333.toInt()
+//    For Blue:
+//
+//    Navy Blue: 0xFF000080.toInt()
+//    Sapphire Blue: 0xFF082567.toInt()
+//    Indigo Blue: 0xFF191970.toInt()
+//    For Red:
+//
+//    Dark Red: 0xFF8B0000.toInt()
+//    Maroon Red: 0xFF800000.toInt()
+//    Burgundy Red: 0xFF800020.toInt()
+//    For Green:
+//
+//    Dark Green: 0xFF006400.toInt()
+//    Forest Green: 0xFF228B22.toInt()
 
 }

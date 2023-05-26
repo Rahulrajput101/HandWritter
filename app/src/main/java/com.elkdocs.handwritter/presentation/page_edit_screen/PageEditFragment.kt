@@ -18,6 +18,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -37,6 +38,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.doOnLayout
@@ -58,6 +60,8 @@ import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MODE_FADE
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -86,6 +90,7 @@ class PageEditFragment : Fragment() {
         //taking the saved details of the page for setup the ui
         val pageArgs = navArgs.pageDetail
         viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
+        Log.v("TAG","x =${pageArgs.dateTextViewX} , y = ${pageArgs.dateTextViewY}")
 
         binding.edtPageLayout.doOnLayout {
             edtPageLayoutView = it
@@ -116,7 +121,7 @@ class PageEditFragment : Fragment() {
             if (noteText.isNotEmpty()) {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
-            Toast.makeText(requireContext(),"${viewModel.state.value.dateTextViewX}",Toast.LENGTH_LONG).show()
+            Log.v("TAG","x =${viewModel.state.value.dateTextViewX} , y = ${viewModel.state.value.dateTextViewY}")
             viewModel.onEvent(PageEditEvent.UpdatePage)
             findNavController().navigateUp()
         }
@@ -132,8 +137,6 @@ class PageEditFragment : Fragment() {
     }
 
     private fun pageNumberDialog() {
-        // Inside your activity or fragment
-        // Replace with your add button's ID
 
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_page_number, null)
             MaterialAlertDialogBuilder(requireContext())
@@ -151,15 +154,14 @@ class PageEditFragment : Fragment() {
                     dialog.dismiss()
                 }
                 .show()
-
     }
-
 
 
     @SuppressLint("ClickableViewAccessibility")
     private fun dateTextTouchListener(){
-        val parentView = binding.edtPageLayout
+
         binding.dateText.setOnTouchListener { v, event ->
+            val parentView = binding.edtPageLayout
             when(event.action){
                 MotionEvent.ACTION_DOWN -> {
                     offsetX = event.rawX - v.x
@@ -185,7 +187,8 @@ class PageEditFragment : Fragment() {
                     v.y = constrainedY
                 }
                 MotionEvent.ACTION_UP -> {
-                    viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(v.x,v.y))
+
+                    viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(v.x + 50f,v.y))
                     // Implement any additional logic after dragging ends
                 }
             }
@@ -211,9 +214,10 @@ class PageEditFragment : Fragment() {
     }
 
     private fun updateDatePosition(x : Float , y : Float){
-        binding.dateText.x = x
-        binding.dateText.y = y
-        viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(x,y))
+        if(x != 0f || y != 0f){
+            binding.dateText.x = x
+            binding.dateText.y = y
+        }
     }
 
     private fun updatePageNumber(pageNumber : String){
@@ -235,13 +239,22 @@ class PageEditFragment : Fragment() {
                 date?.let {
                     val formattedDate = outputDateFormat.format(date)
                     binding.dateTextButton.setTextColor(Color.BLUE)
+                   val x = binding.dateText.x
+                    val y = binding.dateText.y
                     binding.dateText.text = formattedDate
+                    viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(x,y))
                     viewModel.onEvent(PageEditEvent.UpdateDate(formattedDate))
+                    Snackbar.make(requireView(),"You can drag this date anywhere",Snackbar.ANIMATION_MODE_SLIDE).apply {
+                        setBackgroundTint(Color.WHITE)
+                        setTextColor(ContextCompat.getColor(requireContext(),R.color.seed))
+                        animationMode = ANIMATION_MODE_FADE
+                    }.show()
                 }?: Toast.makeText(requireContext(), "Select Date ", Toast.LENGTH_SHORT).show()
             }
         } else {
             binding.dateTextButton.setTextColor(Color.BLACK)
             binding.dateText.text =""
+            viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(0f,0f))
             viewModel.onEvent(PageEditEvent.UpdateDate(""))
         }
     }
@@ -324,6 +337,10 @@ class PageEditFragment : Fragment() {
                 setTextColor(page.inkColor)
                 letterSpacing = page.letterSpace
             }
+            binding.demoStyleTextView.apply {
+                setTextColor(page.inkColor)
+                letterSpacing = page.letterSpace
+            }
         }
 
         // Page number
@@ -340,10 +357,11 @@ class PageEditFragment : Fragment() {
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
         binding.seekbarForLineAndWord.progress = ((page.textAndLineSpace + 5f) / 30f * 100).toInt()
+       // binding.ivTextEditView.letterSpacing = page.letterSpace
 
         // Font size and style
         when (page.fontType) {
-            Typeface.NORMAL -> Toast.makeText(requireContext(), "Normal", Toast.LENGTH_SHORT).show()
+            Typeface.NORMAL -> { }
             Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
             Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
@@ -360,7 +378,7 @@ class PageEditFragment : Fragment() {
         /** Horizontal scroll views **/
 
          updateUnderlineText(page.underline)
-        updateDatePosition(page.dateTextViewX,page.dateTextViewY)
+         updateDatePosition(page.dateTextViewX,page.dateTextViewY)
         //This block is executed after the layout is inflated
         binding.dropdownAlignment.post {
             updateTextAlignment(page.textAlignment)
@@ -400,7 +418,6 @@ class PageEditFragment : Fragment() {
             2 -> {
                 // Right alignment
                 text.gravity = Gravity.END
-
             }
         }
     }
@@ -416,6 +433,7 @@ class PageEditFragment : Fragment() {
     }
     private fun updateInkColor(color: Int) {
         binding.ivTextEditView.setTextColor(color)
+        binding.demoStyleTextView.setTextColor(color)
         viewModel.onEvent(PageEditEvent.UpdateInkColor(color))
     }
 
