@@ -15,6 +15,7 @@ data class MyPageModel(
     @PrimaryKey(autoGenerate = true)
     val pageId: Long? = null,
     val folderId: Long? = null,
+    val pageNumber: String = "",
     val uriIndex: Int,
     val notesText: String,
     val textAlignment : Int,
@@ -25,6 +26,7 @@ data class MyPageModel(
     val textAndLineSpace: Float,
     val addLines: Boolean,
     val lineColor: Int,
+    val inkColor: Int,
     val pageColor: Int,
     val bitmap: Bitmap,
     val underline : Boolean,
@@ -40,6 +42,7 @@ data class MyPageModel(
             return PageEditState(
                 pageId = pageDetail.pageId,
                 folderId = pageDetail.folderId,
+                pageNumber = pageDetail.pageNumber,
                 uriIndex = pageDetail.uriIndex,
                 notesText = pageDetail.notesText,
                 textAlignment = pageDetail.textAlignment,
@@ -49,7 +52,12 @@ data class MyPageModel(
                 textAndLineSpace = pageDetail.textAndLineSpace,
                 addLines = pageDetail.addLines,
                 lineColor = pageDetail.lineColor,
-                pageBitmap = pageDetail.bitmap
+                inkColor = pageDetail.inkColor,
+                pageColor = pageDetail.pageColor,
+                pageBitmap = pageDetail.bitmap,
+                date = pageDetail.date,
+                dateTextViewX = pageDetail.dateTextViewX,
+                dateTextViewY = pageDetail.dateTextViewY,
             )
         }
     }

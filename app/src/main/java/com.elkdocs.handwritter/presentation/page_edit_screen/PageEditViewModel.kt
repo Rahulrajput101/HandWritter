@@ -43,6 +43,10 @@ class PageEditViewModel @Inject constructor(
                 _state.value = _state.value.copy(lineColor = event.lineColor)
             }
 
+            is PageEditEvent.UpdateInkColor -> {
+                _state.value = _state.value.copy(inkColor = event.inkColor)
+            }
+
             is PageEditEvent.UpdateNote -> {
                 _state.value = _state.value.copy(notesText = event.text)
             }
@@ -61,6 +65,7 @@ class PageEditViewModel @Inject constructor(
                         MyPageModel(
                             pageId = state.value.pageId,
                             folderId = state.value.folderId,
+                            pageNumber = state.value.pageNumber,
                             uriIndex = state.value.uriIndex,
                             notesText = state.value.notesText,
                             textAlignment = state.value.textAlignment,
@@ -71,6 +76,7 @@ class PageEditViewModel @Inject constructor(
                             textAndLineSpace = state.value.textAndLineSpace,
                             addLines =state.value.addLines,
                             lineColor = state.value.lineColor,
+                            inkColor = state.value.inkColor,
                             pageColor = state.value.pageColor,
                             underline = state.value.underline,
                             bitmap = state.value.pageBitmap,
@@ -121,6 +127,9 @@ class PageEditViewModel @Inject constructor(
                 _state.value = _state.value.copy(textAlignment = event.alignment)
             }
 
+            is PageEditEvent.UpdatePageNumber -> {
+                _state.value = _state.value.copy(pageNumber = event.pageNumber)
+            }
             else -> {}
         }
     }

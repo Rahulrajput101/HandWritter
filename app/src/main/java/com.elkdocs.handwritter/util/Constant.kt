@@ -89,6 +89,13 @@ object Constant {
         LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
     )
 
+    val INK_COLOR_MAP = mapOf(
+        LINE_COLOR_BLUE to 0xFFB2B1D3.toInt(),
+        LINE_COLOR_BLACK to  0xFFBFBFBD.toInt(),
+        LINE_COLOR_RED to  0xFFCCAAC0.toInt(),
+        LINE_COLOR_GREEN to  0xFF82A6A8.toInt()
+    )
+
     //color lines
     const val BLUE_LINE_COLOR = 0xFFB2B1D3.toInt()
 

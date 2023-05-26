@@ -264,6 +264,7 @@ class PageViewerFragment : Fragment() {
                         textAndLineSpace = 10f,
                         addLines = true,
                         lineColor = BLUE_LINE_COLOR,
+                        inkColor = Color.BLACK,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
                         bitmap = pageBitmap!!,
                         underline = false
@@ -299,6 +300,7 @@ class PageViewerFragment : Fragment() {
                 textAndLineSpace = 0.105f,
                 addLines = true,
                 lineColor = BLUE_LINE_COLOR,
+                inkColor = Color.BLACK,
                 pageColor = PAGE_COLOR_LIGHT_BEIGE,
                 bitmap = pageBitmap!!,
                 underline = false

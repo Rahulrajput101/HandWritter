@@ -19,6 +19,7 @@ import java.util.Locale
 data class PageEditState(
     val pageId: Long? = null,
     val folderId: Long? = null,
+    val pageNumber : String = "",
     val uriIndex: Int =0,
     val notesText: String ="",
     val textAlignment : Int = 0,
@@ -29,6 +30,7 @@ data class PageEditState(
     val textAndLineSpace : Float = 10f,
     val addLines: Boolean = true,
     val lineColor: Int = BLUE_LINE_COLOR,
+    val inkColor: Int = Color.BLACK,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
     val underline : Boolean = false,
     val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),

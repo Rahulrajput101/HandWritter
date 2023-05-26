@@ -37,6 +37,13 @@
         <item>Green</item>
     </string-array>
 
+    <string-array name="ink_color_array">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Green</item>
+    </string-array>
+
     <string-array name="languages_array">
         <item>English</item>
         <item>Hindi</item>

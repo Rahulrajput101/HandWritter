@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- dialog_page_number.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        style = "@style/Widget.Material3.TextInputEditText.OutlinedBox"
+        android:id="@+id/editPageNumber"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter page number"/>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <Button-->
+<!--            style="@style/Widget.Material3.Button.TextButton.Dialog"-->
+<!--            android:id="@+id/pageBtnOk"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="OK"/>-->
+
+<!--        <Button-->
+<!--            style="@style/Widget.Material3.Button.TextButton.Dialog"-->
+<!--            android:id="@+id/pageBtnCancel"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Cancel"/>-->
+<!--    </LinearLayout>-->
+
+</LinearLayout>

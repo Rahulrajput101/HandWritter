@@ -6,6 +6,8 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 
 sealed interface PageEditEvent{
         object UpdatePage : PageEditEvent
+
+        data class UpdatePageNumber(val pageNumber: String) : PageEditEvent
         data class UpdateFontStyle(val fontStyle: Int) : PageEditEvent
         data class UpdateFontType(val fontType: Int) : PageEditEvent
         data class UpdateFontSize(val fontSize: Float) : PageEditEvent
@@ -15,6 +17,7 @@ sealed interface PageEditEvent{
         data class UpdateTextAlignment(val alignment:  Int) : PageEditEvent
         data class UpdateAddLine(val addLine : Boolean) : PageEditEvent
         data class UpdateLineColor(val lineColor: Int) : PageEditEvent
+        data class UpdateInkColor(val inkColor: Int) : PageEditEvent
         data class UpdatePageColor(val pageColor: Int) : PageEditEvent
         data class UpdateNote(val text : String) : PageEditEvent
         data class UpdateBitmap(val bitmap: Bitmap) : PageEditEvent
