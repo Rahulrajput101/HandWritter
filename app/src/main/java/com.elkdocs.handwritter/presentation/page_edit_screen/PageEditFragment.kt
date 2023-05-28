@@ -26,6 +26,7 @@ import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnLayout
@@ -354,7 +355,7 @@ class PageEditFragment : Fragment() {
             Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
             Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
-        binding.fontSizeAutoComplete.setText("${page.fontSize}")
+
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
         binding.ivImageEditView.setBackgroundColor(page.pageColor)
 
@@ -566,8 +567,12 @@ class PageEditFragment : Fragment() {
 
     private fun updateLineColor(color: Int?) {
         if (color != null) {
-            viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
-            updateLine(viewModel.state.value.addLines, viewModel.state.value.fontSize, color, edtPageLayoutView)
+            if(color == -1){
+                updateLine(hasLine = false,viewModel.state.value.fontSize, color, edtPageLayoutView)
+            }else{
+                viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
+                updateLine(viewModel.state.value.addLines, viewModel.state.value.fontSize, color, edtPageLayoutView)
+            }
         }
     }
 
@@ -601,6 +606,13 @@ class PageEditFragment : Fragment() {
                 }
                 false -> {
                     viewModel.onEvent(PageEditEvent.UpdateAddLine(false))
+                    // Clear the drawn lines
+                    binding.ivImageEditView.setImageDrawable(null)
+
+                    // Update the constraints to stretch horizontally
+//                    val params = binding.ivImageEditView.layoutParams as ConstraintLayout.LayoutParams
+//                    params.matchConstraintPercentWidth = 1.0f
+//                    binding.ivImageEditView.layoutParams = params
                 }
             }
         }

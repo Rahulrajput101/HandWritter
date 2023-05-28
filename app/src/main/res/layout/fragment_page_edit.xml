@@ -151,7 +151,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-
                     android:layout_marginBottom="8dp"
                     app:cardBackgroundColor="@color/light_grey"
                     app:cardCornerRadius="4dp"
@@ -494,33 +493,6 @@
                                 android:focusableInTouchMode="true"
                                 android:inputType="none"
                                 android:text="Font Style: Normal"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView
-                            style="@style/TextAppearance.AppCompat.Body2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:text="Font Size" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/fontSizeAutoComplete"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:inputType="none"
-                                android:text="Font Size: 16f"
                                 android:textColor="@android:color/black"
                                 android:textSize="16sp" />
 
