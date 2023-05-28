@@ -70,7 +70,6 @@ class PageColorAdapter(
                 onPageColorClick(color,position)
             }
 
-
         }
 
         fun setSelectedPosition(position: Int) {

@@ -183,10 +183,10 @@ class PageViewerFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage("Are you sure you want to delete selected items?")
             .setPositiveButton("Delete") { dialog, which ->
-                adapter.selectedItems.let {
+                adapter.selectedItems.let { selectedList ->
                     lifecycleScope.launch(Dispatchers.IO) {
-                        if (it.isNotEmpty()) {
-                            if (it.size == adapter.itemCount) {
+                        if (selectedList.isNotEmpty()) {
+                            if (selectedList.size == adapter.itemCount) {
 //                                viewModel.onEvent(PageViewerEvent.DeleteFolder(navArgs.folderId))
                                 viewModel.deleteFolder(navArgs.folderId)
                                 adapter.clearSelectedItems()
@@ -194,8 +194,9 @@ class PageViewerFragment : Fragment() {
                                     findNavController().navigateUp()
                                 }
                             } else {
-                                it.forEach { page ->
-                                    viewModel.onEvent(PageViewerEvent.DeletePage(page))
+                                Log.v("Tag","${selectedList.size}")
+                                selectedList.forEach { page ->
+                                    viewModel.onEvent(PageViewerEvent.DeletePage(page,selectedList.size))
                                 }
 
                             }
@@ -213,35 +214,6 @@ class PageViewerFragment : Fragment() {
             .show()
     }
 
-
-//    private fun showDeleteAllDialog() {
-//        MaterialAlertDialogBuilder(requireContext())
-//            .setMessage("Are you sure you want to delete selected items?")
-//            .setPositiveButton("Delete") { dialog, which ->
-//                adapter.selectedItems.let { selectedItems ->
-//                        if (selectedItems.isNotEmpty()) {
-//                            if (selectedItems.size == adapter.itemCount) {
-////                                val folderId = selectedItems[0].folderId
-//                                viewModel.onEvent(PageViewerEvent.DeleteFolder(navArgs.folderId))
-//
-//                            } else {
-//                                selectedItems.forEach { page ->
-//                                    viewModel.onEvent(PageViewerEvent.DeletePage(page))
-//                                }
-//                            }
-//
-//
-//                        }
-//
-//                    setSelectModeEnabled(false)
-//                }
-//            }
-//            .setNegativeButton("Cancel") { dialog, which ->
-//                dialog.dismiss()
-//            }
-//            .create()
-//            .show()
-//    }
 
     private fun addingInitialPageForFirstTime() {
 
@@ -355,6 +327,50 @@ class PageViewerFragment : Fragment() {
         handler.post(Runnable {
         })
     }
+
+//    private fun createPdf(bitmaps: List<Bitmap>) {
+//        val pdfFile = File(
+//            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() +
+//                    File.separator + "HandWriter_pdf" + System.currentTimeMillis() / 1000 + ".pdf"
+//        )
+//
+//        val executor: ExecutorService = Executors.newSingleThreadExecutor()
+//        val handler = Handler(Looper.getMainLooper())
+//
+//        executor.execute {
+//            //Background work here
+//
+//            // Create a new document and a PDF writer
+//            val document = Document()
+//            val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
+//
+//            // Open the document
+//            document.open()
+//
+//            // Loop through the bitmaps and add each image to the PDF document
+//            for (bitmap in bitmaps) {
+//                val stream = ByteArrayOutputStream()
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+//                val imageBytes: ByteArray = stream.toByteArray()
+//                val image = com.itextpdf.text.Image.getInstance(imageBytes)
+//
+//                // Add the image to the document
+//                document.pageSize = image
+//                document.newPage()
+//                image.setAbsolutePosition(0f, 0f)
+//                document.add(image)
+//            }
+//
+//            // Close the document and the PDF writer
+//            document.close()
+//            writer.close()
+//
+//            // Call the sharePdfFile function to share the generated PDF
+//            sharePdfFile(pdfFile)
+//        }
+//        handler.post(Runnable {
+//        })
+//    }
     private fun saveImageToInternalStorage(bitmap: Bitmap, imageCount: String): Uri {
         //creating file that is only accessible with this app , other app and user cant interact with it
         val file = File(
@@ -373,6 +389,24 @@ class PageViewerFragment : Fragment() {
         //Log.e("myTag ss", Uri.parse((file.absolutePath)).toString())
         val uri = FileProvider.getUriForFile(requireActivity(), "com.elkdocs.handwriter.fileprovider", file)
         return uri
+    }
+
+    private fun sharePdfFile(pdfFile: File) {
+        // Create a content URI for the PDF file
+        val fileUri = FileProvider.getUriForFile(
+            requireContext(),
+            "com.elkdocs.handwriter.fileprovider",
+            pdfFile
+        )
+
+        // Create an intent to share the PDF file
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "application/pdf"
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri)
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        // Start the activity for sharing
+        startActivity(Intent.createChooser(shareIntent, "Share PDF"))
     }
 
     private fun setSelectModeEnabled(isEnabled: Boolean) {

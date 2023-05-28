@@ -138,5 +138,30 @@ class PageEditViewModel @Inject constructor(
         _state.value = pageEditState
     }
 
-
+    suspend fun upsertPage(){
+        addNewPage(
+            MyPageModel(
+                pageId = state.value.pageId,
+                folderId = state.value.folderId,
+                pageNumber = state.value.pageNumber,
+                uriIndex = state.value.uriIndex,
+                notesText = state.value.notesText,
+                textAlignment = state.value.textAlignment,
+                fontStyle = state.value.fontStyle,
+                fontType =state.value.fontType,
+                letterSpace = state.value.letterSpace,
+                fontSize = state.value.fontSize,
+                textAndLineSpace = state.value.textAndLineSpace,
+                addLines =state.value.addLines,
+                lineColor = state.value.lineColor,
+                inkColor = state.value.inkColor,
+                pageColor = state.value.pageColor,
+                underline = state.value.underline,
+                bitmap = state.value.pageBitmap,
+                date = state.value.date,
+                dateTextViewX= state.value.dateTextViewX,
+                dateTextViewY= state.value.dateTextViewY
+            )
+        )
+    }
 }

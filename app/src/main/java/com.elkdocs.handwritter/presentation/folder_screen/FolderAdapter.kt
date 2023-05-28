@@ -161,7 +161,6 @@ class FolderAdapter(
                             selectedItems.remove(folder)
                         }
                     }
-
                 }
                 else -> throw IllegalArgumentException("Invalid view binding")
             }

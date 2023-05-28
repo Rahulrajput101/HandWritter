@@ -31,7 +31,7 @@ class FolderViewModel @Inject constructor(
         when(event){
             is FolderEvent.AddFolder -> {
                 viewModelScope.launch {
-                    val  id =addNewFolder(event.myFolderModel)
+                    val  id = addNewFolder(event.myFolderModel)
                     callback(id)
                 }
             }

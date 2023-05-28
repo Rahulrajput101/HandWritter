@@ -65,7 +65,7 @@ class PageViewerViewModel @Inject constructor(
             }
             is PageViewerEvent.DeletePage -> {
                 viewModelScope.launch {
-                    deletePage(event.page)
+                    deletePage(event.page,event.totalPages)
                 }
             }
 
@@ -81,7 +81,6 @@ class PageViewerViewModel @Inject constructor(
     suspend fun deleteFolder(folderId: Long){
         deleteMyFolderWithPages(folderId)
     }
-
 
 
     fun updateFolderId(folderId: Long) {

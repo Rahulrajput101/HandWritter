@@ -56,5 +56,8 @@ data class PageEditState(
 
         val inputDateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
         val outputDateFormat = SimpleDateFormat("dd-MM-yy", Locale.getDefault())
+
+        //val fontSizeList = listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30)
+        val fontSizeList = listOf("12", "14", "16", "18", "20", "22", "24", "26", "28", "30")
     }
 }

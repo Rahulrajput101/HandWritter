@@ -1,61 +1,56 @@
 package com.elkdocs.handwritter.presentation.page_edit_screen
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.text.LineBreaker
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
+import com.elkdocs.handwritter.databinding.DialogInkColorBinding
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.alignmentOptions
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.fontSizeList
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
+import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
+import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -63,6 +58,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MODE_FADE
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -74,6 +70,7 @@ class PageEditFragment : Fragment() {
     private val navArgs: PageEditFragmentArgs by navArgs()
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
+    private lateinit var inkColorAdapter: InkColorAdapter
     private lateinit var edtPageLayoutView: View
 
     private var offsetX: Float = 0f
@@ -97,13 +94,11 @@ class PageEditFragment : Fragment() {
             setInitialValues(pageArgs, it)
             languageAdapter()
             fontStyleAdapter()
-            fontSizeAdapter()
+            //fontSizeAdapter()
             lineColorAdapter()
-            inkColorAdapter()
             wordSpacing()
             lineWordSpacing(it)
             dateTextTouchListener()
-            textAlignmentAdapter()
 
         }
 
@@ -122,8 +117,11 @@ class PageEditFragment : Fragment() {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
             }
             Log.v("TAG","x =${viewModel.state.value.dateTextViewX} , y = ${viewModel.state.value.dateTextViewY}")
-            viewModel.onEvent(PageEditEvent.UpdatePage)
-            findNavController().navigateUp()
+//            viewModel.onEvent(PageEditEvent.UpdatePage)
+            lifecycleScope.launch {
+                viewModel.upsertPage()
+                findNavController().navigateUp()
+            }
         }
 
         //set up of bottom sheet
@@ -131,13 +129,10 @@ class PageEditFragment : Fragment() {
             peekHeight = 100
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
-
-
         return binding.root
     }
 
     private fun pageNumberDialog() {
-
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_page_number, null)
             MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogView)
@@ -155,7 +150,6 @@ class PageEditFragment : Fragment() {
                 }
                 .show()
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun dateTextTouchListener(){
@@ -198,6 +192,8 @@ class PageEditFragment : Fragment() {
 
 
     private fun horizontalScrollViewItems() {
+        textAlignmentDropDown()
+        fontSizeDropDown()
         binding.boldText.setOnClickListener(textFormatClickListener)
         binding.italicText.setOnClickListener(textFormatClickListener)
         binding.underlineText.setOnClickListener {
@@ -211,6 +207,8 @@ class PageEditFragment : Fragment() {
         binding.addPageNuumberButton.setOnClickListener {
             updatePageNumber(binding.pageNumberTextView.text.toString())
         }
+        binding.inkColorIcon.setOnClickListener { inkColorDialog() }
+
     }
 
     private fun updateDatePosition(x : Float , y : Float){
@@ -229,7 +227,6 @@ class PageEditFragment : Fragment() {
             viewModel.onEvent(PageEditEvent.UpdatePageNumber(""))
         }
     }
-
 
 
     private fun updateDate(addDate : String){
@@ -260,13 +257,7 @@ class PageEditFragment : Fragment() {
     }
 
 
-
     private fun updateUnderlineText(underline: Boolean) {
-        val start =binding.ivTextEditView.selectionStart
-        val end = binding.ivTextEditView.selectionEnd
-        if(start != end){
-            updateSelectedUnderlineText(start,end)
-        } else {
             if (underline) {
                 // Add underline
                 binding.underlineText.setTextColor(Color.BLUE)
@@ -276,10 +267,9 @@ class PageEditFragment : Fragment() {
                 binding.underlineText.setTextColor(Color.BLACK)
                 binding.ivTextEditView.paintFlags = binding.ivTextEditView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
             }
-        }
+
         viewModel.onEvent(PageEditEvent.UpdateUnderLine(underline))
     }
-
 
    private fun updateSelectedUnderlineText(  start : Int ,end : Int ){
 
@@ -294,7 +284,6 @@ class PageEditFragment : Fragment() {
         Toast.makeText(requireContext(),spannableString,Toast.LENGTH_SHORT).show()
         binding.ivTextEditView.setText(spannableString)
     }
-
 
 
     //This will called when user select one of the font type and it will update the font type and ui for selection
@@ -359,7 +348,7 @@ class PageEditFragment : Fragment() {
         binding.seekbarForLineAndWord.progress = ((page.textAndLineSpace + 5f) / 30f * 100).toInt()
        // binding.ivTextEditView.letterSpacing = page.letterSpace
 
-        // Font size and style
+         // Font size and style
         when (page.fontType) {
             Typeface.NORMAL -> { }
             Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
@@ -372,25 +361,30 @@ class PageEditFragment : Fragment() {
         // Page color and font updates
         updateFontStyle(page.fontStyle)
         updateFontType(page.fontStyle, page.fontType)
-        updateFontSize(page.fontSize)
         updateLine(page.addLines, page.fontSize, page.lineColor, view)
 
         /** Horizontal scroll views **/
 
          updateUnderlineText(page.underline)
          updateDatePosition(page.dateTextViewX,page.dateTextViewY)
-        //This block is executed after the layout is inflated
+         INK_COLOR_MAP[page.inkColor]?.let {
+            updateInkColor(page.inkColor, it)
+         }
         binding.dropdownAlignment.post {
             updateTextAlignment(page.textAlignment)
             binding.dropdownAlignment.setSelection(page.textAlignment)
         }
+        binding.dropdownFontSize.post {
+            updateFontSize(page.fontSize)
+            REVERSE_FONT_SIZE_MAP[page.fontSize]?.let { binding.dropdownFontSize.setSelection(it) }
+           //val p = binding.dropdownFontSize.setSelection()
+        }
     }
 
-    private fun textAlignmentAdapter(){
+    private fun textAlignmentDropDown(){
 
         val iconAdapter = IconAdapter(requireContext(), alignmentOptions)
         binding.dropdownAlignment.adapter = iconAdapter
-
         binding.dropdownAlignment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     updateTextAlignment(position)
@@ -399,9 +393,6 @@ class PageEditFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
-
-
-
 
     private fun updateTextAlignment(position: Int) {
         val text = binding.ivTextEditView
@@ -413,7 +404,7 @@ class PageEditFragment : Fragment() {
             }
             1 -> {
                 // Center alignment
-               text.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                text.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
             }
             2 -> {
                 // Right alignment
@@ -422,19 +413,68 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun inkColorAdapter() {
-        val inkColorArray= resources.getStringArray(R.array.ink_color_array)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, inkColorArray)
-        binding.inkColorAutoComplete.setAdapter(arrayAdapter)
-        binding.inkColorAutoComplete.setOnItemClickListener { parent, view, position, id ->
-            val lineColor = parent.getItemAtPosition(position).toString()
-            Constant.INK_COLOR_MAP[lineColor]?.let { updateInkColor(it) }
+    private fun fontSizeDropDown() {
+        val fontSize = resources.getStringArray(R.array.font_sizes_array).toList()
+        val fontSizeAdapter = FontSizeAdapter(requireContext(), fontSize)
+        binding.dropdownFontSize.adapter = fontSizeAdapter
+        binding.dropdownFontSize.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                   // val fontSize = parent?.getItemAtPosition(position).toString()
+                    updateFontSize(FONT_SIZES_MAP[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+    }
+
+    private fun updateFontSize(fontSizeValue: Float?) {
+        if (fontSizeValue != null) {
+            binding.ivTextEditView.textSize = fontSizeValue
+            binding.demoStyleTextView.textSize = fontSizeValue
+            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
+            demoTextLine()
+            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
         }
     }
-    private fun updateInkColor(color: Int) {
-        binding.ivTextEditView.setTextColor(color)
-        binding.demoStyleTextView.setTextColor(color)
-        viewModel.onEvent(PageEditEvent.UpdateInkColor(color))
+
+
+
+
+
+    private fun inkColorDialog() {
+        val dialogBinding = DialogInkColorBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        val inkColorAdapter = InkColorAdapter { inkColorItem ->
+            updateInkColor(inkColorItem.color,inkColorItem.imageId)
+            dialog.dismiss()
+        }
+
+        dialogBinding.inkColorDialogRecyclerView.adapter = inkColorAdapter
+        dialogBinding.inkColorDialogRecyclerView.layoutManager = GridLayoutManager(requireContext(), 5)
+
+        dialog.show()
+    }
+
+
+    private fun updateInkColor( inkColor: Int, imageId : Int,) {
+        binding.ivTextEditView.setTextColor(inkColor)
+        binding.demoStyleTextView.setTextColor(inkColor)
+        binding.inkColorIcon.setImageResource(imageId)
+        binding.pageNumberTextView.setTextColor(inkColor)
+        binding.dateText.setTextColor(inkColor)
+        viewModel.onEvent(PageEditEvent.UpdateInkColor(inkColor))
     }
 
     //setting demo text
@@ -475,6 +515,9 @@ class PageEditFragment : Fragment() {
         }
     }
 
+
+
+
     private fun updateFontStyle(fontResourceId: Int?) {
         if (fontResourceId != null) {
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
@@ -510,24 +553,6 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun fontSizeAdapter() {
-        val fontStyles = resources.getStringArray(R.array.font_sizes_array)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
-        binding.fontSizeAutoComplete.setAdapter(arrayAdapter)
-        binding.fontSizeAutoComplete.setOnItemClickListener { parent, view, position, id ->
-            val fontSize = parent.getItemAtPosition(position).toString()
-            updateFontSize(Constant.FONT_SIZES_MAP[fontSize])
-        }
-    }
-    private fun updateFontSize(fontSizeValue: Float?) {
-        if (fontSizeValue != null) {
-            binding.ivTextEditView.textSize = fontSizeValue
-            binding.demoStyleTextView.textSize = fontSizeValue
-            viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
-            demoTextLine()
-            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
-        }
-    }
 
     private fun lineColorAdapter() {
         val lineColorArray= resources.getStringArray(R.array.line_color_array)
@@ -560,8 +585,8 @@ class PageEditFragment : Fragment() {
         if (hasLine != null) {
             when (hasLine) {
                 true -> {
-                    //updating demo text
 
+                    //updating demo text
                     val width = view.measuredWidth
                     val height = view.measuredHeight
                     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -574,7 +599,6 @@ class PageEditFragment : Fragment() {
                          demoTextLine()
                      }
                 }
-
                 false -> {
                     viewModel.onEvent(PageEditEvent.UpdateAddLine(false))
                 }
