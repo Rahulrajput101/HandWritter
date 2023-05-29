@@ -26,6 +26,9 @@
         <argument
             android:name="folderId"
             app:argType="long" />
+        <argument
+            android:name="folderName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/pageEditFragment"

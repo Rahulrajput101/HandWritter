@@ -1,6 +1,5 @@
 package com.elkdocs.handwritter.presentation.folder_screen
 
-import android.app.usage.UsageEvents.Event
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.MenuHost
@@ -19,20 +19,28 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elkdocs.handwritter.R
+import com.elkdocs.handwritter.databinding.CustomPopupMenuBinding
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.presentation.MainActivity
-import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerEvent
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
+import com.elkdocs.handwritter.util.PdfUtility.createPdf
+import com.elkdocs.handwritter.util.PdfUtility.downloadPdfToGallery
+import com.elkdocs.handwritter.util.PdfUtility.openPdfFile
+import com.elkdocs.handwritter.util.PdfUtility.sharePdf
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 
@@ -61,22 +69,26 @@ class MainFragment : Fragment(),MenuProvider {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         requireActivity().actionBar?.setDisplayHomeAsUpEnabled(true)
-        val isLinear = sharedPreferences.getBoolean(IS_LINEAR, false)
+        val isLinear = sharedPreferences.getBoolean(IS_LINEAR, true)
         binding.menuIcon.setOnClickListener {
             (requireActivity() as MainActivity).openDrawer()
         }
 
         adapter = FolderAdapter(
-            onFolderClick = {
-                findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
+            onFolderClick = { folderId , folderName ->
+                findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(folderId,folderName))
             }
             , onFolderLongClick = {
                 if (!adapter.isSelectModeEnabled) {
                     setSelectModeEnabled(true)
                 }
             },
+            onMoreOptionClick = { folderId,folderName, itemImageView ->
+                popupMenu(folderId,folderName,itemImageView)
+            },
             isLinear = isLinear
         )
+
          binding.rvMyFolderListView.adapter = adapter
          setViewType(isLinear)
 
@@ -98,13 +110,18 @@ class MainFragment : Fragment(),MenuProvider {
             val newIsLinear = !sharedPreferences.getBoolean(IS_LINEAR, false)
             setViewType(newIsLinear)
             adapter = FolderAdapter(
-                onFolderClick = {
-                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(it))
+                onFolderClick = { folderId , folderName ->
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(folderId,folderName))
                 },
                 onFolderLongClick = {
                     if (!adapter.isSelectModeEnabled) {
                         setSelectModeEnabled(true)
                     }
+                },
+                onMoreOptionClick = { folderId,folderName, itemImageView ->
+                    //onShareClick(it)
+                    popupMenu(folderId,folderName,itemImageView)
+
                 },
                 isLinear = newIsLinear
             )
@@ -117,6 +134,161 @@ class MainFragment : Fragment(),MenuProvider {
         
         return binding.root
     }
+
+//    private fun popupMenu(id: Long, itemImageView: ImageView) {
+//        val items = arrayOf("Rename", "Share", "PDF", "Download")
+//
+//        AlertDialog.Builder(requireContext())
+//            .setItems(items) { _, which ->
+//                when (which) {
+//                    0 -> {
+//                        Toast.makeText(requireContext(), "Rename", Toast.LENGTH_SHORT).show()
+//                    }
+//                    1 -> {
+//                        onShareClick(id)
+//                    }
+//                    2 -> {
+//                        Toast.makeText(requireContext(), "PDF", Toast.LENGTH_SHORT).show()
+//                    }
+//                    3 -> {
+//                        Toast.makeText(requireContext(), "Download", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//            .show()
+//    }
+//
+
+//    private fun popupMenu(id : Long,itemImageView: ImageView){
+//        val popupMenu = PopupMenu(requireContext(),itemImageView)
+//        popupMenu.inflate(R.menu.popup_menu)
+//        popupMenu.setOnMenuItemClickListener {
+//            when(it.itemId){
+//                R.id.item_rename -> {
+//                    Toast.makeText(requireContext(),"Rename",Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//                R.id.item_share -> {
+//                    onShareClick(id)
+//                    true
+//                }
+//                R.id.item_pdf -> {
+//                    Toast.makeText(requireContext(),"Pdf",Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//                R.id.item_download -> {
+//                    Toast.makeText(requireContext(),"download",Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//
+//                else -> {true}
+//            }
+//        }
+//        itemImageView.setOnClickListener{
+//            try{
+//                val popup = PopupMenu::class.java.getDeclaredField("mPopup")
+//                popup.isAccessible = true
+//                val menu = popup.get(popupMenu)
+//                menu.javaClass
+//                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+//                    .invoke(menu,true)
+//            }catch(e : Exception){
+//                e.printStackTrace()
+//            } finally {
+//                popupMenu.show()
+//            }
+//
+//
+//        }
+//    }
+
+//    private fun popupMenu(id: Long, itemImageView: ImageView) {
+//        val dialog = Dialog(requireContext())
+//        dialog.setContentView(R.layout.custom_popup_menu)
+//
+//        val itemRename = dialog.findViewById<CardView>(R.id.item_rename)
+//        val itemShare = dialog.findViewById<CardView>(R.id.item_share)
+//        val itemPdf = dialog.findViewById<CardView>(R.id.item_pdf)
+//        val itemDownload = dialog.findViewById<CardView>(R.id.item_download)
+//
+//        itemRename.setOnClickListener {
+//            Toast.makeText(requireContext(), "Rename", Toast.LENGTH_SHORT).show()
+//            dialog.dismiss()
+//        }
+//
+//        itemShare.setOnClickListener {
+//            onShareClick(id)
+//            dialog.dismiss()
+//        }
+//
+//        itemPdf.setOnClickListener {
+//            Toast.makeText(requireContext(), "Pdf", Toast.LENGTH_SHORT).show()
+//            dialog.dismiss()
+//        }
+//
+//        itemDownload.setOnClickListener {
+//            Toast.makeText(requireContext(), "Download", Toast.LENGTH_SHORT).show()
+//            dialog.dismiss()
+//        }
+//
+//        dialog.show()
+//    }
+private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
+    val bottomSheetDialog = BottomSheetDialog(requireContext())
+    val dialogBinding = CustomPopupMenuBinding.inflate(layoutInflater)
+    bottomSheetDialog.setContentView(dialogBinding.root)
+    dialogBinding.folderName.text = folderName
+
+     dialogBinding.itemDownload.setOnClickListener {
+        getPdfFile(id,folderName) { pdfFile ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
+
+                withContext(Dispatchers.Main) {
+                    if (isSuccessful) {
+                        Toast.makeText(requireContext(), "PDF saved successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+        bottomSheetDialog.dismiss()
+    }
+
+    dialogBinding.itemShare.setOnClickListener {
+        getPdfFile(id,folderName){
+            sharePdf(requireContext(),it)
+        }
+        bottomSheetDialog.dismiss()
+    }
+
+    dialogBinding.itemPdf.setOnClickListener {
+        getPdfFile(id,folderName){
+            openPdfFile(requireContext(),it)
+        }
+        bottomSheetDialog.dismiss()
+    }
+
+
+
+    bottomSheetDialog.show()
+}
+    private fun getPdfFile(folderId : Long, folderName : String,pdfFile : (file : File) -> Unit, ){
+        lifecycleScope.launch {
+            val pages = viewModel.getAllPagesById(folderId)
+            val pageModels = pages.first() // Get the initial value of the pages list
+            if (pageModels.isNotEmpty()) {
+                val bitmapList = pageModels.map { it.bitmap }
+                createPdf(requireContext(), bitmapList , folderName){
+                   pdfFile(it)
+                }
+            } else {
+                Toast.makeText(requireContext(), "Empty", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
 
     private fun setClickListeners(){
@@ -144,6 +316,7 @@ class MainFragment : Fragment(),MenuProvider {
             adapter.clearSelectedItems()
         }
 
+        binding
 
 
 
@@ -155,8 +328,8 @@ class MainFragment : Fragment(),MenuProvider {
                 adapter.selectedItems.let {
                     if (it.isNotEmpty()) {
                         it.forEach { folder ->
-                           viewModel.onEvent(FolderEvent.DeleteFolderWithPages(folder)){
-                               Toast.makeText(requireContext(),"$it",Toast.LENGTH_SHORT).show()
+                           viewModel.onEvent(FolderEvent.DeleteFolderWithPages(folder)){ folderId,folderName ->
+                               Toast.makeText(requireContext(),"$folderId",Toast.LENGTH_SHORT).show()
                            }
                         }
                     }
@@ -188,10 +361,9 @@ class MainFragment : Fragment(),MenuProvider {
             pageCount = 0,
             lastUpdated = System.currentTimeMillis()
         )
-        viewModel.onEvent(FolderEvent.AddFolder(folder)){
-            it?.let {id ->
-                findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(id))
-            }
+        viewModel.onEvent(FolderEvent.AddFolder(folder)){ folderId,folderName ->
+                findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(folderId,folderName))
+
         }
     }
 

@@ -44,6 +44,7 @@ import com.elkdocs.handwritter.util.Constant.LINE_COLOR_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import com.elkdocs.handwritter.util.OtherUtility.drawableToBitmap
+import com.elkdocs.handwritter.util.PdfUtility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.itextpdf.text.Document
@@ -171,11 +172,12 @@ class PageViewerFragment : Fragment() {
 
     private fun createPdfFromAllPages() {
         lifecycleScope.launch {
-            val bitmapList = viewModel.allPages.value.map { page ->
-                saveImageToInternalStorage(page.bitmap, page.pageId.toString())
-                page.bitmap
+            val bitmapList = viewModel.allPages.value.map {
+                it.bitmap
             }
-            createPdf(bitmapList)
+            PdfUtility.createPdf(requireContext(),bitmapList,navArgs.folderName){
+                 PdfUtility.openPdfFile(requireContext(),it)
+            }
         }
     }
 
@@ -282,51 +284,51 @@ class PageViewerFragment : Fragment() {
     }
 
 
-    private fun createPdf(bitmaps: List<Bitmap>) {
-        val pdfFile = File(
-            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() +
-                    File.separator + "HandWriter_pdf" + System.currentTimeMillis() / 1000 + ".pdf"
-        )
-
-        val executor: ExecutorService = Executors.newSingleThreadExecutor()
-        val handler = Handler(Looper.getMainLooper())
-        // Create a new document and a PDF writer
-        val document = Document()
-        val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
-
-        executor.execute {
-            //Background work here
-
-            // Open the document
-            document.open()
-
-            // Loop through the bitmaps and add each image to the PDF document
-            for (bitmap in bitmaps) {
-                val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                val imageBytes: ByteArray = stream.toByteArray()
-                val image = com.itextpdf.text.Image.getInstance(imageBytes)
-
-                // Add the image to the document
-                document.pageSize = image
-                document.newPage()
-                image.setAbsolutePosition(0f, 0f)
-                document.add(image)
-            }
-
-            // Close the document and the PDF writer
-            document.close()
-            writer.close()
-            val intent = Intent(Intent.ACTION_VIEW)
-            val uri =
-                FileProvider.getUriForFile(requireContext(), "com.elkdocs.handwriter.fileprovider", pdfFile)
-            intent.setDataAndType(uri, "application/pdf")
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivity(intent)
-        }
-        handler.post(Runnable {
-        })
-    }
+//    private fun createPdf(bitmaps: List<Bitmap>) {
+//        val pdfFile = File(
+//            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() +
+//                    File.separator + "HandWriter_pdf" + System.currentTimeMillis() / 1000 + ".pdf"
+//        )
+//
+//        val executor: ExecutorService = Executors.newSingleThreadExecutor()
+//        val handler = Handler(Looper.getMainLooper())
+//        // Create a new document and a PDF writer
+//        val document = Document()
+//        val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
+//
+//        executor.execute {
+//            //Background work here
+//
+//            // Open the document
+//            document.open()
+//
+//            // Loop through the bitmaps and add each image to the PDF document
+//            for (bitmap in bitmaps) {
+//                val stream = ByteArrayOutputStream()
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+//                val imageBytes: ByteArray = stream.toByteArray()
+//                val image = com.itextpdf.text.Image.getInstance(imageBytes)
+//
+//                // Add the image to the document
+//                document.pageSize = image
+//                document.newPage()
+//                image.setAbsolutePosition(0f, 0f)
+//                document.add(image)
+//            }
+//
+//            // Close the document and the PDF writer
+//            document.close()
+//            writer.close()
+//            val intent = Intent(Intent.ACTION_VIEW)
+//            val uri =
+//                FileProvider.getUriForFile(requireContext(), "com.elkdocs.handwriter.fileprovider", pdfFile)
+//            intent.setDataAndType(uri, "application/pdf")
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//            startActivity(intent)
+//        }
+//        handler.post(Runnable {
+//        })
+//    }
 
 //    private fun createPdf(bitmaps: List<Bitmap>) {
 //        val pdfFile = File(
@@ -371,25 +373,25 @@ class PageViewerFragment : Fragment() {
 //        handler.post(Runnable {
 //        })
 //    }
-    private fun saveImageToInternalStorage(bitmap: Bitmap, imageCount: String): Uri {
-        //creating file that is only accessible with this app , other app and user cant interact with it
-        val file = File(
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() +
-                    File.separator + "HandWriter_Pro_$imageCount" + System.currentTimeMillis() / 1000 + ".png"
-        )
-        try {
-            val bytes = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-            val fo = FileOutputStream(file)
-            fo.write(bytes.toByteArray())
-            fo.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        //Log.e("myTag ss", Uri.parse((file.absolutePath)).toString())
-        val uri = FileProvider.getUriForFile(requireActivity(), "com.elkdocs.handwriter.fileprovider", file)
-        return uri
-    }
+//    private fun saveImageToInternalStorage(bitmap: Bitmap, imageCount: String): Uri {
+//        //creating file that is only accessible with this app , other app and user cant interact with it
+//        val file = File(
+//            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() +
+//                    File.separator + "HandWriter_Pro_$imageCount" + System.currentTimeMillis() / 1000 + ".png"
+//        )
+//        try {
+//            val bytes = ByteArrayOutputStream()
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+//            val fo = FileOutputStream(file)
+//            fo.write(bytes.toByteArray())
+//            fo.close()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        //Log.e("myTag ss", Uri.parse((file.absolutePath)).toString())
+//        val uri = FileProvider.getUriForFile(requireActivity(), "com.elkdocs.handwriter.fileprovider", file)
+//        return uri
+//    }
 
     private fun sharePdfFile(pdfFile: File) {
         // Create a content URI for the PDF file

@@ -3,23 +3,22 @@ package com.elkdocs.handwritter.presentation.folder_screen
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.ItemFolderGridViewBinding
 import com.elkdocs.handwritter.databinding.ItemFolderListViewBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
-import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerAdapter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class FolderAdapter(
-    val  onFolderClick : (folderId : Long) -> Unit,
+    val onFolderClick : (folderId : Long,folderName : String) -> Unit,
     val onFolderLongClick : (folder: MyFolderModel) -> Unit,
+    val onMoreOptionClick: (folderId: Long,folderName : String, itemImageView : ImageView) -> Unit,
     private val isLinear : Boolean,
 ) : RecyclerView.Adapter<FolderAdapter.MyViewHolder>() {
 
@@ -54,7 +53,7 @@ class FolderAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = folderListWithPages[position]
-        holder.bind(item,isSelectModeEnabled,selectedItems)
+        holder.bind(item,isSelectModeEnabled,selectedItems,onMoreOptionClick)
 //        holder.itemView.setOnClickListener {
 //            onFolderClick(item.folderId!!)
 //        }
@@ -62,9 +61,9 @@ class FolderAdapter(
         holder.itemView.setOnClickListener {
             if (isSelectModeEnabled) {
                 item.isSelected = !item.isSelected // toggle isSelected state
-                holder.bind(item, isSelectModeEnabled,selectedItems) // re-bind the view to update the checkbox state
+                holder.bind(item, isSelectModeEnabled,selectedItems, onMoreOptionClick) // re-bind the view to update the checkbox state
             } else {
-                onFolderClick(item.folderId!!)
+                onFolderClick(item.folderId!!,item.folderName)
             }
         }
 
@@ -98,7 +97,11 @@ class FolderAdapter(
     }
 
     class MyViewHolder(private val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(folder: MyFolderModel,isSelectModeEnabled: Boolean,selectedItems : ArrayList<MyFolderModel>) {
+        fun bind(
+            folder: MyFolderModel,
+            isSelectModeEnabled: Boolean,
+            selectedItems : ArrayList<MyFolderModel>,
+            onShareClick : (folderId : Long,folderName : String, imageView : ImageView) -> Unit) {
             when (binding) {
 
                 is ItemFolderListViewBinding -> {
@@ -131,6 +134,10 @@ class FolderAdapter(
                             selectedItems.remove(folder)
                         }
                     }
+
+                    binding.ivMoreOptionsListView.setOnClickListener {
+                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,binding.ivMoreOptionsListView) }
+                    }
                 }
 
                 is ItemFolderGridViewBinding -> {
@@ -160,6 +167,10 @@ class FolderAdapter(
                         } else {
                             selectedItems.remove(folder)
                         }
+                    }
+
+                    binding.ivMoreOptions.setOnClickListener {
+                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,binding.ivMoreOptions) }
                     }
                 }
                 else -> throw IllegalArgumentException("Invalid view binding")

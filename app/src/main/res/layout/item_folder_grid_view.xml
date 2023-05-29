@@ -140,7 +140,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
             android:padding="5dp"
-            android:src="@drawable/ic_share_24" />
+            android:src="@drawable/ic_more_options_24" />
 
         <ImageView
             android:id="@+id/iv_rename_done"

@@ -5,5 +5,4 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 
 data class PageViewerState(
     val folderId : Long = 0,
-
 )
