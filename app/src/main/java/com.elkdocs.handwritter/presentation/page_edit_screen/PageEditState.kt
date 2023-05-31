@@ -22,10 +22,12 @@ data class PageEditState(
     val pageNumber : String = "",
     val uriIndex: Int =0,
     val notesText: String ="",
+    val headingText : String ="",
     val textAlignment : Int = 0,
     val fontStyle: Int = R.font.caveat_variablefont_wght,
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
+    val headingFontType : Int = Typeface.NORMAL,
     val letterSpace: Float = 3f,
     val textAndLineSpace : Float = 10f,
     val addLines: Boolean = true,
@@ -33,10 +35,13 @@ data class PageEditState(
     val inkColor: Int = Color.BLACK,
     val pageColor: Int = PAGE_COLOR_LIGHT_BEIGE,
     val underline : Boolean = false,
+    val headingUnderline : Boolean = false,
     val pageBitmap: Bitmap = Bitmap.createBitmap(1024,1485,Bitmap.Config.ARGB_8888),
     val date :String = "",
     val dateTextViewX : Float = 0f,
     val dateTextViewY : Float = 0f,
+    val headingTextViewX : Float = 0f,
+    val headingTextViewY : Float = 0f,
 ) {
     companion object{
         val pageColorList = mutableListOf(

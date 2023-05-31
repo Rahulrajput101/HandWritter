@@ -230,10 +230,12 @@ class PageViewerFragment : Fragment() {
                         folderId = navArgs.folderId,
                         uriIndex = 0,
                         notesText = "",
+                        headingText = "",
                         textAlignment = 0,
                         fontSize = 20f,
                         fontStyle = R.font.caveat_variablefont_wght,
                         fontType = Typeface.NORMAL,
+                        headingFontType = Typeface.NORMAL,
                         letterSpace = 0f,
                         textAndLineSpace = 10f,
                         addLines = true,
@@ -241,7 +243,8 @@ class PageViewerFragment : Fragment() {
                         inkColor = Color.BLACK,
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
                         bitmap = pageBitmap!!,
-                        underline = false
+                        underline = false,
+                        headingUnderline = false
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
                 }
@@ -266,10 +269,12 @@ class PageViewerFragment : Fragment() {
                 folderId = navArgs.folderId,
                 uriIndex = 0,
                 notesText = "",
+                headingText = "",
                 textAlignment = 0,
                 fontSize = 20f,
                 fontStyle = R.font.caveat_variablefont_wght,
                 fontType = Typeface.NORMAL,
+                headingFontType = Typeface.NORMAL,
                 letterSpace = 0f,
                 textAndLineSpace = 0.105f,
                 addLines = true,
@@ -277,7 +282,8 @@ class PageViewerFragment : Fragment() {
                 inkColor = Color.BLACK,
                 pageColor = PAGE_COLOR_LIGHT_BEIGE,
                 bitmap = pageBitmap!!,
-                underline = false
+                underline = false,
+                headingUnderline = false
             )
             viewModel.onEvent(PageViewerEvent.AddPage(page))
         }

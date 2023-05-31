@@ -1,5 +1,6 @@
 package com.elkdocs.handwritter.util
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context
@@ -12,9 +13,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.UnderlineSpan
 import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -78,6 +85,73 @@ object OtherUtility {
         }, currentYear, currentMonth, currentDay)
 
         datePickerDialog.show()
+    }
+
+    fun updateTextPosition(view: View, x: Float, y: Float) {
+        if (x != 0f || y != 0f) {
+            view.x = x
+            view.y = y
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun TextTouchListener(
+        view: View,
+        parentView: View,
+        updatePositionCallback: (Float, Float) -> Unit
+    ){
+        var offsetX = 0f
+        var offsetY = 0f
+
+        view.setOnTouchListener { v, event ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> {
+                    offsetX = event.rawX - v.x
+                    offsetY = event.rawY - v.y
+                   val startX = v.x
+                   val startY = v.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val newX = event.rawX - offsetX
+                    val newY = event.rawY - offsetY
+
+                    // Calculate the boundaries based on the parent view's dimensions
+                    val minX = 0f
+                    val maxX = parentView.width - v.width
+                    val minY = 0f
+                    val maxY = parentView.height - v.height
+
+                    // Constrain the new coordinates within the boundaries
+                    val constrainedX = newX.coerceIn(minX, maxX.toFloat())
+                    val constrainedY = newY.coerceIn(minY, maxY.toFloat())
+
+                    v.x = constrainedX
+                    v.y = constrainedY
+                }
+                MotionEvent.ACTION_UP -> {
+
+                    updatePositionCallback(v.x + 50f,v.y)
+                    // Implement any additional logic after dragging ends
+                }
+            }
+            true
+        }
+    }
+    fun updateHeadingUnderlineEditText(text: String, underline: Boolean, length: Int, spanString : (SpannableString) -> Unit) {
+        val spannableString = SpannableString(text)
+        val underlineSpans = spannableString.getSpans(0, length, UnderlineSpan::class.java)
+        if (underline) {
+            // Add underline effect
+            spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else {
+            // Remove underline effect
+            for (span in underlineSpans) {
+                spannableString.removeSpan(span)
+            }
+        }
+
+        spanString(spannableString)
     }
 
 

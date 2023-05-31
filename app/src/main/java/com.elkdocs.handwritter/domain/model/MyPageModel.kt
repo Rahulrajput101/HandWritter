@@ -18,10 +18,12 @@ data class MyPageModel(
     val pageNumber: String = "",
     val uriIndex: Int,
     val notesText: String,
+    val headingText : String,
     val textAlignment : Int,
     val fontStyle: Int,
     val fontType: Int,
     val fontSize: Float,
+    val headingFontType : Int,
     val letterSpace: Float,
     val textAndLineSpace: Float,
     val addLines: Boolean,
@@ -30,10 +32,13 @@ data class MyPageModel(
     val pageColor: Int,
     val bitmap: Bitmap,
     val underline : Boolean,
+    val headingUnderline : Boolean,
     var isSelected: Boolean = false,
     val date : String = "",
     val dateTextViewX : Float = 0f,
-    val dateTextViewY: Float = 0f
+    val dateTextViewY: Float = 0f,
+    val headingTextViewX: Float = 0f,
+    val headingTextViewY: Float = 0f,
 
     //val underlineSpans: MutableList<Pair<Int, Int>> = mutableListOf()
     ) : Parcelable{
@@ -45,6 +50,7 @@ data class MyPageModel(
                 pageNumber = pageDetail.pageNumber,
                 uriIndex = pageDetail.uriIndex,
                 notesText = pageDetail.notesText,
+                headingText = pageDetail.headingText,
                 textAlignment = pageDetail.textAlignment,
                 fontStyle = pageDetail.fontStyle,
                 letterSpace = pageDetail.letterSpace,
@@ -55,9 +61,12 @@ data class MyPageModel(
                 inkColor = pageDetail.inkColor,
                 pageColor = pageDetail.pageColor,
                 pageBitmap = pageDetail.bitmap,
+                headingUnderline = pageDetail.headingUnderline,
                 date = pageDetail.date,
                 dateTextViewX = pageDetail.dateTextViewX,
                 dateTextViewY = pageDetail.dateTextViewY,
+                headingTextViewX = pageDetail.headingTextViewX,
+                headingTextViewY = pageDetail.headingTextViewY
             )
         }
     }

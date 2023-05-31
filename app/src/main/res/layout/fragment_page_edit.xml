@@ -86,6 +86,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="3dp"
                     android:layout_marginBottom="8dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
@@ -108,6 +109,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
@@ -129,6 +131,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
@@ -204,7 +207,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:foreground="?attr/selectableItemBackground"
-
                         android:padding="8dp"
                         android:text="Date"
                         android:textColor="@android:color/black"
@@ -216,7 +218,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
                     android:orientation="horizontal">
 
@@ -235,7 +237,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
                     app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
@@ -248,6 +250,27 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
                         android:text="Page No."
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="@color/light_gre2"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp">
+
+                    <CheckedTextView
+                        android:id="@+id/addHeadingButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:padding="8dp"
+                        android:text="Heading"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
                 </androidx.cardview.widget.CardView>
@@ -359,6 +382,20 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="@+id/top_view"
+                        app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view" />
+
+                    <TextView
+                        android:id="@+id/headingTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginBottom="6dp"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/top_view"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/left_view"
                         app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
