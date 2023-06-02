@@ -49,6 +49,7 @@ import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.elkdocs.handwritter.util.OtherUtility.updateTextPosition
@@ -72,14 +73,13 @@ class PageEditFragment : Fragment() {
     private val navArgs: PageEditFragmentArgs by navArgs()
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
-    private lateinit var inkColorAdapter: InkColorAdapter
     private lateinit var edtPageLayoutView: View
 
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
     private var startX: Float = 0f
     private var startY: Float = 0f
-    private var isDragged = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -435,6 +435,7 @@ class PageEditFragment : Fragment() {
         }
 
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
+        binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
         binding.ivImageEditView.setBackgroundColor(page.pageColor)
 
         // Page color and font updates
@@ -760,10 +761,11 @@ class PageEditFragment : Fragment() {
     private fun updateLineColor(color: Int?) {
         if (color != null) {
             if(color == -1){
+                viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
                 updateLine(hasLine = false,viewModel.state.value.fontSize, color, edtPageLayoutView)
             }else{
                 viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
-                updateLine(viewModel.state.value.addLines, viewModel.state.value.fontSize, color, edtPageLayoutView)
+                updateLine(hasLine = true, viewModel.state.value.fontSize, color, edtPageLayoutView)
             }
         }
     }
@@ -778,9 +780,6 @@ class PageEditFragment : Fragment() {
         binding.headingTextView.setTypeface(typeface,fontType)
         viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
-
-
-
 
 
     private fun updateLine(hasLine: Boolean?, fontSize: Float, lineColor: Int, view: View) {
@@ -805,11 +804,7 @@ class PageEditFragment : Fragment() {
                     viewModel.onEvent(PageEditEvent.UpdateAddLine(false))
                     // Clear the drawn lines
                     binding.ivImageEditView.setImageDrawable(null)
-
-                    // Update the constraints to stretch horizontally
-//                    val params = binding.ivImageEditView.layoutParams as ConstraintLayout.LayoutParams
-//                    params.matchConstraintPercentWidth = 1.0f
-//                    binding.ivImageEditView.layoutParams = params
+                    binding.ivImageDemoView.setImageDrawable(null)
                 }
             }
         }
@@ -950,10 +945,6 @@ class PageEditFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun convertDpToPx(dp: Int): Int {
-        // Get the current width of the view
-        val scale = resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
+
 
 }

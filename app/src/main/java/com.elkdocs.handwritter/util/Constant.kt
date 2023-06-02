@@ -106,6 +106,14 @@ object Constant {
         LINE_COLOR_GREEN to 0xFF82A6A8.toInt(),
         NO_LINE to -1
     )
+    val REVERSE_LINE_COLOR_MAP = mapOf(
+        0xFFB2B1D3.toInt() to LINE_COLOR_BLUE,
+        0xFFBFBFBD.toInt() to LINE_COLOR_BLACK,
+        0xFFCCAAC0.toInt() to LINE_COLOR_RED,
+        0xFF82A6A8.toInt() to LINE_COLOR_GREEN,
+        -1 to NO_LINE
+
+    )
 //    const val INK_COLOR_BLACK = "Black"
 //    const val INK_COLOR_BLUE = "Blue"
 //    const val INK_COLOR_RED = "Red"
