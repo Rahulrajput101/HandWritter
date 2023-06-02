@@ -363,10 +363,11 @@
                     <TextView
                         android:id="@+id/dateText"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@android:color/transparent"
                         android:maxLines="1"
+                        android:textStyle="bold"
                         android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/left_view"
@@ -384,19 +385,30 @@
                         app:layout_constraintEnd_toEndOf="@+id/top_view"
                         app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view" />
 
-                    <TextView
-                        android:id="@+id/headingTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_marginBottom="6dp"
-                        android:textSize="24sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/top_view"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/left_view"
-                        app:layout_constraintTop_toTopOf="@+id/iv_image_edit_view" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/headlineParentConstraint"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+
+                        app:layout_constraintBottom_toTopOf="@+id/top_view"
+                        app:layout_constraintEnd_toStartOf="@+id/pageNumberTextView"
+                        app:layout_constraintStart_toStartOf="@+id/ivTextEditView"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/headingTextView"
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Rahul"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.4"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

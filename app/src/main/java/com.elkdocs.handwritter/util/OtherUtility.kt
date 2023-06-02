@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.icu.util.Calendar
@@ -19,6 +20,7 @@ import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
@@ -154,7 +156,12 @@ object OtherUtility {
         spanString(spannableString)
     }
 
+    // Function to convert dp to pixels
 
+
+   fun setTypeface(textView: TextView, typeface: Typeface?) {
+        textView.typeface = typeface
+    }
 
 
 }

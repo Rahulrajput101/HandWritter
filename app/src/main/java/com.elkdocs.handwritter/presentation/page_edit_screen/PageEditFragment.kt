@@ -7,32 +7,27 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -42,13 +37,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elkdocs.handwritter.R
-import com.elkdocs.handwritter.databinding.CustomPopupMenuBinding
 import com.elkdocs.handwritter.databinding.DialogInkColorBinding
 import com.elkdocs.handwritter.databinding.DialogPageHeadingBinding
 import com.elkdocs.handwritter.databinding.FragmentPageEditBinding
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.alignmentOptions
-import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.fontSizeList
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
@@ -56,15 +49,18 @@ import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
-import com.elkdocs.handwritter.util.OtherUtility.updateHeadingUnderlineEditText
 import com.elkdocs.handwritter.util.OtherUtility.updateTextPosition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MODE_FADE
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -83,7 +79,7 @@ class PageEditFragment : Fragment() {
     private var offsetY: Float = 0f
     private var startX: Float = 0f
     private var startY: Float = 0f
-
+    private var isDragged = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,7 +93,12 @@ class PageEditFragment : Fragment() {
 
         binding.edtPageLayout.doOnLayout {
             edtPageLayoutView = it
-            setInitialValues(pageArgs, it)
+            lifecycleScope.launch {
+                withContext(Dispatchers.Main){
+                    setInitialValues(pageArgs, it)
+                }
+            }
+
             languageAdapter()
             fontStyleAdapter()
             //fontSizeAdapter()
@@ -138,20 +139,24 @@ class PageEditFragment : Fragment() {
         return binding.root
     }
 
-    private fun headingDialog() {
-        val typeface = ResourcesCompat.getFont(requireContext(), viewModel.state.value.fontStyle)
+    /** Headline Dialog and his helper functions **/
+    private fun showHeadingDialog(isClicked: Boolean = false) {
+        val state = viewModel.state.value
+        val typeface = ResourcesCompat.getFont(requireContext(), state.fontStyle)
         val headingBinding = DialogPageHeadingBinding.inflate(layoutInflater)
-        headingBinding.headingEditTextInput.typeface = typeface
+
+        if (isClicked) {
+            updateHeadingEditText(state, headingBinding.headingEditTextInput, typeface)
+        } else {
+            headingBinding.headingEditTextInput.setText("")
+        }
+
+        setTypeface(headingBinding.headingEditTextInput, typeface)
+
         MaterialAlertDialogBuilder(requireContext())
             .setView(headingBinding.root)
             .setPositiveButton("OK") { _, _ ->
-                binding.addHeadingButton.setTextColor(Color.BLUE)
-                val heading = headingBinding.headingEditTextInput.text.toString()
-                binding.headingTextView.text = heading
-                val bold = headingBinding.headingEditTextInput.typeface.isBold
-                headingTextViewUpdate(bold,headingBinding.headingEditTextInput.text.toString())
-
-                viewModel.onEvent(PageEditEvent.UpdateHeading(heading))
+                updateHeadingViewState(headingBinding)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
@@ -159,37 +164,138 @@ class PageEditFragment : Fragment() {
             .show()
 
         headingBinding.boldDialog.setOnClickListener {
-            val isBold = headingBinding.headingEditTextInput.typeface.isBold
-          if(isBold){
-              headingBinding.headingEditTextInput.setTypeface(typeface,Typeface.NORMAL)
-          }else{
-              headingBinding.headingEditTextInput.setTypeface(typeface,Typeface.BOLD)
-          }
+            toggleTextBold(headingBinding.headingEditTextInput, typeface)
         }
 
         headingBinding.underlineDialog.setOnClickListener {
-            val headerUnderline = !viewModel.state.value.headingUnderline
-            viewModel.onEvent(PageEditEvent.UpdateHeadingUnderline(headerUnderline))
-            val length = headingBinding.headingEditTextInput.length()
-            Toast.makeText(requireContext(),"$headerUnderline",Toast.LENGTH_SHORT).show()
-            //For headline
-            updateHeadingUnderlineEditText(headingBinding.headingEditTextInput.text.toString(), headerUnderline, length){ spannableString ->
-                headingBinding.headingEditTextInput.setText(spannableString)
-                viewModel.onEvent(PageEditEvent.UpdateHeading(spannableString.toString()))
+            toggleHeadingUnderline(headingBinding.headingEditTextInput)
+        }
+    }
+
+
+    private fun updateHeadingEditText(state: PageEditState, editText: EditText, typeface: Typeface?) {
+        val isBold = binding.headingTextView.typeface.isBold
+        lifecycleScope.launch(Dispatchers.Default) {
+            updateHeadingEditTextUnderline(state.headingText, state.headingUnderline, state.headingText.length) { spannableString ->
+                lifecycleScope.launch {
+                    withContext(Dispatchers.Main) {
+                        editText.setText(spannableString)
+                        editText.setTypeface(typeface, if (isBold) Typeface.BOLD else Typeface.NORMAL)
+                    }
+                }
             }
         }
     }
 
-    private fun headingTextViewUpdate(isBold : Boolean,text: String){
-        if(!isBold){
-            updateFontTypeOfHeading(viewModel.state.value.fontStyle,Typeface.NORMAL)
-        }else{
-            updateFontTypeOfHeading(viewModel.state.value.fontStyle,Typeface.BOLD)
+    private fun updateHeadingEditTextUnderline(text: String, underline: Boolean, length: Int, spanString: (SpannableString) -> Unit) {
+        val spannableString = SpannableString(text)
+        val underlineSpans = spannableString.getSpans(0, length, UnderlineSpan::class.java)
+        if (underline) {
+            spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else {
+            for (span in underlineSpans) {
+                spannableString.removeSpan(span)
+            }
         }
 
-        updateHeadTextUnderlineText(viewModel.state.value.headingUnderline)
-
+        spanString(spannableString)
     }
+
+    private fun updateHeadingViewState(headingBinding: DialogPageHeadingBinding) {
+        binding.addHeadingButton.setTextColor(Color.BLUE)
+        val heading = headingBinding.headingEditTextInput.text.toString()
+        val isBold = headingBinding.headingEditTextInput.typeface.isBold
+        viewModel.onEvent(PageEditEvent.UpdateHeading(heading = heading))
+        updateHeadingTextView(isBold, heading)
+    }
+
+    private fun updateHeadingTextView(isBold: Boolean, text: String) {
+        updateFontTypeOfHeadingTextView(viewModel.state.value.fontStyle, if (isBold) Typeface.BOLD else Typeface.NORMAL)
+        updateUnderlineHeadingTextView(viewModel.state.value.headingUnderline)
+    }
+
+    private fun toggleTextBold(editText: EditText, typeface: Typeface?) {
+        val isBold = editText.typeface.isBold
+        editText.setTypeface(typeface, if (isBold) Typeface.NORMAL else Typeface.BOLD)
+    }
+
+    private fun toggleHeadingUnderline(editText: EditText) {
+        val headerUnderline = !viewModel.state.value.headingUnderline
+        viewModel.onEvent(PageEditEvent.UpdateHeadingUnderline(headerUnderline))
+        val length = editText.length()
+        updateHeadingEditTextUnderline(editText.text.toString(), headerUnderline, length) { spannableString ->
+            editText.setText(spannableString)
+        }
+    }
+
+    private fun updateFontTypeOfHeadingTextView(fontStyle: Int, fontType: Int){
+        val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
+        binding.headingTextView.setTypeface(typeface,fontType)
+        viewModel.onEvent(PageEditEvent.UpdateHeadingFontType(fontType))
+    }
+
+    private fun updateUnderlineHeadingTextView(underline: Boolean) {
+        binding.headingTextView.text = viewModel.state.value.headingText
+        if (underline) {
+            binding.headingTextView.paintFlags =binding.headingTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        } else {
+            binding.headingTextView.paintFlags = binding.headingTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun headingTextTouchListener(){
+
+        val gestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener(){
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                showHeadingDialog(true)
+                return true
+            }
+
+        })
+
+        binding.headingTextView.setOnTouchListener { v, event ->
+            val parentView = binding.headlineParentConstraint
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> {
+                    offsetX = event.rawX - v.x
+                    offsetY = event.rawY - v.y
+                    startX = v.x
+                    startY = v.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val newX = event.rawX - offsetX
+                    val newY = event.rawY - offsetY
+
+                    // Calculate the boundaries based on the parent view's dimensions
+                    val minX = 0f
+                    val maxX = parentView.width - v.width
+                    val minY = 0f
+                    val maxY = parentView.height - v.height
+
+                    // Constrain the new coordinates within the boundaries
+                    val constrainedX = newX.coerceIn(minX, maxX.toFloat())
+                    val constrainedY = newY.coerceIn(minY, maxY.toFloat())
+
+                    v.x = constrainedX
+                    v.y = constrainedY
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(v.x ,v.y))
+                    // Implement any additional logic after dragging ends
+                    // Return false to propagate the touch event for click event handling
+                }
+            }
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+    }
+
+
+    /**  End  **/
+
+
+
 
 
     private fun pageNumberDialog() {
@@ -246,44 +352,7 @@ class PageEditFragment : Fragment() {
                     // Implement any additional logic after dragging ends
                 }
             }
-            true
-        }
-    }
-    @SuppressLint("ClickableViewAccessibility")
-    private fun headingTextTouchListener(){
 
-        binding.headingTextView.setOnTouchListener { v, event ->
-            val parentView = binding.edtPageLayout
-            when(event.action){
-                MotionEvent.ACTION_DOWN -> {
-                    offsetX = event.rawX - v.x
-                    offsetY = event.rawY - v.y
-                    startX = v.x
-                    startY = v.y
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val newX = event.rawX - offsetX
-                    val newY = event.rawY - offsetY
-
-                    // Calculate the boundaries based on the parent view's dimensions
-                    val minX = 0f
-                    val maxX = parentView.width - v.width
-                    val minY = 0f
-                    val maxY = parentView.height - v.height
-
-                    // Constrain the new coordinates within the boundaries
-                    val constrainedX = newX.coerceIn(minX, maxX.toFloat())
-                    val constrainedY = newY.coerceIn(minY, maxY.toFloat())
-
-                    v.x = constrainedX
-                    v.y = constrainedY
-                }
-                MotionEvent.ACTION_UP -> {
-
-                    viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(v.x + 50f,v.y))
-                    // Implement any additional logic after dragging ends
-                }
-            }
             true
         }
     }
@@ -311,6 +380,96 @@ class PageEditFragment : Fragment() {
                updateHeading(binding.headingTextView.text.toString())
         }
 
+    }
+
+    private fun setInitialValues(page: MyPageModel, view: View) {
+        //setting up initial text
+        if (page.notesText.isEmpty()) {
+            //This will fill the edit text with space
+            //creatingEmptyLine()
+        } else {
+            binding.ivTextEditView.apply {
+                setText(page.notesText)
+                setTextColor(page.inkColor)
+                letterSpacing = page.letterSpace
+            }
+            binding.demoStyleTextView.apply {
+                setTextColor(page.inkColor)
+                letterSpacing = page.letterSpace
+            }
+        }
+
+
+        binding.headingTextView.apply {
+            text = page.headingText
+            setTextColor(page.inkColor)
+            letterSpacing = page.letterSpace
+        }
+
+
+
+        //toggling heading button color
+        val headingButtonColor = if (page.headingText.isNotEmpty()) Color.BLUE else Color.BLACK
+        binding.addHeadingButton.setTextColor(headingButtonColor)
+        // Page number
+        val pageNumberColor = if (page.pageNumber.isNotEmpty()) Color.BLUE else Color.BLACK
+        binding.addPageNuumberButton.setTextColor(pageNumberColor)
+        binding.pageNumberTextView.text = page.pageNumber
+
+        // Saved date
+        val dateColor = if (page.date.isNotEmpty()) Color.BLUE else Color.BLACK
+        binding.dateTextButton.setTextColor(dateColor)
+        binding.dateText.text = page.date
+
+
+        //setting up seekbars
+        binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
+        binding.seekbarForLineAndWord.progress = ((page.textAndLineSpace + 5f) / 30f * 100).toInt()
+        // binding.ivTextEditView.letterSpacing = page.letterSpace
+
+        // Font size and style
+        when (page.fontType) {
+            Typeface.NORMAL -> { }
+            Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
+            Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
+        }
+
+        binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
+        binding.ivImageEditView.setBackgroundColor(page.pageColor)
+
+        // Page color and font updates
+        updateFontStyle(page.fontStyle)
+        updateFontType(page.fontStyle, page.fontType)
+        updateLine(page.addLines, page.fontSize, page.lineColor, view)
+
+        /** Horizontal scroll views **/
+
+        updateUnderlineHeadingTextView(page.headingUnderline)
+        updateFontTypeOfHeadingTextView(page.fontStyle,page.headingFontType)
+        //For date
+        updateTextPosition(binding.dateText,page.dateTextViewX,page.dateTextViewY)
+        //For Heading
+        lifecycleScope.launch {
+            binding.headlineParentConstraint.post {
+                updateTextPosition(binding.headingTextView,page.headingTextViewX,page.headingTextViewY)
+            }
+            //delay(500)
+
+        }
+
+        //updateDatePosition(page.dateTextViewX,page.dateTextViewY)
+        INK_COLOR_MAP[page.inkColor]?.let {
+            updateInkColor(page.inkColor, it)
+        }
+        binding.dropdownAlignment.post {
+            updateTextAlignment(page.textAlignment)
+            binding.dropdownAlignment.setSelection(page.textAlignment)
+        }
+        binding.dropdownFontSize.post {
+            updateFontSize(page.fontSize)
+            REVERSE_FONT_SIZE_MAP[page.fontSize]?.let { binding.dropdownFontSize.setSelection(it) }
+            //val p = binding.dropdownFontSize.setSelection()
+        }
     }
 
 
@@ -344,12 +503,12 @@ class PageEditFragment : Fragment() {
 
     private fun updateHeading(headingText : String){
         if(headingText.isEmpty()){
-            headingDialog()
+            showHeadingDialog()
             val x = binding.headingTextView.x
             val y = binding.headingTextView.y
             viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(x,y))
         }else{
-            binding.headingTextView.text =""
+            binding.headingTextView.setText("")
             binding.addHeadingButton.setTextColor(Color.BLACK)
             viewModel.onEvent(PageEditEvent.UpdateHeadingUnderline(false))
             viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(0f,0f))
@@ -382,20 +541,7 @@ class PageEditFragment : Fragment() {
         viewModel.onEvent(PageEditEvent.UpdateUnderLine(underline))
     }
 
-    private fun updateHeadTextUnderlineText(underline: Boolean) {
-        Toast.makeText(requireContext(),"$underline",Toast.LENGTH_SHORT).show()
-        if (underline) {
-            // Add underline
-           // binding.underlineText.setTextColor(Color.BLUE)
 
-            binding.headingTextView.paintFlags =binding.headingTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        } else {
-            // Remove underline
-           // binding.underlineText.setTextColor(Color.BLACK)
-            //binding.addHeadingButton.setTextColor(Color.BLACK)
-            binding.headingTextView.paintFlags = binding.headingTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
-        }
-    }
 
 
 
@@ -429,85 +575,7 @@ class PageEditFragment : Fragment() {
     }
 
 
-    private fun setInitialValues(page: MyPageModel, view: View) {
-        //setting up initial text
-        if (page.notesText.isEmpty()) {
-            //This will fill the edit text with space
-            //creatingEmptyLine()
-        } else {
-            binding.ivTextEditView.apply {
-                setText(page.notesText)
-                setTextColor(page.inkColor)
-                letterSpacing = page.letterSpace
-            }
-            binding.demoStyleTextView.apply {
-                setTextColor(page.inkColor)
-                letterSpacing = page.letterSpace
-            }
-        }
 
-        binding.headingTextView.apply {
-            text = page.headingText
-            setTextColor(page.inkColor)
-            letterSpacing = page.letterSpace
-        }
-
-        //toggling heading button color
-        val headingButtonColor = if (page.headingText.isNotEmpty()) Color.BLUE else Color.BLACK
-         binding.addHeadingButton.setTextColor(headingButtonColor)
-        // Page number
-        val pageNumberColor = if (page.pageNumber.isNotEmpty()) Color.BLUE else Color.BLACK
-        binding.addPageNuumberButton.setTextColor(pageNumberColor)
-        binding.pageNumberTextView.text = page.pageNumber
-
-        // Saved date
-        val dateColor = if (page.date.isNotEmpty()) Color.BLUE else Color.BLACK
-        binding.dateTextButton.setTextColor(dateColor)
-        binding.dateText.text = page.date
-
-
-        //setting up seekbars
-        binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
-        binding.seekbarForLineAndWord.progress = ((page.textAndLineSpace + 5f) / 30f * 100).toInt()
-       // binding.ivTextEditView.letterSpacing = page.letterSpace
-
-         // Font size and style
-        when (page.fontType) {
-            Typeface.NORMAL -> { }
-            Typeface.BOLD -> binding.boldText.setTextColor(Color.BLUE)
-            Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
-        }
-
-        binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
-        binding.ivImageEditView.setBackgroundColor(page.pageColor)
-
-        // Page color and font updates
-        updateFontStyle(page.fontStyle)
-        updateFontType(page.fontStyle, page.fontType)
-        updateLine(page.addLines, page.fontSize, page.lineColor, view)
-
-        /** Horizontal scroll views **/
-
-        updateHeadTextUnderlineText(page.headingUnderline)
-         updateFontTypeOfHeading(page.fontStyle,page.headingFontType)
-        //For date
-         updateTextPosition(binding.dateText,page.dateTextViewX,page.dateTextViewY)
-        //For Heading
-         updateTextPosition(binding.headingTextView,page.headingTextViewX,page.headingTextViewY)
-         //updateDatePosition(page.dateTextViewX,page.dateTextViewY)
-         INK_COLOR_MAP[page.inkColor]?.let {
-            updateInkColor(page.inkColor, it)
-         }
-        binding.dropdownAlignment.post {
-            updateTextAlignment(page.textAlignment)
-            binding.dropdownAlignment.setSelection(page.textAlignment)
-        }
-        binding.dropdownFontSize.post {
-            updateFontSize(page.fontSize)
-            REVERSE_FONT_SIZE_MAP[page.fontSize]?.let { binding.dropdownFontSize.setSelection(it) }
-           //val p = binding.dropdownFontSize.setSelection()
-        }
-    }
 
     private fun textAlignmentDropDown(){
 
@@ -711,11 +779,6 @@ class PageEditFragment : Fragment() {
         viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
 
-    private fun updateFontTypeOfHeading(fontStyle: Int, fontType: Int){
-        val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
-        binding.headingTextView.setTypeface(typeface,fontType)
-        viewModel.onEvent(PageEditEvent.UpdateHeadingFontType(fontType))
-    }
 
 
 
@@ -885,6 +948,12 @@ class PageEditFragment : Fragment() {
         }, currentYear, currentMonth, currentDay)
 
         datePickerDialog.show()
+    }
+
+    private fun convertDpToPx(dp: Int): Int {
+        // Get the current width of the view
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
 
 }
