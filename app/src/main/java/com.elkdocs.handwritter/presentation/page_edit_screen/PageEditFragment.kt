@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
@@ -118,8 +119,20 @@ class PageEditFragment : Fragment() {
         //This will first saved the user input in database and then it will go to the viewer screen
         binding.editForwardButton.setOnClickListener {
             binding.ivTextEditView.clearFocus()
-            val bitmap = binding.edtPageLayout.drawToBitmap()
-            viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
+
+            //converting the bitmap to desired size
+            val desiredWidth = 677
+            val desiredHeight = 1162
+            val originalBitmap = binding.edtPageLayout.drawToBitmap()
+            val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(resizedBitmap)
+            val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
+            val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
+            canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
+
+            viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
+//            val bitmap = binding.edtPageLayout.drawToBitmap()
+//            viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
             val noteText = binding.ivTextEditView.text.toString()
             if (noteText.isNotEmpty()) {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
