@@ -39,8 +39,6 @@ data class MyPageModel(
     val dateTextViewY: Float = 0f,
     val headingTextViewX: Float = 0f,
     val headingTextViewY: Float = 0f,
-
-    //val underlineSpans: MutableList<Pair<Int, Int>> = mutableListOf()
     ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {

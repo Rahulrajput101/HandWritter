@@ -186,49 +186,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view1" />
 
-        <ImageView
-            android:id="@+id/item_rename_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/baseline_drive_file_rename_outline_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2" />
-
-        <TextView
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
+        <LinearLayout
             android:id="@+id/item_rename"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Rename"
-            app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
-            app:layout_constraintStart_toEndOf="@+id/item_rename_icon"
-            app:layout_constraintTop_toTopOf="@+id/item_rename_icon" />
+            android:paddingVertical="8dp"
+            android:layout_marginTop="8dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            >
 
-        <ImageView
-            android:id="@+id/item_delete_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            <ImageView
+                android:id="@+id/item_rename_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_drive_file_rename_outline_24"
+                />
+
+            <TextView
+                style="@style/Widget.AppCompat.TextView.SpinnerItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Rename"
+                app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
+                app:layout_constraintStart_toEndOf="@+id/item_rename_icon"
+                app:layout_constraintTop_toTopOf="@+id/item_rename_icon" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/item_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingVertical="8dp"
+            android:layout_marginTop="8dp"
             android:src="@drawable/baseline_delete_outline_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_rename" />
+            app:layout_constraintTop_toBottomOf="@+id/item_rename">
 
-        <TextView
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
-            android:id="@+id/item_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Delete"
-            app:layout_constraintBottom_toBottomOf="@+id/item_delete_icon"
-            app:layout_constraintStart_toEndOf="@+id/item_delete_icon"
-            app:layout_constraintTop_toTopOf="@+id/item_delete_icon" />
+            <ImageView
+                android:id="@+id/item_delete_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_delete_outline_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_rename" />
+
+            <TextView
+                style="@style/Widget.AppCompat.TextView.SpinnerItem"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Delete" />
+        </LinearLayout>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

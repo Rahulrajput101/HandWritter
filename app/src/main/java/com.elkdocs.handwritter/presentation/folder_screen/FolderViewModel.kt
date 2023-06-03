@@ -45,7 +45,7 @@ class FolderViewModel @Inject constructor(
 
             is FolderEvent.DeleteFolderWithPages -> {
                 viewModelScope.launch {
-                    deleteMyFolderWithPages(event.FolderModel.folderId!!)
+                    deleteMyFolderWithPages(event.folderId)
                 }
             }
         }

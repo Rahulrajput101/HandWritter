@@ -9,6 +9,7 @@ import com.elkdocs.handwritter.data.repository.MyFolderRepositoryImp
 import com.elkdocs.handwritter.domain.repository.MyFolderRepository
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
+import com.elkdocs.handwritter.util.Constant.PAGE_EDIT_STATE_PREF
 import com.elkdocs.handwritter.util.Constant.SHARED_PREFERENCE_NAME
 import dagger.Module
 import dagger.Provides
@@ -55,6 +56,15 @@ object AppModule {
     @Singleton
     fun provideTypeofRecyclerView(sharedPreferences: SharedPreferences) =
         sharedPreferences.getBoolean(IS_LINEAR,true)
+
+    @Provides
+    @Singleton
+    @Named("pageEditState")
+    fun providePageEditStateSharedPreferences(
+        @ApplicationContext app: Context
+    ): SharedPreferences {
+        return app.getSharedPreferences(PAGE_EDIT_STATE_PREF, Context.MODE_PRIVATE)
+    }
 
 //    @Provides
 //    @Singleton

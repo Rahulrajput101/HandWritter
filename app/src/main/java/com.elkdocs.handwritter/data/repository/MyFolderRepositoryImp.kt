@@ -59,5 +59,9 @@ class MyFolderRepositoryImp(
         myFolderDao.updateFolderPageCount(folderId,pageCount)
     }
 
+    override suspend fun getPageById(pageId: Long): MyPageModel {
+       return myFolderDao.getPageById(pageId)
+    }
+
 
 }

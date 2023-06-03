@@ -36,6 +36,9 @@ interface MyFolderDao {
     @Query("SELECT * FROM my_pages WHERE folderId = :folderId")
     fun getAllPages(folderId: Long): Flow<List<MyPageModel>>
 
+    @Query("SELECT * FROM  my_pages WHERE pageId = :pageId")
+    suspend fun getPageById(pageId : Long): MyPageModel
+
     @Query("SELECT * FROM my_pages")
     fun getPages() : Flow<List<MyPageModel>>
 

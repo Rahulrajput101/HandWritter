@@ -87,7 +87,7 @@ class PageViewerFragment : Fragment() {
         adapter = PageViewerAdapter(
             onPageClick = { pageDetail ->
                 findNavController().navigate(
-                    PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail)
+                    PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail.pageId!!)
                 )
             },
             onDeleteClick = { qrData ->

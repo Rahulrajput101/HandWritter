@@ -2,6 +2,8 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -66,6 +68,8 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Named
 
 
 @AndroidEntryPoint
@@ -75,11 +79,17 @@ class PageEditFragment : Fragment() {
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
     private lateinit var edtPageLayoutView: View
+    private lateinit var pageArgs : MyPageModel
+
 
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
     private var startX: Float = 0f
     private var startY: Float = 0f
+
+    @Inject
+    @Named("pageEditState")
+    lateinit var pageEditStatePrefs: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,33 +98,41 @@ class PageEditFragment : Fragment() {
         // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
         //taking the saved details of the page for setup the ui
-        val pageArgs = navArgs.pageDetail
-        viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
-        Log.v("TAG","x =${pageArgs.dateTextViewX} , y = ${pageArgs.dateTextViewY}")
+        val pageId = navArgs.pageId
 
-        binding.edtPageLayout.doOnLayout {
-            edtPageLayoutView = it
-            lifecycleScope.launch {
-                withContext(Dispatchers.Main){
-                    setInitialValues(pageArgs, it)
-                }
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO){
+                pageArgs = viewModel.getPageById(pageId)
             }
+            viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
+            binding.edtPageLayout.doOnLayout {
+                edtPageLayoutView = it
+                lifecycleScope.launch {
+                    withContext(Dispatchers.Main){
+                        setInitialValues(pageArgs, it)
+                    }
+                }
 
-            languageAdapter()
-            fontStyleAdapter()
-            //fontSizeAdapter()
-            lineColorAdapter()
-            wordSpacing()
-            lineWordSpacing(it)
-            dateTextTouchListener()
-            headingTextTouchListener()
+                languageAdapter()
+                fontStyleAdapter()
+                //fontSizeAdapter()
+                lineColorAdapter()
+                wordSpacing()
+                lineWordSpacing(it)
+                dateTextTouchListener()
+                headingTextTouchListener()
 
+            }
         }
+
+
+
 
         horizontalScrollViewItems()
         pageColorAdapter()
 
-        binding.editBackButton.setOnClickListener { findNavController().navigateUp() }
+       // binding.editBackButton.setOnClickListener { findNavController().navigateUp() }
 
         //This will first saved the user input in database and then it will go to the viewer screen
         binding.editForwardButton.setOnClickListener {
@@ -557,9 +575,6 @@ class PageEditFragment : Fragment() {
 
 
 
-
-
-
     //This will called when user select one of the font type and it will update the font type and ui for selection
     private val textFormatClickListener = View.OnClickListener { view ->
         val isBold = binding.ivTextEditView.typeface.isBold
@@ -958,6 +973,37 @@ class PageEditFragment : Fragment() {
         datePickerDialog.show()
     }
 
+    override fun onPause() {
+        super.onPause()
+       // Log.v("TAG","onPauseCalled")
+//        // Retrieve the current state from your view model
+//        val currentState = viewModel.state.value
+//
+//        // Save the currentState to shared preferences
+//        val editor = pageEditStatePrefs.edit()
+//        editor.putString("pageEditState", currentState.toJson())
+//        editor.apply()
+    }
+
+    override fun onResume() {
+        super.onResume()
+       // Log.v("TAG","onResumeCalled")
+        // Retrieve the state from shared preferences
+//        val stateJson = pageEditStatePrefs.getString("pageEditState", null)
+//
+//        // Check if the state is not null
+//        if (!stateJson.isNullOrEmpty()) {
+//            val currentState = PageEditState.fromJson(stateJson)
+//
+//            // Restore the state
+//            viewModel.setPageEditState(currentState)
+//        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //Log.v("TAG","onDestroyCalled")
+    }
 
 
 }

@@ -33,4 +33,6 @@ interface MyFolderRepository {
     suspend fun deleteMyFolderWithPages(folderId : Long)
 
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
+
+   suspend fun getPageById(pageId : Long) : MyPageModel
 }

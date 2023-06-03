@@ -270,6 +270,11 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
         bottomSheetDialog.dismiss()
     }
 
+    dialogBinding.itemDelete.setOnClickListener {
+         showDeleteDialog(id)
+        bottomSheetDialog.dismiss()
+    }
+
 
 
     bottomSheetDialog.show()
@@ -325,15 +330,31 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage("Are you sure you want to delete selected items?")
             .setPositiveButton("Delete") { dialog, which ->
-                adapter.selectedItems.let {
+                adapter.selectedItems.let { it ->
                     if (it.isNotEmpty()) {
                         it.forEach { folder ->
-                           viewModel.onEvent(FolderEvent.DeleteFolderWithPages(folder)){ folderId,folderName ->
-                               Toast.makeText(requireContext(),"$folderId",Toast.LENGTH_SHORT).show()
-                           }
+                            folder.folderId?.let { id ->
+                                viewModel.onEvent(FolderEvent.DeleteFolderWithPages(id)){ folderId,folderName ->
+
+                                }
+                            }
                         }
                     }
                     setSelectModeEnabled(false)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun showDeleteDialog(folderId: Long) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Are you sure you want to delete the folder")
+            .setPositiveButton("Delete") { dialog, which ->
+                viewModel.onEvent(FolderEvent.DeleteFolderWithPages(folderId)) { _, _ ->
                 }
             }
             .setNegativeButton("Cancel") { dialog, which ->

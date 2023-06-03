@@ -12,6 +12,7 @@ import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_OFF_WHITE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_PALE_LAVENDER
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_WHITE
+import com.google.gson.Gson
 import com.google.mlkit.nl.translate.TranslateLanguage
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -43,7 +44,17 @@ data class PageEditState(
     val headingTextViewX : Float = 0f,
     val headingTextViewY : Float = 0f,
 ) {
+
+    fun toJson(): String {
+        return Gson().toJson(this)
+    }
+
+
     companion object{
+
+        fun fromJson(json: String): PageEditState {
+            return Gson().fromJson(json, PageEditState::class.java)
+        }
         val pageColorList = mutableListOf(
             PAGE_COLOR_LIGHT_BEIGE,
             PAGE_COLOR_LIGHT_GRAY,

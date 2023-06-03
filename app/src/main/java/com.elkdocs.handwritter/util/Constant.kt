@@ -150,6 +150,8 @@ object Constant {
     const val SHARED_PREFERENCE_NAME = "shared_pref"
     const val IS_LINEAR = " KEY_LOOK"
 
+    const val PAGE_EDIT_STATE_PREF = "page_edit_state_pref"
+
 //    For Black:
 //
 //    Jet Black: 0xFF000000.toInt()

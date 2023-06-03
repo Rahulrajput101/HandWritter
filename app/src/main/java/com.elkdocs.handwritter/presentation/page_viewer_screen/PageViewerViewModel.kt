@@ -50,7 +50,6 @@ class PageViewerViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             allPages.collect { pages ->
-
             }
         }
     }
