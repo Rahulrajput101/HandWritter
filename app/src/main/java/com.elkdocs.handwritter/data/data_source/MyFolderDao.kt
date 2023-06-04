@@ -21,8 +21,8 @@ interface MyFolderDao {
     @Query("SELECT * FROM my_folders WHERE folderId = :id")
     suspend fun getMyFolder(id: Long): MyFolderModel
     
-    @Query("SELECT * FROM my_folders WHERE folderName = :folderName")
-    suspend fun getMyFolderByName(folderName: String): MyFolderModel
+    @Query("SELECT * FROM my_folders WHERE folderName = :folderName LIMIT 1")
+    suspend fun getMyFolderByName(folderName: String): MyFolderModel?
     
     @Upsert
     suspend fun addMyPage(myPageModel: MyPageModel): Long
@@ -54,6 +54,12 @@ interface MyFolderDao {
     }
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
+
+    @Query("UPDATE my_folders SET folderName = :folderName WHERE folderId = :folderId")
+    suspend fun updateFolderName(folderName: String,folderId: Long)
+
+
+
 
 
     

@@ -1,6 +1,7 @@
 package com.elkdocs.handwritter.presentation.folder_screen
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -24,9 +26,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.CustomPopupMenuBinding
+import com.elkdocs.handwritter.databinding.DialogRenameFolderBinding
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.presentation.MainActivity
+import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import com.elkdocs.handwritter.util.PdfUtility.createPdf
 import com.elkdocs.handwritter.util.PdfUtility.downloadPdfToGallery
@@ -37,6 +41,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -129,110 +134,13 @@ class MainFragment : Fragment(),MenuProvider {
             setObservers()
         }
         setClickListeners()
-
+        handleRenameEvent()
 
         
         return binding.root
     }
 
-//    private fun popupMenu(id: Long, itemImageView: ImageView) {
-//        val items = arrayOf("Rename", "Share", "PDF", "Download")
-//
-//        AlertDialog.Builder(requireContext())
-//            .setItems(items) { _, which ->
-//                when (which) {
-//                    0 -> {
-//                        Toast.makeText(requireContext(), "Rename", Toast.LENGTH_SHORT).show()
-//                    }
-//                    1 -> {
-//                        onShareClick(id)
-//                    }
-//                    2 -> {
-//                        Toast.makeText(requireContext(), "PDF", Toast.LENGTH_SHORT).show()
-//                    }
-//                    3 -> {
-//                        Toast.makeText(requireContext(), "Download", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//            .show()
-//    }
-//
 
-//    private fun popupMenu(id : Long,itemImageView: ImageView){
-//        val popupMenu = PopupMenu(requireContext(),itemImageView)
-//        popupMenu.inflate(R.menu.popup_menu)
-//        popupMenu.setOnMenuItemClickListener {
-//            when(it.itemId){
-//                R.id.item_rename -> {
-//                    Toast.makeText(requireContext(),"Rename",Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.item_share -> {
-//                    onShareClick(id)
-//                    true
-//                }
-//                R.id.item_pdf -> {
-//                    Toast.makeText(requireContext(),"Pdf",Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.item_download -> {
-//                    Toast.makeText(requireContext(),"download",Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//
-//                else -> {true}
-//            }
-//        }
-//        itemImageView.setOnClickListener{
-//            try{
-//                val popup = PopupMenu::class.java.getDeclaredField("mPopup")
-//                popup.isAccessible = true
-//                val menu = popup.get(popupMenu)
-//                menu.javaClass
-//                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-//                    .invoke(menu,true)
-//            }catch(e : Exception){
-//                e.printStackTrace()
-//            } finally {
-//                popupMenu.show()
-//            }
-//
-//
-//        }
-//    }
-
-//    private fun popupMenu(id: Long, itemImageView: ImageView) {
-//        val dialog = Dialog(requireContext())
-//        dialog.setContentView(R.layout.custom_popup_menu)
-//
-//        val itemRename = dialog.findViewById<CardView>(R.id.item_rename)
-//        val itemShare = dialog.findViewById<CardView>(R.id.item_share)
-//        val itemPdf = dialog.findViewById<CardView>(R.id.item_pdf)
-//        val itemDownload = dialog.findViewById<CardView>(R.id.item_download)
-//
-//        itemRename.setOnClickListener {
-//            Toast.makeText(requireContext(), "Rename", Toast.LENGTH_SHORT).show()
-//            dialog.dismiss()
-//        }
-//
-//        itemShare.setOnClickListener {
-//            onShareClick(id)
-//            dialog.dismiss()
-//        }
-//
-//        itemPdf.setOnClickListener {
-//            Toast.makeText(requireContext(), "Pdf", Toast.LENGTH_SHORT).show()
-//            dialog.dismiss()
-//        }
-//
-//        itemDownload.setOnClickListener {
-//            Toast.makeText(requireContext(), "Download", Toast.LENGTH_SHORT).show()
-//            dialog.dismiss()
-//        }
-//
-//        dialog.show()
-//    }
 private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
     val bottomSheetDialog = BottomSheetDialog(requireContext())
     val dialogBinding = CustomPopupMenuBinding.inflate(layoutInflater)
@@ -270,11 +178,15 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
         bottomSheetDialog.dismiss()
     }
 
+    dialogBinding.itemRename.setOnClickListener {
+         renameFolderDialog(folderName,id)
+         bottomSheetDialog.dismiss()
+    }
+
     dialogBinding.itemDelete.setOnClickListener {
          showDeleteDialog(id)
         bottomSheetDialog.dismiss()
     }
-
 
 
     bottomSheetDialog.show()
@@ -363,6 +275,56 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             .create()
             .show()
     }
+
+    private fun renameFolderDialog(folderName : String,folderId: Long){
+        val renameBinding = DialogRenameFolderBinding.inflate(layoutInflater)
+        renameBinding.editRenameFolder.setText(folderName)
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(renameBinding.root)
+            .setPositiveButton("OK") { _, _ ->
+                val newFolderName = renameBinding.editRenameFolder.text.toString()
+                Toast.makeText(requireContext(),newFolderName,Toast.LENGTH_SHORT).show()
+             viewModel.onEvent(FolderEvent.UpdateFolderName(newFolderName,folderId)){_,_ ->
+             }
+
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun handleRenameEvent(){
+        lifecycleScope.launch {
+            viewModel.eventFlow.collectLatest { event ->
+                when(event){
+
+                    FolderViewModel.RenameFolderName.Success -> {
+                        Toast.makeText(requireContext(),"Folder Renamed",Toast.LENGTH_SHORT).show()
+                    }
+
+                    is FolderViewModel.RenameFolderName.Error -> {
+                        nameExistDialog(event.folderName,event.folderId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun nameExistDialog(folderName : String, folderId: Long){
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("The folder name already exist")
+            .setPositiveButton("Try again"){_, _ ->
+                renameFolderDialog(folderName,folderId)
+            }
+            .setNegativeButton("Cancel"){dialog, _ ->
+                dialog.dismiss()
+
+            }
+            .show()
+
+    }
+
 
 
     private fun setViewType(isLinear : Boolean){

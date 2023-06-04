@@ -53,6 +53,7 @@ import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
+import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
 import com.elkdocs.handwritter.util.OtherUtility.updateTextPosition
@@ -100,7 +101,6 @@ class PageEditFragment : Fragment() {
         //taking the saved details of the page for setup the ui
         val pageId = navArgs.pageId
 
-
         lifecycleScope.launch {
             withContext(Dispatchers.IO){
                 pageArgs = viewModel.getPageById(pageId)
@@ -126,31 +126,15 @@ class PageEditFragment : Fragment() {
             }
         }
 
-
-
-
         horizontalScrollViewItems()
         pageColorAdapter()
-
-       // binding.editBackButton.setOnClickListener { findNavController().navigateUp() }
 
         //This will first saved the user input in database and then it will go to the viewer screen
         binding.editForwardButton.setOnClickListener {
             binding.ivTextEditView.clearFocus()
-
-            //converting the bitmap to desired size
-            val desiredWidth = 677
-            val desiredHeight = 1162
-            val originalBitmap = binding.edtPageLayout.drawToBitmap()
-            val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(resizedBitmap)
-            val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
-            val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
-            canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
-
+            val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap())
             viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
-//            val bitmap = binding.edtPageLayout.drawToBitmap()
-//            viewModel.onEvent(PageEditEvent.UpdateBitmap(bitmap))
+
             val noteText = binding.ivTextEditView.text.toString()
             if (noteText.isNotEmpty()) {
                 viewModel.onEvent(PageEditEvent.UpdateNote(noteText))

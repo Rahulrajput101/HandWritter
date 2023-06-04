@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -161,6 +162,17 @@ object OtherUtility {
 
    fun setTypeface(textView: TextView, typeface: Typeface?) {
         textView.typeface = typeface
+    }
+
+    fun resizeBitmap(originalBitmap: Bitmap): Bitmap {
+        val desiredWidth = 677
+        val desiredHeight = 1162
+        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resizedBitmap)
+        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
+        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
+        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
+        return resizedBitmap
     }
 
 

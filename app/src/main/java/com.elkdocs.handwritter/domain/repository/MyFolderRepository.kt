@@ -22,7 +22,7 @@ interface MyFolderRepository {
     suspend fun getMyFolder(id: Long): MyFolderModel
 
 
-    suspend fun getMyFolderByName(folderName: String): MyFolderModel
+    suspend fun getMyFolderByName(folderName: String): MyFolderModel?
 
 
     suspend fun addMyPage(myPageModel: MyPageModel) : Long
@@ -35,4 +35,8 @@ interface MyFolderRepository {
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
 
    suspend fun getPageById(pageId : Long) : MyPageModel
+
+   suspend fun updateFolderName(folderName : String, folderId : Long)
+
+
 }

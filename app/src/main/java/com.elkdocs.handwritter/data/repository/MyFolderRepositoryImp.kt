@@ -29,8 +29,8 @@ class MyFolderRepositoryImp(
        return myFolderDao.getMyFolder(id)
     }
 
-    override suspend fun getMyFolderByName(folderName: String): MyFolderModel {
-        TODO("Not yet implemented")
+    override suspend fun getMyFolderByName(folderName: String): MyFolderModel? {
+        return myFolderDao.getMyFolderByName(folderName)
     }
 
     override suspend fun addMyPage(myPageModel: MyPageModel): Long {
@@ -62,6 +62,12 @@ class MyFolderRepositoryImp(
     override suspend fun getPageById(pageId: Long): MyPageModel {
        return myFolderDao.getPageById(pageId)
     }
+
+    override suspend fun updateFolderName(folderName: String, folderId: Long) {
+         myFolderDao.updateFolderName(folderName,folderId)
+    }
+
+
 
 
 }
