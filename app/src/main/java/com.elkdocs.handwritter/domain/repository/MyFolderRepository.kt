@@ -14,10 +14,7 @@ interface MyFolderRepository {
 
     suspend fun updateMyFolder(myFolderModel: MyFolderModel)
 
-
     suspend fun deleteMyFolder(myFolderModel: MyFolderModel)
-    
-
 
     suspend fun getMyFolder(id: Long): MyFolderModel
 

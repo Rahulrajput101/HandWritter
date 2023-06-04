@@ -52,11 +52,19 @@ interface MyFolderDao {
         deleteMyFolder(folder)
 
     }
+
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
 
+//    @Transaction
+//    suspend fun updateFolderPageCount(folderId: Long) {
+//        val folder = getMyFolder(folderId)
+//        val currentPageCount = folder.pageCount + 1
+//        updateFolderPageCount2(folderId,currentPageCount)
+//    }
+
     @Query("UPDATE my_folders SET folderName = :folderName WHERE folderId = :folderId")
-    suspend fun updateFolderName(folderName: String,folderId: Long)
+    suspend fun updateFolderName(folderName: String, folderId: Long)
 
 
 

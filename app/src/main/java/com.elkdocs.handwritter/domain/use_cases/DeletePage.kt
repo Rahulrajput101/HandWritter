@@ -7,12 +7,9 @@ import javax.inject.Inject
 class DeletePage @Inject constructor(
     private val repository: MyFolderRepository
 ){
-    suspend operator fun invoke(page : MyPageModel, pageCount : Int = 0){
-
+    suspend operator fun invoke(page : MyPageModel){
         repository.deleteMyPage(page)
-        // Increment the folder's page count
-        val folder = repository.getMyFolder(page.folderId!!)
-        repository.updateFolderPageCount(folder.folderId!!,folder.pageCount - pageCount)
+
     }
 
 }

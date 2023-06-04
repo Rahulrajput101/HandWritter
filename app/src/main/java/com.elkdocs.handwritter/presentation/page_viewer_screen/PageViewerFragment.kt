@@ -158,6 +158,7 @@ class PageViewerFragment : Fragment() {
                 setSelectModeEnabled(true)
                 Snackbar.make(requireView(),"Please select item to delete",Snackbar.LENGTH_SHORT).show()
             } else {
+                Toast.makeText(requireContext(),"${adapter.selectedItems.size}",Toast.LENGTH_SHORT).show()
                 showDeleteAllDialog()
             }
         }
@@ -195,15 +196,23 @@ class PageViewerFragment : Fragment() {
                                 }
                             } else {
                                 Log.v("Tag","${selectedList.size}")
-                                selectedList.forEach { page ->
+                                val list = selectedList.toList()
+                                list.forEach { page ->
                                     viewModel.onEvent(PageViewerEvent.DeletePage(page,selectedList.size))
+
                                 }
+
+
+
                             }
                         }
                     }
+                    viewModel.onEvent(PageViewerEvent.DecreasePageCount(navArgs.folderId,selectedList.size))
 
                     setSelectModeEnabled(false)
                 }
+                adapter.clearSelectedItems()
+
             }
             .setNegativeButton("Cancel") { dialog, which ->
                 dialog.dismiss()
@@ -220,7 +229,7 @@ class PageViewerFragment : Fragment() {
         )
         lifecycleScope.launch {
 
-            viewModel.allPages2.collectLatest {
+            viewModel.allPages2.collectLatest { it ->
                 if (it.isEmpty()) {
                     val page = MyPageModel(
                         folderId = navArgs.folderId,
@@ -243,6 +252,9 @@ class PageViewerFragment : Fragment() {
                         headingUnderline = false
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
+                    page.folderId?.let {folderId ->
+                        viewModel.onEvent(PageViewerEvent.IncreasePageCount(folderId))
+                    }
                 }
             }
         }
@@ -282,6 +294,9 @@ class PageViewerFragment : Fragment() {
                 headingUnderline = false
             )
             viewModel.onEvent(PageViewerEvent.AddPage(page))
+            page.folderId?.let {
+                viewModel.onEvent(PageViewerEvent.IncreasePageCount(it))
+            }
         }
     }
 

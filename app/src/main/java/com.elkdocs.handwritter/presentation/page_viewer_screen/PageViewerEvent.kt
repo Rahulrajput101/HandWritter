@@ -10,4 +10,7 @@ sealed interface PageViewerEvent{
 
     data class DeleteFolder(val folderId : Long) : PageViewerEvent
 
+    data class IncreasePageCount(val folderId: Long) : PageViewerEvent
+    data class DecreasePageCount(val folderId: Long, val totalPages: Int) : PageViewerEvent
+
 }

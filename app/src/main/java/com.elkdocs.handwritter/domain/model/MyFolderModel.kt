@@ -12,7 +12,7 @@ data class MyFolderModel(
     val folderId: Long? = null,
     val folderName: String,
     val folderIcon: String,
-    val pageCount: Int,
+    var pageCount: Int,
     val lastUpdated: Long,
     var isSelected: Boolean = false
 ) : Parcelable

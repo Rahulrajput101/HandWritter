@@ -8,10 +8,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.domain.repository.MyFolderRepository
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.DeleteMyFolderWithPages
 import com.elkdocs.handwritter.domain.use_cases.DeletePage
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
+import com.elkdocs.handwritter.domain.use_cases.UpdatePageCount
 import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,6 +32,7 @@ class PageViewerViewModel @Inject constructor(
     getAllPages: GetAllPages,
     private val addNewPage: AddNewPage,
     private val deletePage: DeletePage,
+    private val updatePageCount: UpdatePageCount,
     val deleteMyFolderWithPages: DeleteMyFolderWithPages,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -43,7 +46,7 @@ class PageViewerViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val allPages2 = state.flatMapLatest { it ->
+    val allPages2 = state.flatMapLatest {
         getAllPages(it.folderId)
     }
 
@@ -54,7 +57,6 @@ class PageViewerViewModel @Inject constructor(
         }
     }
 
-
     fun onEvent(event: PageViewerEvent){
         when(event){
             is PageViewerEvent.AddPage -> {
@@ -62,9 +64,10 @@ class PageViewerViewModel @Inject constructor(
                     addNewPage(event.page)
                 }
             }
+
             is PageViewerEvent.DeletePage -> {
                 viewModelScope.launch {
-                    deletePage(event.page,event.totalPages)
+                    deletePage(event.page)
                 }
             }
 
@@ -74,6 +77,17 @@ class PageViewerViewModel @Inject constructor(
                 }
             }
 
+            is PageViewerEvent.IncreasePageCount -> {
+                viewModelScope.launch {
+                    updatePageCount(event.folderId)
+                }
+            }
+
+            is PageViewerEvent.DecreasePageCount -> {
+                viewModelScope.launch {
+                    updatePageCount(event.folderId,event.totalPages)
+                }
+            }
         }
     }
 
