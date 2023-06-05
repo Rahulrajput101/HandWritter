@@ -46,7 +46,7 @@ object PdfUtility {
 
         for (bitmap in bitmaps) {
             val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             val imageBytes = stream.toByteArray()
             val image = Image.getInstance(imageBytes)
             document.pageSize = image

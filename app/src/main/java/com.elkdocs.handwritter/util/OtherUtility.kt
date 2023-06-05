@@ -28,6 +28,7 @@ import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import java.lang.Math.min
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -165,13 +166,22 @@ object OtherUtility {
     }
 
     fun resizeBitmap(originalBitmap: Bitmap): Bitmap {
-        val desiredWidth = 677
-        val desiredHeight = 1162
-        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resizedBitmap)
-        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
-        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
-        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
+        val desiredWidth = 1024
+        val desiredHeight = 1832
+//        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(resizedBitmap)
+//        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
+//        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
+//        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
+//        return resizedBitmap
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        val scaleFactor = min(desiredWidth / originalWidth.toFloat(), desiredHeight / originalHeight.toFloat())
+        val newWidth = (originalWidth * scaleFactor).toInt()
+        val newHeight = (originalHeight * scaleFactor).toInt()
+
+        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
         return resizedBitmap
     }
 

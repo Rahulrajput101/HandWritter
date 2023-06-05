@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_mainFragment_to_pageViewerFragment"
             app:destination="@id/pageViewerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_pageViewerFragment2"
+            app:destination="@id/pageViewerFragment" />
     </fragment>
     <fragment
         android:id="@+id/pageViewerFragment"

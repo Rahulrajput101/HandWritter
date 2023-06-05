@@ -225,7 +225,7 @@ class PageViewerFragment : Fragment() {
     private fun addingInitialPageForFirstTime() {
 
         val pageBitmap = drawableToBitmap(
-            ContextCompat.getDrawable(requireContext(), R.drawable.intial_page_image)
+            ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
         )
         lifecycleScope.launch {
 
@@ -255,9 +255,11 @@ class PageViewerFragment : Fragment() {
                     page.folderId?.let {folderId ->
                         viewModel.onEvent(PageViewerEvent.IncreasePageCount(folderId))
                     }
+
                 }
             }
         }
+
     }
 
     private fun setObserver() {
@@ -271,7 +273,7 @@ class PageViewerFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-        val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.intial_page_image))
+        val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
         binding.fabImagePicker.setOnClickListener {
             val page = MyPageModel(
                 folderId = navArgs.folderId,

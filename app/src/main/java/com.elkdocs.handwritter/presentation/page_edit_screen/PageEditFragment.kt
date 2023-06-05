@@ -27,6 +27,7 @@ import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnLayout
@@ -131,27 +132,45 @@ class PageEditFragment : Fragment() {
 
         //This will first saved the user input in database and then it will go to the viewer screen
         binding.editForwardButton.setOnClickListener {
-            binding.ivTextEditView.clearFocus()
-            val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap())
-            viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
-
-            val noteText = binding.ivTextEditView.text.toString()
-            if (noteText.isNotEmpty()) {
-                viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
-            }
-
-            lifecycleScope.launch {
-                viewModel.upsertPage()
-                findNavController().navigateUp()
-            }
+           savePageAndNavigateUp()
         }
-
+        binding.editBackButton.setOnClickListener {
+            savePageAndNavigateUp()
+        }
         //set up of bottom sheet
         BottomSheetBehavior.from(binding.bottomSheetLayout).apply {
             peekHeight = 100
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
+        setupNavigation()
         return binding.root
+    }
+
+
+    private fun savePageAndNavigateUp() {
+        binding.ivTextEditView.clearFocus()
+
+        val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap())
+        viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
+
+        val noteText = binding.ivTextEditView.text.toString()
+        if (noteText.isNotEmpty()) {
+            viewModel.onEvent(PageEditEvent.UpdateNote(noteText))
+        }
+
+        lifecycleScope.launch {
+            viewModel.upsertPage()
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun setupNavigation() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                savePageAndNavigateUp()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     /** Headline Dialog and his helper functions **/
@@ -845,6 +864,7 @@ class PageEditFragment : Fragment() {
         binding.demoStyleTextView.setLineSpacing(lineSpacing,0f)
 
         val linePaint = Paint()
+        linePaint.isAntiAlias = true
         linePaint.strokeWidth = 2f
         linePaint.color = lineColor
 
@@ -863,6 +883,7 @@ class PageEditFragment : Fragment() {
         binding.ivTextEditView.setLineSpacing(lineSpacing, 0f)
 
         val linePaint = Paint()
+        linePaint.isAntiAlias = true
         linePaint.strokeWidth = 2f
         linePaint.color = lineColor
 
@@ -919,27 +940,6 @@ class PageEditFragment : Fragment() {
         })
     }
 
-    private fun creatingEmptyLine(){
-        val text = StringBuilder()
-        text.append("Enter the text")
-        val lineHeight = binding.ivTextEditView.lineHeight
-        val editTextHeight = binding.ivTextEditView.height
-
-        // Total number of lines in edit text
-        val totalLines = editTextHeight / lineHeight
-        for( i in 0 until totalLines){
-            for(j in 0 until binding.ivTextEditView.width){
-                text.append(" ")
-            }
-            //changing the line until he reaches at the last line
-            if(i < totalLines - 1){
-                text.append("\n")
-            }
-        }
-        //finally setting up the result to edit text
-        binding.ivTextEditView.setText(text)
-    }
-
 
     private fun pickDate(callback: (dateTime: String) -> Unit) {
         val calendar = Calendar.getInstance()
@@ -956,38 +956,5 @@ class PageEditFragment : Fragment() {
 
         datePickerDialog.show()
     }
-
-    override fun onPause() {
-        super.onPause()
-       // Log.v("TAG","onPauseCalled")
-//        // Retrieve the current state from your view model
-//        val currentState = viewModel.state.value
-//
-//        // Save the currentState to shared preferences
-//        val editor = pageEditStatePrefs.edit()
-//        editor.putString("pageEditState", currentState.toJson())
-//        editor.apply()
-    }
-
-    override fun onResume() {
-        super.onResume()
-       // Log.v("TAG","onResumeCalled")
-        // Retrieve the state from shared preferences
-//        val stateJson = pageEditStatePrefs.getString("pageEditState", null)
-//
-//        // Check if the state is not null
-//        if (!stateJson.isNullOrEmpty()) {
-//            val currentState = PageEditState.fromJson(stateJson)
-//
-//            // Restore the state
-//            viewModel.setPageEditState(currentState)
-//        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //Log.v("TAG","onDestroyCalled")
-    }
-
 
 }
