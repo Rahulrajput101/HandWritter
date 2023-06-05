@@ -10,4 +10,5 @@ sealed interface FolderEvent{
     data class UpdateFolderName(val folderName: String, val folderId: Long) : FolderEvent
 
 
+
 }

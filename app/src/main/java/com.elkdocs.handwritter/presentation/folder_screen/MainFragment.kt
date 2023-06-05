@@ -3,6 +3,7 @@ package com.elkdocs.handwritter.presentation.folder_screen
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -12,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.SearchView
+import android.widget.SearchView.OnQueryTextListener
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.MenuHost
@@ -43,6 +46,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -154,9 +158,9 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
 
                 withContext(Dispatchers.Main) {
                     if (isSuccessful) {
-                        Toast.makeText(requireContext(), "PDF saved successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -187,8 +191,6 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
          showDeleteDialog(id)
         bottomSheetDialog.dismiss()
     }
-
-
     bottomSheetDialog.show()
 }
     private fun getPdfFile(folderId : Long, folderName : String,pdfFile : (file : File) -> Unit, ){
@@ -232,12 +234,41 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             setSelectModeEnabled(false)
             adapter.clearSelectedItems()
         }
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query != null){
+                   searchedFolder(query)
+                }
+                return true
+            }
 
-        binding
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText.isNullOrEmpty()){
+                   setObservers()
+                }else{
+                    searchedFolder(newText)
+                }
+                return true
+            }
+
+
+
+
+        })
 
 
 
     }
+
+    fun searchedFolder(folderName: String){
+        lifecycleScope.launch {
+          viewModel.searchFolderByName(folderName).collect{
+               adapter.setAllFolder(it)
+              adapter.notifyDataSetChanged()
+           }
+        }
+    }
+
     private fun showDeleteAllDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage("Are you sure you want to delete selected items?")

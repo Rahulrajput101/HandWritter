@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import com.elkdocs.handwritter.domain.repository.MyFolderRepository
 import com.elkdocs.handwritter.domain.use_cases.AddNewFolder
 import com.elkdocs.handwritter.domain.use_cases.DeleteMyFolderWithPages
 import com.elkdocs.handwritter.domain.use_cases.GetAllFolders
@@ -30,11 +31,15 @@ class FolderViewModel @Inject constructor(
     private val getAllPages: GetAllPages,
     val deleteMyFolderWithPages: DeleteMyFolderWithPages,
     private val updateFolderTitle: UpdateFolderTitle,
+    private val repository: MyFolderRepository,
     private val addNewFolder: AddNewFolder
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FolderState())
     val state: StateFlow<FolderState> = _state
+
+    private val _searchResults = MutableStateFlow<List<MyFolderModel>>(emptyList())
+    val searchResults: StateFlow<List<MyFolderModel>> = _searchResults
 
     private val _eventFlow = Channel<RenameFolderName>()
     val eventFlow = _eventFlow.receiveAsFlow()
@@ -70,6 +75,11 @@ class FolderViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun searchFolderByName(folderName: String) : Flow<List<MyFolderModel>> {
+        return repository.searchFolderByName(folderName)
+
     }
 
     fun getAllPagesById(folderId: Long): Flow<List<MyPageModel>> {

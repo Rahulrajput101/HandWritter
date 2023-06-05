@@ -66,6 +66,9 @@ interface MyFolderDao {
     @Query("UPDATE my_folders SET folderName = :folderName WHERE folderId = :folderId")
     suspend fun updateFolderName(folderName: String, folderId: Long)
 
+    @Query("SELECT * FROM my_folders WHERE folderName LIKE '%' || :folderName || '%' ")
+    fun searchFolderByQuery(folderName: String) : Flow<List<MyFolderModel>>
+
 
 
 

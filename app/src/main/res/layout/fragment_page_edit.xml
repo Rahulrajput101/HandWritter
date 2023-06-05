@@ -398,7 +398,7 @@
 
                         <TextView
                             android:id="@+id/headingTextView"
-                            android:layout_width="180dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="Rahul"

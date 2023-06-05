@@ -35,5 +35,7 @@ interface MyFolderRepository {
 
    suspend fun updateFolderName(folderName : String, folderId : Long)
 
+   fun searchFolderByName(folderName: String) : Flow<List<MyFolderModel>>
+
 
 }

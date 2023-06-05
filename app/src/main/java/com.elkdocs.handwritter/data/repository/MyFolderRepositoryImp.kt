@@ -67,7 +67,9 @@ class MyFolderRepositoryImp(
          myFolderDao.updateFolderName(folderName,folderId)
     }
 
-
+    override fun searchFolderByName(folderName: String): Flow<List<MyFolderModel>> {
+        return myFolderDao.searchFolderByQuery(folderName)
+    }
 
 
 }
