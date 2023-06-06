@@ -59,6 +59,7 @@ import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
+import com.elkdocs.handwritter.util.OtherUtility.updateHeadingTextPosition
 import com.elkdocs.handwritter.util.OtherUtility.updateTextPosition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -500,7 +501,7 @@ class PageEditFragment : Fragment() {
         //For Heading
         lifecycleScope.launch {
             binding.headlineParentConstraint.post {
-                updateTextPosition(binding.headingTextView,page.headingTextViewX,page.headingTextViewY)
+                updateHeadingTextPosition(binding.headingTextView,page.headingTextViewX,page.headingTextViewY)
             }
             //delay(500)
 

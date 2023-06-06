@@ -1,11 +1,10 @@
 package com.elkdocs.handwritter.presentation.folder_screen
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
-import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.AddNewFolder
 import com.elkdocs.handwritter.domain.use_cases.DeleteMyFolderWithPages
 import com.elkdocs.handwritter.domain.use_cases.GetAllFolders
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -31,7 +29,7 @@ class FolderViewModel @Inject constructor(
     private val getAllPages: GetAllPages,
     val deleteMyFolderWithPages: DeleteMyFolderWithPages,
     private val updateFolderTitle: UpdateFolderTitle,
-    private val repository: MyFolderRepository,
+    private val repository: MyRepository,
     private val addNewFolder: AddNewFolder
 ) : ViewModel() {
 

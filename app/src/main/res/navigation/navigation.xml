@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_mainFragment_to_pageViewerFragment2"
             app:destination="@id/pageViewerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/pageViewerFragment"
@@ -42,4 +45,8 @@
             android:name="pageId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.elkdocs.handwritter.presentation.about_screen.AboutFragment"
+        android:label="AboutFragment" />
 </navigation>

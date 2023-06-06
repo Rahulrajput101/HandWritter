@@ -3,7 +3,7 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyPageModel
-import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
@@ -19,7 +19,7 @@ class PageEditViewModel @Inject constructor(
     private val addNewPage: AddNewPage,
     private val drawLine: DrawLine,
     getAllPages: GetAllPages,
-    val  myFolderRepository: MyFolderRepository
+    val  myRepository: MyRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PageEditState())
@@ -173,7 +173,7 @@ class PageEditViewModel @Inject constructor(
     }
 
     suspend fun getPageById(pageId : Long) : MyPageModel{
-        return myFolderRepository.getPageById(pageId)
+        return myRepository.getPageById(pageId)
     }
 
     suspend fun upsertPage(){

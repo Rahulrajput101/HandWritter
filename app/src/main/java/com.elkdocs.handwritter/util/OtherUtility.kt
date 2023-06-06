@@ -97,6 +97,11 @@ object OtherUtility {
             view.y = y
         }
     }
+    fun updateHeadingTextPosition(view: View,x: Float,y: Float){
+        view.x = x
+        view.y = y
+    }
+
 
 
     @SuppressLint("ClickableViewAccessibility")

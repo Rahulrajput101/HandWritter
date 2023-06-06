@@ -6,72 +6,59 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MyFolderDao {
-    
+interface MyDao {
+
     @Upsert
     suspend fun addMyFolder(myFolderModel: MyFolderModel): Long
-    
+
     @Delete
     suspend fun deleteMyFolder(myFolderModel: MyFolderModel)
-    
-    
+
+
     @Query("Select * from my_folders")
     fun getAllFolder(): Flow<List<MyFolderModel>>
-    
+
     @Query("SELECT * FROM my_folders WHERE folderId = :id")
     suspend fun getMyFolder(id: Long): MyFolderModel
-    
+
     @Query("SELECT * FROM my_folders WHERE folderName = :folderName LIMIT 1")
     suspend fun getMyFolderByName(folderName: String): MyFolderModel?
-    
+
     @Upsert
     suspend fun addMyPage(myPageModel: MyPageModel): Long
-    
+
     @Delete
     suspend fun deleteMyPage(myPageModel: MyPageModel)
 
     @Query("DELETE FROM my_pages WHERE folderId = :folderId")
     suspend fun deletePagesByFolderId(folderId: Long)
-    
+
     @Query("SELECT * FROM my_pages WHERE folderId = :folderId")
     fun getAllPages(folderId: Long): Flow<List<MyPageModel>>
 
     @Query("SELECT * FROM  my_pages WHERE pageId = :pageId")
-    suspend fun getPageById(pageId : Long): MyPageModel
+    suspend fun getPageById(pageId: Long): MyPageModel
 
     @Query("SELECT * FROM my_pages")
-    fun getPages() : Flow<List<MyPageModel>>
+    fun getPages(): Flow<List<MyPageModel>>
 
     @Transaction
     suspend fun deleteMyFolderWithPages(folderId: Long) {
         // Delete all pages associated with the folder
         deletePagesByFolderId(folderId)
         // Delete the folder itself
-        // Delete the folder itself
         val folder = getMyFolder(folderId)
         deleteMyFolder(folder)
-
     }
 
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")
     suspend fun updateFolderPageCount(folderId: Long, pageCount: Int)
 
-//    @Transaction
-//    suspend fun updateFolderPageCount(folderId: Long) {
-//        val folder = getMyFolder(folderId)
-//        val currentPageCount = folder.pageCount + 1
-//        updateFolderPageCount2(folderId,currentPageCount)
-//    }
-
     @Query("UPDATE my_folders SET folderName = :folderName WHERE folderId = :folderId")
     suspend fun updateFolderName(folderName: String, folderId: Long)
 
     @Query("SELECT * FROM my_folders WHERE folderName LIKE '%' || :folderName || '%' ")
-    fun searchFolderByQuery(folderName: String) : Flow<List<MyFolderModel>>
+    fun searchFolderByQuery(folderName: String): Flow<List<MyFolderModel>>
 
 
-
-
-
-    
 }

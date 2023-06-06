@@ -1,11 +1,10 @@
 package com.elkdocs.handwritter.domain.use_cases
 
-import android.util.Log
-import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.domain.repository.MyRepository
 import javax.inject.Inject
 
 class UpdateFolderTitle @Inject constructor(
-    private val repository: MyFolderRepository
+    private val repository: MyRepository
 ) {
     suspend operator fun invoke(folderName : String , folderId : Long){
         val existingFolder = repository.getMyFolderByName(folderName)

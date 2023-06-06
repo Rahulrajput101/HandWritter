@@ -103,7 +103,9 @@ class MainFragment : Fragment(),MenuProvider {
 
         binding.navigationView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.item1 -> { Toast.makeText(requireContext(),"1",Toast.LENGTH_SHORT).show() }
+                R.id.item1 -> {
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToAboutFragment())
+                }
                 R.id.item2 -> { Toast.makeText(requireContext(),"2",Toast.LENGTH_SHORT).show() }
                 R.id.item3 -> { Toast.makeText(requireContext(),"3",Toast.LENGTH_SHORT).show() }
             }

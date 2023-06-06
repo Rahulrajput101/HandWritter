@@ -1,12 +1,11 @@
 package com.elkdocs.handwritter.domain.repository
 
 
-import androidx.room.Transaction
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import kotlinx.coroutines.flow.Flow
 
-interface MyFolderRepository {
+interface MyRepository {
 
     suspend fun addMyFolder(myFolderModel: MyFolderModel) : Long
     

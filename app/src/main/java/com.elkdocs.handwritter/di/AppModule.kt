@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.elkdocs.handwritter.data.data_source.MyDatabase
-import com.elkdocs.handwritter.data.repository.MyFolderRepositoryImp
-import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.data.repository.MyRepositoryImp
+import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import com.elkdocs.handwritter.util.Constant.PAGE_EDIT_STATE_PREF
@@ -36,8 +36,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMyFolderRepository(db : MyDatabase) : MyFolderRepository {
-        return MyFolderRepositoryImp(db.myFolderDao())
+    fun provideMyFolderRepository(db : MyDatabase) : MyRepository {
+        return MyRepositoryImp(db.myFolderDao())
     }
 
     @Provides

@@ -1,10 +1,10 @@
 package com.elkdocs.handwritter.domain.use_cases
 
-import com.elkdocs.handwritter.domain.repository.MyFolderRepository
+import com.elkdocs.handwritter.domain.repository.MyRepository
 import javax.inject.Inject
 
 class UpdatePageCount @Inject constructor(
-    val repository: MyFolderRepository
+    val repository: MyRepository
 ){
     suspend operator fun invoke(folderId : Long, totalPages : Int? = null){
         val folder = repository.getMyFolder(folderId)

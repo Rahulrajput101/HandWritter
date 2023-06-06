@@ -13,7 +13,7 @@ import com.elkdocs.handwritter.domain.model.MyPageModel
 @TypeConverters(Converters::class)
 abstract class MyDatabase : RoomDatabase(){
 
-    abstract fun myFolderDao() : MyFolderDao
+    abstract fun myFolderDao() : MyDao
     companion object{
         const val DATABASE_NAME = "my_db"
     }
