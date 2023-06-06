@@ -25,6 +25,7 @@ data class PageEditState(
     val notesText: String ="",
     val headingText : String ="",
     val textAlignment : Int = 0,
+    val language: String = "English",
     val fontStyle: Int = R.font.caveat_variablefont_wght,
     val fontSize: Float= 20f,
     val fontType : Int = Typeface.NORMAL,
@@ -43,6 +44,7 @@ data class PageEditState(
     val dateTextViewY : Float = 0f,
     val headingTextViewX : Float = 0f,
     val headingTextViewY : Float = 0f,
+    val isLayoutFlipped : Boolean = false
 ) {
 
     fun toJson(): String {

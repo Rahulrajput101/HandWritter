@@ -74,6 +74,7 @@ class PageEditViewModel @Inject constructor(
                             notesText = state.value.notesText,
                             headingText = state.value.headingText,
                             textAlignment = state.value.textAlignment,
+                            language = state.value.language,
                             fontStyle = state.value.fontStyle,
                             fontType =state.value.fontType,
                             headingFontType =state.value.headingFontType,
@@ -92,7 +93,7 @@ class PageEditViewModel @Inject constructor(
                             dateTextViewY= state.value.dateTextViewY,
                             headingTextViewX = state.value.headingTextViewX,
                             headingTextViewY = state.value.headingTextViewY,
-
+                            isLayoutFlipped = state.value.isLayoutFlipped
                         )
                     )
                 }
@@ -156,7 +157,13 @@ class PageEditViewModel @Inject constructor(
                 _state.value = _state.value.copy(headingUnderline = event.headingUnderline)
             }
 
+            is PageEditEvent.UpdateLayoutFlipped -> {
+                _state.value = _state.value.copy(isLayoutFlipped = event.isLayoutFlipped)
+            }
 
+            is PageEditEvent.UpdateLanguage -> {
+                _state.value = _state.value.copy(language = event.language)
+            }
             else -> {}
         }
     }
@@ -179,6 +186,7 @@ class PageEditViewModel @Inject constructor(
                 notesText = state.value.notesText,
                 headingText = state.value.headingText,
                 textAlignment = state.value.textAlignment,
+                language = state.value.language,
                 fontStyle = state.value.fontStyle,
                 fontType =state.value.fontType,
                 headingFontType =state.value.headingFontType,
@@ -197,6 +205,7 @@ class PageEditViewModel @Inject constructor(
                 dateTextViewY= state.value.dateTextViewY,
                 headingTextViewX = state.value.headingTextViewX,
                 headingTextViewY = state.value.headingTextViewY,
+                isLayoutFlipped = state.value.isLayoutFlipped
             )
         )
     }

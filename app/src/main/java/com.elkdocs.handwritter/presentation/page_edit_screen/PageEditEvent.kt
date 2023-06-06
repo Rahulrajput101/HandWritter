@@ -8,6 +8,8 @@ sealed interface PageEditEvent{
         object UpdatePage : PageEditEvent
 
         data class UpdatePageNumber(val pageNumber: String) : PageEditEvent
+
+        data class UpdateLanguage(val language: String) : PageEditEvent
         data class UpdateFontStyle(val fontStyle: Int) : PageEditEvent
         data class UpdateFontType(val fontType: Int) : PageEditEvent
         data class UpdateHeadingFontType(val headingFontType: Int) : PageEditEvent
@@ -25,6 +27,7 @@ sealed interface PageEditEvent{
         data class UpdateUnderLine(val underLine: Boolean) : PageEditEvent
         data class UpdateHeadingUnderline(val headingUnderline: Boolean) : PageEditEvent
         data class UpdateDate(val date : String) : PageEditEvent
+        data class UpdateLayoutFlipped( val isLayoutFlipped: Boolean) : PageEditEvent
 
         data class UpdateHeading(val heading : String) : PageEditEvent
         data class UpdateDateTextPosition(val dateTextViewX : Float , val dateTextViewY : Float) : PageEditEvent

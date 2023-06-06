@@ -76,6 +76,7 @@ class PageViewerFragment : Fragment() {
     private lateinit var adapter : PageViewerAdapter
     private val navArgs: PageViewerFragmentArgs by navArgs()
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -201,12 +202,10 @@ class PageViewerFragment : Fragment() {
                                     viewModel.onEvent(PageViewerEvent.DeletePage(page,selectedList.size))
 
                                 }
-
-
-
                             }
                         }
                     }
+
                     viewModel.onEvent(PageViewerEvent.DecreasePageCount(navArgs.folderId,selectedList.size))
 
                     setSelectModeEnabled(false)
@@ -238,6 +237,7 @@ class PageViewerFragment : Fragment() {
                         headingText = "",
                         textAlignment = 0,
                         fontSize = 20f,
+                        language = "English",
                         fontStyle = R.font.caveat_variablefont_wght,
                         fontType = Typeface.NORMAL,
                         headingFontType = Typeface.NORMAL,
@@ -249,7 +249,8 @@ class PageViewerFragment : Fragment() {
                         pageColor = PAGE_COLOR_LIGHT_BEIGE,
                         bitmap = pageBitmap!!,
                         underline = false,
-                        headingUnderline = false
+                        headingUnderline = false,
+                        isLayoutFlipped = false
                     )
                     viewModel.onEvent(PageViewerEvent.AddPage(page))
                     page.folderId?.let {folderId ->
@@ -282,6 +283,7 @@ class PageViewerFragment : Fragment() {
                 headingText = "",
                 textAlignment = 0,
                 fontSize = 20f,
+                language = "English",
                 fontStyle = R.font.caveat_variablefont_wght,
                 fontType = Typeface.NORMAL,
                 headingFontType = Typeface.NORMAL,
@@ -293,7 +295,8 @@ class PageViewerFragment : Fragment() {
                 pageColor = PAGE_COLOR_LIGHT_BEIGE,
                 bitmap = pageBitmap!!,
                 underline = false,
-                headingUnderline = false
+                headingUnderline = false,
+                isLayoutFlipped = false
             )
             viewModel.onEvent(PageViewerEvent.AddPage(page))
             page.folderId?.let {

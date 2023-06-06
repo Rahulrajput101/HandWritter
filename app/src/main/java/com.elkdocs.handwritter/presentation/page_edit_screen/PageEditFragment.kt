@@ -11,6 +11,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Layout.Alignment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
@@ -53,6 +54,7 @@ import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REVERSE_LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
@@ -80,9 +82,9 @@ class PageEditFragment : Fragment() {
     private val navArgs: PageEditFragmentArgs by navArgs()
     private val viewModel: PageEditViewModel by viewModels()
     private lateinit var pageColorAdapter: PageColorAdapter
-    private lateinit var edtPageLayoutView: View
+    private var edtPageLayoutView: View? = null
     private lateinit var pageArgs : MyPageModel
-
+    private var isLayoutFlipped: Boolean = false
 
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
@@ -107,11 +109,12 @@ class PageEditFragment : Fragment() {
                 pageArgs = viewModel.getPageById(pageId)
             }
             viewModel.setPageEditState(MyPageModel.fromMyPageModel(pageArgs))
-            binding.edtPageLayout.doOnLayout {
-                edtPageLayoutView = it
+            binding.edtPageLayout.post {
+                val view = binding.edtPageLayout
+                edtPageLayoutView = binding.edtPageLayout
                 lifecycleScope.launch {
                     withContext(Dispatchers.Main){
-                        setInitialValues(pageArgs, it)
+                        setInitialValues(pageArgs, view)
                     }
                 }
 
@@ -120,7 +123,7 @@ class PageEditFragment : Fragment() {
                 //fontSizeAdapter()
                 lineColorAdapter()
                 wordSpacing()
-                lineWordSpacing(it)
+                lineWordSpacing(view)
                 dateTextTouchListener()
                 headingTextTouchListener()
 
@@ -151,6 +154,7 @@ class PageEditFragment : Fragment() {
         binding.ivTextEditView.clearFocus()
 
         val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap())
+        Log.v("TAG","${resizedBitmap.width} and ${resizedBitmap.height}" )
         viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
 
         val noteText = binding.ivTextEditView.text.toString()
@@ -417,6 +421,7 @@ class PageEditFragment : Fragment() {
     }
 
     private fun setInitialValues(page: MyPageModel, view: View) {
+
         //setting up initial text
         if (page.notesText.isEmpty()) {
             //This will fill the edit text with space
@@ -433,6 +438,13 @@ class PageEditFragment : Fragment() {
             }
         }
 
+        if(page.isLayoutFlipped){
+            flipLayout(true)
+            binding.ivTextEditView.gravity = Gravity.END
+        }else{
+            flipLayout(false)
+            binding.ivTextEditView.gravity = Gravity.START
+        }
 
         binding.headingTextView.apply {
             text = page.headingText
@@ -470,6 +482,8 @@ class PageEditFragment : Fragment() {
 
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
+        Toast.makeText(requireContext(),"${page.fontType} and ${page.fontStyle}",Toast.LENGTH_SHORT).show()
+        binding.languageAutoComplete.setText(page.language)
         binding.ivImageEditView.setBackgroundColor(page.pageColor)
 
         // Page color and font updates
@@ -607,8 +621,6 @@ class PageEditFragment : Fragment() {
     }
 
 
-
-
     private fun textAlignmentDropDown(){
 
         val iconAdapter = IconAdapter(requireContext(), alignmentOptions)
@@ -624,21 +636,21 @@ class PageEditFragment : Fragment() {
 
     private fun updateTextAlignment(position: Int) {
         val text = binding.ivTextEditView
-        when (position) {
-            0 -> {
-                // Original position
-                // Left alignment
-                text.gravity = Gravity.START
-            }
-            1 -> {
-                // Center alignment
-                text.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-            }
-            2 -> {
-                // Right alignment
-                text.gravity = Gravity.END
-            }
-        }
+//        when (position) {
+//            0 -> {
+//                // Original position
+//                // Left alignment
+//                text.gravity = Gravity.START
+//            }
+//            1 -> {
+//                // Center alignment
+//                text.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+//            }
+//            2 -> {
+//                // Right alignment
+//                text.gravity = Gravity.END
+//            }
+//        }
     }
 
     private fun fontSizeDropDown() {
@@ -670,7 +682,8 @@ class PageEditFragment : Fragment() {
             binding.demoStyleTextView.textSize = fontSizeValue
             viewModel.onEvent(PageEditEvent.UpdateFontSize(fontSizeValue))
             demoTextLine()
-            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, edtPageLayoutView)
+            val view = edtPageLayoutView ?: return
+            updateLine(viewModel.state.value.addLines, fontSizeValue, viewModel.state.value.lineColor, view )
         }
     }
 
@@ -762,20 +775,44 @@ class PageEditFragment : Fragment() {
             val fontStyle = parent.getItemAtPosition(position).toString()
             binding.boldText.setTextColor(Color.BLACK)
             binding.italicText.setTextColor(Color.BLACK)
+            viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
             updateLanguage(Constant.LANGUAGE_MAP[fontStyle])
         }
     }
 
     private fun updateLanguage(fontResourceId: Int?) {
         if (fontResourceId != null) {
-            Toast.makeText(requireContext(), "$fontResourceId", Toast.LENGTH_SHORT).show()
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
+            if(fontResourceId == R.font.arabic){
+                // Flip the layout horizontally if the chosen language is Arabic
+                    flipLayout(true)
+                    binding.ivTextEditView.gravity = Gravity.END
+                    viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(true))
+
+            } else {
+                // Restore the original layout if the chosen language is not Arabic
+                    flipLayout(false)
+                    binding.ivTextEditView.gravity = Gravity.START
+                    viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(false))
+
+            }
             binding.dateText.typeface = typeface
             binding.pageNumberTextView.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
+    }
+
+    private fun flipLayout(flip : Boolean) {
+        val rotationAngle = if (flip) 180f else 0f
+        binding.edtPageLayout.rotationY = rotationAngle
+        binding.ivTextEditView.rotationY = rotationAngle
+        binding.dateText.rotationY = rotationAngle
+        binding.headingTextView.rotationY = rotationAngle
+        binding.pageNumberTextView.rotationY = rotationAngle
+        binding.demoStyleTextView.rotationY = rotationAngle
+        isLayoutFlipped = !isLayoutFlipped
     }
 
 
@@ -790,13 +827,14 @@ class PageEditFragment : Fragment() {
     }
 
     private fun updateLineColor(color: Int?) {
+        val view = edtPageLayoutView ?: return
         if (color != null) {
             if(color == -1){
                 viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
-                updateLine(hasLine = false,viewModel.state.value.fontSize, color, edtPageLayoutView)
+                updateLine(hasLine = false,viewModel.state.value.fontSize, color, view)
             }else{
                 viewModel.onEvent(PageEditEvent.UpdateLineColor(color))
-                updateLine(hasLine = true, viewModel.state.value.fontSize, color, edtPageLayoutView)
+                updateLine(hasLine = true, viewModel.state.value.fontSize, color, view)
             }
         }
     }

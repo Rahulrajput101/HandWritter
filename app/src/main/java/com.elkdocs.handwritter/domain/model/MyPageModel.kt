@@ -20,6 +20,7 @@ data class MyPageModel(
     val notesText: String,
     val headingText : String,
     val textAlignment : Int,
+    val language: String,
     val fontStyle: Int,
     val fontType: Int,
     val fontSize: Float,
@@ -39,6 +40,7 @@ data class MyPageModel(
     val dateTextViewY: Float = 0f,
     val headingTextViewX: Float = 0f,
     val headingTextViewY: Float = 0f,
+    val isLayoutFlipped : Boolean = false,
     ) : Parcelable{
     companion object {
         fun fromMyPageModel(pageDetail: MyPageModel): PageEditState {
@@ -64,7 +66,8 @@ data class MyPageModel(
                 dateTextViewX = pageDetail.dateTextViewX,
                 dateTextViewY = pageDetail.dateTextViewY,
                 headingTextViewX = pageDetail.headingTextViewX,
-                headingTextViewY = pageDetail.headingTextViewY
+                headingTextViewY = pageDetail.headingTextViewY,
+                isLayoutFlipped = pageDetail.isLayoutFlipped
             )
         }
     }

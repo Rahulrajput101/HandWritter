@@ -168,21 +168,21 @@ object OtherUtility {
     fun resizeBitmap(originalBitmap: Bitmap): Bitmap {
         val desiredWidth = 1024
         val desiredHeight = 1832
-//        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(resizedBitmap)
-//        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
-//        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
-//        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
-//        return resizedBitmap
-        val originalWidth = originalBitmap.width
-        val originalHeight = originalBitmap.height
-
-        val scaleFactor = min(desiredWidth / originalWidth.toFloat(), desiredHeight / originalHeight.toFloat())
-        val newWidth = (originalWidth * scaleFactor).toInt()
-        val newHeight = (originalHeight * scaleFactor).toInt()
-
-        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
+        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resizedBitmap)
+        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
+        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
+        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
         return resizedBitmap
+//        val originalWidth = originalBitmap.width
+//        val originalHeight = originalBitmap.height
+//
+//        val scaleFactor = min(desiredWidth / originalWidth.toFloat(), desiredHeight / originalHeight.toFloat())
+//        val newWidth = (originalWidth * scaleFactor).toInt()
+//        val newHeight = (originalHeight * scaleFactor).toInt()
+//
+//        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
+//        return resizedBitmap
     }
 
 
