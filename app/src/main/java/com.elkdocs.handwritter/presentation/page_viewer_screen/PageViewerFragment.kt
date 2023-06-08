@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -44,6 +45,7 @@ import com.elkdocs.handwritter.util.Constant.LINE_COLOR_BLUE
 import com.elkdocs.handwritter.util.Constant.PAGE_COLOR_LIGHT_BEIGE
 import com.elkdocs.handwritter.util.OtherUtility
 import com.elkdocs.handwritter.util.OtherUtility.drawableToBitmap
+import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.PdfUtility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -223,9 +225,12 @@ class PageViewerFragment : Fragment() {
 
     private fun addingInitialPageForFirstTime() {
 
-        val pageBitmap = drawableToBitmap(
-            ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
-        )
+//        val pageBitmap = drawableToBitmap(
+//            ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
+//        )
+        val pageBitmap = ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
+            ?.toBitmap(1024,1833,Bitmap.Config.ARGB_8888)
+        //val resizeBitmap = pageBitmap?.let { resizeBitmap(it) }
         lifecycleScope.launch {
 
             viewModel.allPages2.collectLatest { it ->
@@ -274,7 +279,9 @@ class PageViewerFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-        val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
+       // val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
+        val pageBitmap = ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
+            ?.toBitmap(1024,1833,Bitmap.Config.ARGB_8888)
         binding.fabImagePicker.setOnClickListener {
             val page = MyPageModel(
                 folderId = navArgs.folderId,

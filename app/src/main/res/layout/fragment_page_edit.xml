@@ -360,21 +360,55 @@
                         app:layout_constraintTop_toBottomOf="@+id/top_view"
                         app:layout_constraintVertical_bias="0.5" />
 
-                    <TextView
-                        android:id="@+id/dateText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="26dp"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:maxLines="1"
-                        android:textStyle="bold"
-                        android:textSize="10sp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/date_text_constraint_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/left_view"
-                        app:layout_constraintHorizontal_bias="0.52"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.089999974" />
+                       >
+                        <View
+                            android:id="@+id/top_view2"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/date_text_constraint_layout"
+                            app:layout_constraintVertical_bias="0.100000000" />
+
+                        <View
+                            android:id="@+id/left_view2"
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/date_text_constraint_layout"
+                            app:layout_constraintHorizontal_bias="0.15"
+                            app:layout_constraintStart_toStartOf="@+id/date_text_constraint_layout"
+                            app:layout_constraintTop_toTopOf="parent" />
+                        <TextView
+                            android:id="@+id/dateText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:maxLines="1"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/left_view2"
+                            app:layout_constraintHorizontal_bias="0.52"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.089999974"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                     <TextView
                         android:id="@+id/pageNumberTextView"
@@ -389,7 +423,6 @@
                         android:id="@+id/headlineParentConstraint"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-
                         app:layout_constraintBottom_toTopOf="@+id/top_view"
                         app:layout_constraintEnd_toStartOf="@+id/pageNumberTextView"
                         app:layout_constraintStart_toStartOf="@+id/ivTextEditView"
@@ -399,6 +432,7 @@
                             android:id="@+id/headingTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
                             android:gravity="center"
                             android:text=" "
                             android:textSize="28sp"

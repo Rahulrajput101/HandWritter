@@ -19,7 +19,7 @@ class PageEditViewModel @Inject constructor(
     private val addNewPage: AddNewPage,
     private val drawLine: DrawLine,
     getAllPages: GetAllPages,
-    val  myRepository: MyRepository
+    private val  myRepository: MyRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PageEditState())

@@ -38,8 +38,8 @@ data class MyPageModel(
     val date : String = "",
     val dateTextViewX : Float = 0f,
     val dateTextViewY: Float = 0f,
-    val headingTextViewX: Float = 0f,
-    val headingTextViewY: Float = 0f,
+    val headingTextViewX: Float = -1f,
+    val headingTextViewY: Float = -1f,
     val isLayoutFlipped : Boolean = false,
     ) : Parcelable{
     companion object {

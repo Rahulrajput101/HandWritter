@@ -98,8 +98,11 @@ object OtherUtility {
         }
     }
     fun updateHeadingTextPosition(view: View,x: Float,y: Float){
-        view.x = x
-        view.y = y
+        if (x != -1f || y != -1f){
+            view.x = x
+            view.y = y
+        }
+
     }
 
 

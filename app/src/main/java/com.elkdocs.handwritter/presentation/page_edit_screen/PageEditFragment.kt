@@ -283,7 +283,7 @@ class PageEditFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun headingTextTouchListener(){
+    private fun headingTextTouchListener() {
 
         val gestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener(){
             override fun onSingleTapUp(e: MotionEvent): Boolean {
@@ -292,19 +292,27 @@ class PageEditFragment : Fragment() {
             }
 
         })
-
         binding.headingTextView.setOnTouchListener { v, event ->
             val parentView = binding.headlineParentConstraint
-            when(event.action){
+            val rotationAngle = if (viewModel.state.value.isLayoutFlipped) 180f else 0f
+
+            val screenX = event.rawX
+            val screenY = event.rawY
+
+            val viewX = v.x
+            val viewY = v.y
+
+            when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    offsetX = event.rawX - v.x
-                    offsetY = event.rawY - v.y
-                    startX = v.x
-                    startY = v.y
+                    offsetX = screenX - viewX
+                    offsetY = screenY - viewY
+                    startX = viewX
+                    startY = viewY
                 }
+
                 MotionEvent.ACTION_MOVE -> {
-                    val newX = event.rawX - offsetX
-                    val newY = event.rawY - offsetY
+                    val newX = screenX - offsetX
+                    val newY = screenY - offsetY
 
                     // Calculate the boundaries based on the parent view's dimensions
                     val minX = 0f
@@ -316,20 +324,20 @@ class PageEditFragment : Fragment() {
                     val constrainedX = newX.coerceIn(minX, maxX.toFloat())
                     val constrainedY = newY.coerceIn(minY, maxY.toFloat())
 
+
                     v.x = constrainedX
                     v.y = constrainedY
                 }
+
                 MotionEvent.ACTION_UP -> {
-                    viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(v.x ,v.y))
-                    // Implement any additional logic after dragging ends
-                    // Return false to propagate the touch event for click event handling
+                    viewModel.onEvent(PageEditEvent.UpdateHeadingTextPosition(v.x, v.y))
                 }
             }
+
             gestureDetector.onTouchEvent(event)
             true
         }
     }
-
 
     /**  End  **/
 
@@ -360,7 +368,7 @@ class PageEditFragment : Fragment() {
     private fun dateTextTouchListener(){
 
         binding.dateText.setOnTouchListener { v, event ->
-            val parentView = binding.edtPageLayout
+            val parentView = binding.dateTextConstraintLayout
             when(event.action){
                 MotionEvent.ACTION_DOWN -> {
                     offsetX = event.rawX - v.x
@@ -809,8 +817,8 @@ class PageEditFragment : Fragment() {
         val rotationAngle = if (flip) 180f else 0f
         binding.edtPageLayout.rotationY = rotationAngle
         binding.ivTextEditView.rotationY = rotationAngle
-        binding.dateText.rotationY = rotationAngle
-        binding.headingTextView.rotationY = rotationAngle
+        binding.headlineParentConstraint.rotationY = rotationAngle
+        binding.dateTextConstraintLayout.rotationY =rotationAngle
         binding.pageNumberTextView.rotationY = rotationAngle
         binding.demoStyleTextView.rotationY = rotationAngle
         isLayoutFlipped = !isLayoutFlipped

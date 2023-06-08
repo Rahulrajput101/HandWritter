@@ -252,13 +252,7 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
                 }
                 return true
             }
-
-
-
-
         })
-
-
 
     }
 
@@ -384,7 +378,6 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
     }
 
 
-    
     private fun setObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
