@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
@@ -171,27 +172,37 @@ object OtherUtility {
 
    fun setTypeface(textView: TextView, typeface: Typeface?) {
         textView.typeface = typeface
-    }
+   }
 
-    fun resizeBitmap(originalBitmap: Bitmap): Bitmap {
+
+    /* Scale factor is a number by which the size of any geometrical figure or shape
+     can be changed with respect to its original size.
+     It is used to draw the enlarged or reduced shape of any given figure
+     and to find the missing length, area, or volume of an enlarged or reduced figure
+     formula :-
+     Scale factor = Dimensions of the new shape ÷ Dimensions of the original shape.*/
+    fun resizeBitmap(originalBitmap: Bitmap, isLayoutFlipped: Boolean): Bitmap {
         val desiredWidth = 1024
         val desiredHeight = 1832
-        val resizedBitmap = Bitmap.createBitmap(desiredWidth, desiredHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resizedBitmap)
-        val originalRect = Rect(0, 0, originalBitmap.width, originalBitmap.height)
-        val destinationRect = Rect(0, 0, desiredWidth, desiredHeight)
-        canvas.drawBitmap(originalBitmap, originalRect, destinationRect, null)
-        return resizedBitmap
-//        val originalWidth = originalBitmap.width
-//        val originalHeight = originalBitmap.height
-//
-//        val scaleFactor = min(desiredWidth / originalWidth.toFloat(), desiredHeight / originalHeight.toFloat())
-//        val newWidth = (originalWidth * scaleFactor).toInt()
-//        val newHeight = (originalHeight * scaleFactor).toInt()
-//
-//        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
-//        return resizedBitmap
+
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        val scaleFactor =
+            min(desiredWidth / originalWidth.toFloat(), desiredHeight / originalHeight.toFloat())
+        val newWidth = (originalWidth * scaleFactor).toInt()
+        val newHeight = (originalHeight * scaleFactor).toInt()
+
+        val matrix = Matrix()
+        matrix.setScale(scaleFactor, scaleFactor)
+        if (isLayoutFlipped) {
+            matrix.postScale(-1f, 1f)
+        }
+
+        val resizedBitmap =
+            Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
+        val finalBitmap = Bitmap.createScaledBitmap(resizedBitmap, newWidth, newHeight, true)
+
+        return finalBitmap
     }
-
-
 }

@@ -15,7 +15,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
             android:orientation="vertical">
 
 
@@ -23,7 +22,7 @@
                 android:id="@+id/saved_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +101,6 @@
                     android:layout_gravity="bottom|end"
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="12dp"
-                    android:backgroundTint="@android:color/white"
                     android:contentDescription="TODO"
                     android:elevation="5dp"
                     android:src="@drawable/baseline_add_24"

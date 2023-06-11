@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.data.data_source.MyDatabase
 import com.elkdocs.handwritter.data.repository.MyRepositoryImp
 import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
+import com.elkdocs.handwritter.util.Constant.APP_THEME_PREF
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import com.elkdocs.handwritter.util.Constant.PAGE_EDIT_STATE_PREF
 import com.elkdocs.handwritter.util.Constant.SHARED_PREFERENCE_NAME
@@ -56,21 +58,15 @@ object AppModule {
     @Singleton
     fun provideTypeofRecyclerView(sharedPreferences: SharedPreferences) =
         sharedPreferences.getBoolean(IS_LINEAR,true)
-
     @Provides
     @Singleton
-    @Named("pageEditState")
-    fun providePageEditStateSharedPreferences(
+    @Named("theme")
+    fun provideAppThemeSharedPreferences(
         @ApplicationContext app: Context
     ): SharedPreferences {
-        return app.getSharedPreferences(PAGE_EDIT_STATE_PREF, Context.MODE_PRIVATE)
+        return app.getSharedPreferences(APP_THEME_PREF, Context.MODE_PRIVATE)
     }
 
-//    @Provides
-//    @Singleton
-//    @Named("myPageRepository")
-//    fun provideMyPageRepository(db : MyDatabase) : MyPageRepository {
-//        return MyPageRepositoryImp(db.myPageDao())
-//    }
+
 }
 

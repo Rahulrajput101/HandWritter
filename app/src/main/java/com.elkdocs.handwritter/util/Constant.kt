@@ -153,6 +153,7 @@ object Constant {
     //sharedPref
     const val SHARED_PREFERENCE_NAME = "shared_pref"
     const val IS_LINEAR = " KEY_LOOK"
+    const val APP_THEME_PREF = "app_theme_pref"
 
     const val PAGE_EDIT_STATE_PREF = "page_edit_state_pref"
 

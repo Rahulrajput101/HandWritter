@@ -2,8 +2,10 @@ package com.elkdocs.handwritter.presentation.folder_screen
 
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -17,6 +19,7 @@ import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -29,11 +32,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.CustomPopupMenuBinding
+import com.elkdocs.handwritter.databinding.DialogInkColorBinding
 import com.elkdocs.handwritter.databinding.DialogRenameFolderBinding
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.presentation.MainActivity
+import com.elkdocs.handwritter.presentation.page_edit_screen.InkColorAdapter
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
+import com.elkdocs.handwritter.util.Constant.APP_THEME_PREF
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import com.elkdocs.handwritter.util.PdfUtility.createPdf
 import com.elkdocs.handwritter.util.PdfUtility.downloadPdfToGallery
@@ -51,6 +57,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
+import javax.inject.Named
 
 
 @AndroidEntryPoint
@@ -64,6 +71,10 @@ class MainFragment : Fragment(),MenuProvider {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    @Named("theme")
+     lateinit var appThemePref: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +82,8 @@ class MainFragment : Fragment(),MenuProvider {
         
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(layoutInflater)
+        //setThemeColor(appThemePref.getInt(APP_THEME_PREF,R.style.AppTheme))
+
         val menuHost : MenuHost = requireActivity()
         menuHost.addMenuProvider(this,viewLifecycleOwner, Lifecycle.State.RESUMED)
 
@@ -108,6 +121,9 @@ class MainFragment : Fragment(),MenuProvider {
                 }
                 R.id.item2 -> { Toast.makeText(requireContext(),"2",Toast.LENGTH_SHORT).show() }
                 R.id.item3 -> { Toast.makeText(requireContext(),"3",Toast.LENGTH_SHORT).show() }
+                R.id.item4 -> {
+                    themeDialog()
+                }
             }
             true
         }
@@ -240,6 +256,7 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if(query != null){
                    searchedFolder(query)
+
                 }
                 return true
             }
@@ -254,6 +271,12 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             }
         })
 
+    }
+    override fun onResume() {
+        super.onResume()
+        binding.searchView.setQuery("", false)
+        binding.searchView.clearFocus()
+        binding.searchView.isIconified = true
     }
 
     fun searchedFolder(folderName: String){
@@ -413,5 +436,31 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
         binding.closeImageView.isVisible = isEnabled
         adapter.notifyDataSetChanged()
     }
+
+    private fun themeDialog() {
+        val dialogBinding = DialogInkColorBinding.inflate(layoutInflater)
+        dialogBinding.inkColorDialogTitle.setText("Select a theme")
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        val themesAdapter = ThemesAdapter{ theme ->
+            setThemeColor(theme.themeStyle)
+            dialog.dismiss()
+        }
+
+        dialogBinding.inkColorDialogRecyclerView.adapter = themesAdapter
+        dialogBinding.inkColorDialogRecyclerView.layoutManager = GridLayoutManager(requireContext(), 5)
+
+        dialog.show()
+    }
+
+    private fun setThemeColor(themeId : Int){
+        appThemePref.edit().putInt(APP_THEME_PREF,themeId).apply()
+
+         requireActivity().recreate()
+
+    }
+
 
 }

@@ -96,5 +96,11 @@
     //lineColorOfPage
     <color name="purple_line_color">#B2B1D3</color>
 
+    //background color
+    <color name ="background_screen_color">@android:color/black</color>
+
+    //Icon Tint
+    <color name="icon_tint_color">@android:color/white</color>
+
 
 </resources>

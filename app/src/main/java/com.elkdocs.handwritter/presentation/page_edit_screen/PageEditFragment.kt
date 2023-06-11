@@ -92,9 +92,7 @@ class PageEditFragment : Fragment() {
     private var startX: Float = 0f
     private var startY: Float = 0f
 
-    @Inject
-    @Named("pageEditState")
-    lateinit var pageEditStatePrefs: SharedPreferences
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -154,8 +152,7 @@ class PageEditFragment : Fragment() {
     private fun savePageAndNavigateUp() {
         binding.ivTextEditView.clearFocus()
 
-        val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap())
-        Log.v("TAG","${resizedBitmap.width} and ${resizedBitmap.height}" )
+        val resizedBitmap = resizeBitmap(binding.edtPageLayout.drawToBitmap(),viewModel.state.value.isLayoutFlipped)
         viewModel.onEvent(PageEditEvent.UpdateBitmap(resizedBitmap))
 
         val noteText = binding.ivTextEditView.text.toString()
@@ -450,9 +447,11 @@ class PageEditFragment : Fragment() {
         if(page.isLayoutFlipped){
             flipLayout(true)
             binding.ivTextEditView.gravity = Gravity.END
+            binding.demoStyleTextView.gravity = Gravity.END
         }else{
             flipLayout(false)
             binding.ivTextEditView.gravity = Gravity.START
+            binding.demoStyleTextView.gravity = Gravity.START
         }
 
         binding.headingTextView.apply {
@@ -491,8 +490,8 @@ class PageEditFragment : Fragment() {
 
         binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
-        Toast.makeText(requireContext(),"${page.fontType} and ${page.fontStyle}",Toast.LENGTH_SHORT).show()
         binding.languageAutoComplete.setText(page.language)
+        viewModel.onEvent(PageEditEvent.UpdateLanguage(page.language))
         binding.ivImageEditView.setBackgroundColor(page.pageColor)
 
         // Page color and font updates
@@ -797,12 +796,14 @@ class PageEditFragment : Fragment() {
                 // Flip the layout horizontally if the chosen language is Arabic
                     flipLayout(true)
                     binding.ivTextEditView.gravity = Gravity.END
+                    binding.demoStyleTextView.gravity = Gravity.END
                     viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(true))
 
             } else {
                 // Restore the original layout if the chosen language is not Arabic
                     flipLayout(false)
                     binding.ivTextEditView.gravity = Gravity.START
+                     binding.demoStyleTextView.gravity = Gravity.START
                     viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(false))
 
             }
@@ -820,7 +821,7 @@ class PageEditFragment : Fragment() {
         binding.headlineParentConstraint.rotationY = rotationAngle
         binding.dateTextConstraintLayout.rotationY =rotationAngle
         binding.pageNumberTextView.rotationY = rotationAngle
-        binding.demoStyleTextView.rotationY = rotationAngle
+        //binding.demoStyleTextView.rotationY = rotationAngle
         isLayoutFlipped = !isLayoutFlipped
     }
 

@@ -37,6 +37,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
+                        app:cardBackgroundColor="@android:color/white"
                         >
 
                         <ImageView
@@ -70,7 +71,8 @@
                                 android:ellipsize="end"
                                 android:maxLines="1"
                                 android:gravity="start"
-                                android:text="folderName" />
+                                android:text="folderName"
+                                android:textColor="@android:color/black"/>
 
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/et_folder_name_list_view"
@@ -90,7 +92,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="start"
                             android:text="count"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            android:textColor="@android:color/black"/>
 
                         <TextView
                             android:id="@+id/tv_folder_last_updated_list_view"
@@ -98,7 +101,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="start"
                             android:text="12/25/22 22:50"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            android:textColor="@android:color/black"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -158,6 +162,7 @@
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="3dp"
             android:visibility="gone"
+
             />
 
 
