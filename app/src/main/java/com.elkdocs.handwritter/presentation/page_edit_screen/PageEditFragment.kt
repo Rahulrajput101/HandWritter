@@ -792,7 +792,7 @@ class PageEditFragment : Fragment() {
         if (fontResourceId != null) {
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
-            if(fontResourceId == R.font.arabic){
+            if(fontResourceId == R.font.arabic || fontResourceId == R.font.urdu){
                 // Flip the layout horizontally if the chosen language is Arabic
                     flipLayout(true)
                     binding.ivTextEditView.gravity = Gravity.END

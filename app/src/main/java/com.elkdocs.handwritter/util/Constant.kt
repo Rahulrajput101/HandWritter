@@ -5,6 +5,7 @@ import com.elkdocs.handwritter.R
 
 object Constant {
 
+    //English
     const val SHADOWS_INTO_LIGHT_REGULAR = "Shadows Into Light Regular"
     const val TILLANA_REGULAR = "Tillana Regular"
     const val INDIE_FLOWER_REGULAR = "Zeyada Regular"
@@ -13,9 +14,18 @@ object Constant {
     const val PERMANENT_MARKER = "Permanent Marker"
     const val SACRAMENTO_REGULAR = "Sacramento Regular"
 
+    //Hindi
+    //Arabic
+    //Russian
+    //Urdu
+    //Philippines
+
     const val English = "English"
     const val Hindi = "Hindi"
-    const val ARABIC = "Arabic"
+    const val Arabic = "Arabic"
+    const val Russian = "Russian"
+    const val Urdu = "Urdu"
+    const val Filipino = "Filipino"
 
     val FONT_STYLES_MAP = mapOf(
         SHADOWS_INTO_LIGHT_REGULAR to R.font.shadows_into_light_regular,
@@ -39,13 +49,16 @@ object Constant {
     val LANGUAGE_MAP = mapOf(
         English to R.font.caveat_variablefont_wght,
         Hindi to R.font.hindi,
-        ARABIC to R.font.arabic
-
+        Arabic to R.font.arabic,
+        Russian to R.font.russian,
+        Urdu to R.font.urdu,
+        Filipino to R.font.filipino,
     )
     val REVERSE_LANGUAGE_MAP = mapOf(
         R.font.caveat_variablefont_wght to English,
         R.font.hindi to Hindi,
-        R.font.arabic to ARABIC
+        R.font.arabic to Arabic,
+        R.font.russian to Russian
     )
 
     const val FONT_SIZE_12 = 0
