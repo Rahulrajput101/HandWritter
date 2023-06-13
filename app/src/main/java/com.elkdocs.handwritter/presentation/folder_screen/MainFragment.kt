@@ -162,54 +162,56 @@ class MainFragment : Fragment(),MenuProvider {
     }
 
 
-private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
-    val bottomSheetDialog = BottomSheetDialog(requireContext())
-    val dialogBinding = CustomPopupMenuBinding.inflate(layoutInflater)
-    bottomSheetDialog.setContentView(dialogBinding.root)
-    dialogBinding.folderName.text = folderName
+    private fun popupMenu(id: Long, folderName: String, itemImageView: ImageView) {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val dialogBinding = CustomPopupMenuBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(dialogBinding.root)
+        dialogBinding.folderName.text = folderName
 
-     dialogBinding.itemDownload.setOnClickListener {
-        getPdfFile(id,folderName) { pdfFile ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
+        dialogBinding.itemDownload.setOnClickListener {
+            getPdfFile(id, folderName) { pdfFile ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
 
-                withContext(Dispatchers.Main) {
-                    if (isSuccessful) {
-                        Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT).show()
+                    withContext(Dispatchers.Main) {
+                        if (isSuccessful) {
+                            Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
             }
+            bottomSheetDialog.dismiss()
         }
-        bottomSheetDialog.dismiss()
-    }
 
-    dialogBinding.itemShare.setOnClickListener {
-        getPdfFile(id,folderName){
-            sharePdf(requireContext(),it)
+        dialogBinding.itemShare.setOnClickListener {
+            getPdfFile(id, folderName) {
+                sharePdf(requireContext(), it)
+            }
+            bottomSheetDialog.dismiss()
         }
-        bottomSheetDialog.dismiss()
-    }
 
-    dialogBinding.itemPdf.setOnClickListener {
-        getPdfFile(id,folderName){
-            openPdfFile(requireContext(),it)
+        dialogBinding.itemPdf.setOnClickListener {
+            getPdfFile(id, folderName) {
+                openPdfFile(requireContext(), it)
+            }
+            bottomSheetDialog.dismiss()
         }
-        bottomSheetDialog.dismiss()
-    }
 
-    dialogBinding.itemRename.setOnClickListener {
-         renameFolderDialog(folderName,id)
-         bottomSheetDialog.dismiss()
-    }
+        dialogBinding.itemRename.setOnClickListener {
+            renameFolderDialog(folderName, id)
+            bottomSheetDialog.dismiss()
+        }
 
-    dialogBinding.itemDelete.setOnClickListener {
-         showDeleteDialog(id)
-        bottomSheetDialog.dismiss()
+        dialogBinding.itemDelete.setOnClickListener {
+            showDeleteDialog(id)
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
     }
-    bottomSheetDialog.show()
-}
     private fun getPdfFile(folderId : Long, folderName : String,pdfFile : (file : File) -> Unit, ){
         lifecycleScope.launch {
             val pages = viewModel.getAllPagesById(folderId)
@@ -247,7 +249,7 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             adapter.notifyDataSetChanged()
         }
 
-        binding.closeImageView.setOnClickListener {
+        binding.leftBack.setOnClickListener {
             setSelectModeEnabled(false)
             adapter.clearSelectedItems()
         }
@@ -437,11 +439,13 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
         binding.checkFolderImageView.isVisible = !isEnabled
         binding.gridImageView.isVisible = !isEnabled
         binding.addFolderImageView.isVisible = !isEnabled
-        binding.allDocsHeadingTextView.isVisible =!isEnabled
+//        binding.allDocsHeadingTextView.isVisible = !isEnabled
         binding.fabMain.isVisible = !isEnabled
+        binding.menuIcon.isVisible = !isEnabled
+        binding.leftBack.isVisible = isEnabled
         binding.folderDeleteImageView.isVisible = isEnabled
         binding.selectAllImageView.isVisible = isEnabled
-        binding.closeImageView.isVisible = isEnabled
+       // binding.closeImageView.isVisible = isEnabled
         adapter.notifyDataSetChanged()
     }
 
@@ -452,66 +456,92 @@ private fun popupMenu(id: Long, folderName : String ,itemImageView: ImageView) {
             .setView(dialogBinding.root)
             .create()
 
-        val themesAdapter = ThemesAdapter{ theme ->
+        val themesAdapter = ThemesAdapter { theme ->
             setThemeColor(theme.themeStyle)
             dialog.dismiss()
         }
 
         dialogBinding.inkColorDialogRecyclerView.adapter = themesAdapter
-        dialogBinding.inkColorDialogRecyclerView.layoutManager = GridLayoutManager(requireContext(), 5)
+        dialogBinding.inkColorDialogRecyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 5)
 
         dialog.show()
     }
 
-    private fun setThemeColor(themeId : Int){
-        appThemePref.edit().putInt(APP_THEME_PREF,themeId).apply()
+    private fun setThemeColor(themeId: Int) {
+        appThemePref.edit().putInt(APP_THEME_PREF, themeId).apply()
 
-         requireActivity().recreate()
+        requireActivity().recreate()
 
     }
 
-    private fun setIconColorByTheme(){
-        when(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme)){
-            R.style.AppTheme -> {
-                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-              //  binding.root.findViewById<ImageView>(R.id.iv_more_options_list_view).setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
+    //    private fun setIconColorByTheme(){
+//        when(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme)){
+//            R.style.AppTheme -> {
+//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
+//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
+//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
+//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
+//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer))
+//
+//
+//            }
+//            R.style.AppTheme_Green -> {
+//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
+//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
+//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
+//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
+//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer2))
+//
+//            }
+//            R.style.AppTheme_pink -> {
+//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
+//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
+//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
+//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
+//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer3))
+//
+//            }
+//            R.style.AppTheme_teal -> {
+//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
+//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
+//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
+//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
+//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer4))
+//
+//            }
+//
+//            R.style.AppTheme_purple -> {
+//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
+//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
+//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
+//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
+//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer5))
+//            }
+//
+//        }
+    //  }
+    private fun setIconColorByTheme() {
 
-            }
-            R.style.AppTheme_Green -> {
-                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-              //  binding.root.findViewById<ImageView>(R.id.iv_more_options_list_view).setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-            }
-            R.style.AppTheme_pink -> {
-                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-                //binding.root.findViewById<ImageView>(R.id.iv_more_options_list_view).setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-            }
-            R.style.AppTheme_teal -> {
-                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-               // binding.root.findViewById<ImageView>(R.id.iv_more_options_list_view).setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-            }
+        val colorResId = when (appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_teal)) {
+            R.style.AppTheme -> R.color.md_theme_light_tertiaryContainer
+            R.style.AppTheme_Green -> R.color.md_theme_light_tertiaryContainer2
+            R.style.AppTheme_pink -> R.color.md_theme_light_tertiaryContainer3
+            R.style.AppTheme_teal -> R.color.md_theme_light_tertiaryContainer4
+            R.style.AppTheme_purple -> R.color.md_theme_light_tertiaryContainer5
+            else -> R.color.md_theme_light_tertiaryContainer4
+        }
 
-            R.style.AppTheme_purple -> {
-                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-            }
+        val color = ContextCompat.getColor(requireContext(), colorResId)
 
+        with(binding) {
+            checkFolderImageView.setColorFilter(color)
+            gridImageView.setColorFilter(color)
+            addFolderImageView.setColorFilter(color)
+            menuIcon.setColorFilter(color)
+            //selectAllImageView.setColorFilter(color)
+            leftBack.setColorFilter(color)
         }
     }
-
-
 
 }

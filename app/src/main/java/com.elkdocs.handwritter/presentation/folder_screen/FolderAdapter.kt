@@ -112,8 +112,8 @@ class FolderAdapter(
                     val calendar = Calendar.getInstance().apply {
                         timeInMillis = folder.lastUpdated
                     }
-                    val date = SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(calendar.time)
-
+                 //   val date = SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(calendar.time)
+                    val date = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.getDefault()).format(calendar.time)
                     binding.tvFolderLastUpdatedListView.text = date
                     binding.listMainCheckbox.isChecked = folder.isSelected
                     binding.ivMoreOptionsListView.isVisible = !isSelectModeEnabled
@@ -149,8 +149,8 @@ class FolderAdapter(
                         timeInMillis = folder.lastUpdated
                     }
 
-                    val date = SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(calendar.time)
-                    binding.tvFolderLastUpdatedGridView.text = date
+                    val date = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.getDefault()).format(calendar.time)
+                    binding.tvFolderLastUpdatedGridView.text =date
                     binding.gridMainCheckbox.isChecked = folder.isSelected
                     binding.ivMoreOptions.isVisible =!isSelectModeEnabled
 

@@ -9,7 +9,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginEnd="4dp">
 
         <LinearLayout
@@ -55,13 +54,13 @@
                                 android:id="@+id/tv_folder_name_list_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="15dp"
+                                android:layout_marginEnd="5dp"
                                 android:ellipsize="end"
                                 android:fontFamily="@font/work_sans"
                                 android:textStyle="bold"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:gravity="start"
-                                android:maxWidth="120dp"
+                                android:maxWidth="160dp"
                                 android:maxLines="1"
                                 android:text="folderName"
                                 android:textColor="@android:color/black" />
@@ -92,12 +91,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="10sp"
-                                android:text="Date created :"
-                                 />
                             <TextView
                                 android:id="@+id/tv_folder_last_updated_list_view"
                                 android:layout_width="match_parent"
@@ -163,11 +156,10 @@
             android:id = "@+id/list_main_checkbox"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="end|center"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="3dp"
             android:visibility="gone"
-
             />
 
 
