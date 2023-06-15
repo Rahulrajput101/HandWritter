@@ -14,6 +14,8 @@ object Constant {
     const val PERMANENT_MARKER = "Permanent Marker"
     const val SACRAMENTO_REGULAR = "Sacramento Regular"
 
+    const val PHILIPINE1 = "Philipine1"
+
     //Hindi
     //Arabic
     //Russian
@@ -25,7 +27,7 @@ object Constant {
     const val Arabic = "Arabic"
     const val Russian = "Russian"
     const val Urdu = "Urdu"
-    const val Filipino = "Filipino"
+    const val PHILIPINE = "Philipine"
 
     val FONT_STYLES_MAP = mapOf(
         SHADOWS_INTO_LIGHT_REGULAR to R.font.shadows_into_light_regular,
@@ -46,13 +48,20 @@ object Constant {
         R.font.sacramento_regular to SACRAMENTO_REGULAR
     )
 
+    val PH_FONT_STYLE_MAP = mapOf(
+       PHILIPINE1 to R.font.philipine1
+    )
+    val REV_PH_FONT_STYLE_MAP = mapOf(
+        R.font.philipine1 to PHILIPINE1
+    )
+
     val LANGUAGE_MAP = mapOf(
         English to R.font.caveat_variablefont_wght,
         Hindi to R.font.hindi,
         Arabic to R.font.arabic,
         Russian to R.font.russian,
         Urdu to R.font.urdu,
-        Filipino to R.font.filipino,
+        PHILIPINE to R.font.philipine1,
     )
     val REVERSE_LANGUAGE_MAP = mapOf(
         R.font.caveat_variablefont_wght to English,

@@ -50,12 +50,15 @@ import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Compa
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.English
 import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
+import com.elkdocs.handwritter.util.Constant.PHILIPINE
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
+import com.elkdocs.handwritter.util.Constant.REV_PH_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
@@ -271,12 +274,30 @@ class PageEditFragment : Fragment() {
     }
 
     private fun updateUnderlineHeadingTextView(underline: Boolean) {
-        binding.headingTextView.text = viewModel.state.value.headingText
+        binding.headingTextView.text = viewModel.state.value.headingText+" "
+        val spannableString = SpannableString(binding.headingTextView.text)
+        val underlineSpan = spannableString.getSpans(0,binding.headingTextView.text.length-1,UnderlineSpan::class.java)
         if (underline) {
-            binding.headingTextView.paintFlags =binding.headingTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            spannableString.setSpan(UnderlineSpan(), 0 , binding.headingTextView.text.length-1 ,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            //binding.headingTextView.paintFlags =binding.headingTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         } else {
-            binding.headingTextView.paintFlags = binding.headingTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
+            for(span in underlineSpan ){
+                spannableString.removeSpan(span)
+            }
+           // binding.headingTextView.paintFlags = binding.headingTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
         }
+        binding.headingTextView.setText(spannableString)
+
+//        val spannableString = SpannableString(text)
+//        val underlineSpans = spannableString.getSpans(0, length, UnderlineSpan::class.java)
+//        if (underline) {
+//            spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        } else {
+//            for (span in underlineSpans) {
+//                spannableString.removeSpan(span)
+//            }
+//        }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -488,7 +509,13 @@ class PageEditFragment : Fragment() {
             Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
 
-        binding.fontStyleAutoComplete.setText(REVERSE_FONT_STYLE_MAP[page.fontStyle])
+       val selectedFont = when(page.language) {
+            English -> REVERSE_FONT_STYLE_MAP[page.fontStyle]
+            PHILIPINE -> REV_PH_FONT_STYLE_MAP[page.fontStyle]
+            else -> ""
+        }
+
+        binding.fontStyleAutoComplete.setText(selectedFont)
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
         binding.languageAutoComplete.setText(page.language)
         viewModel.onEvent(PageEditEvent.UpdateLanguage(page.language))
@@ -749,13 +776,20 @@ class PageEditFragment : Fragment() {
     }
 
     private fun fontStyleAdapter() {
-        val fontStyles = resources.getStringArray(R.array.font_styles_array)
+
+        val fontStyles =when(viewModel.state.value.language){
+            English ->  resources.getStringArray(R.array.font_styles_array)
+            PHILIPINE -> resources.getStringArray(R.array.ph_styles_array)
+            else -> resources.getStringArray(R.array.font_styles_array)
+        }
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
+        binding.fontStyleAutoComplete.setText(arrayAdapter.getItem(0))
         binding.fontStyleAutoComplete.setAdapter(arrayAdapter)
         binding.fontStyleAutoComplete.setOnItemClickListener { parent, view, position, id ->
             val fontStyle = parent.getItemAtPosition(position).toString()
             binding.boldText.setTextColor(Color.BLACK)
             binding.italicText.setTextColor(Color.BLACK)
+            Toast.makeText(requireContext(),fontStyle,Toast.LENGTH_SHORT).show()
             updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
         }
     }
@@ -785,6 +819,8 @@ class PageEditFragment : Fragment() {
             binding.italicText.setTextColor(Color.BLACK)
             viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
             updateLanguage(Constant.LANGUAGE_MAP[fontStyle])
+
+            fontStyleAdapter()
         }
     }
 
@@ -964,6 +1000,7 @@ class PageEditFragment : Fragment() {
                 val spacingValue = progress.toFloat() / 100
                 binding.ivTextEditView.letterSpacing = spacingValue
                 binding.demoStyleTextView.letterSpacing = spacingValue
+                binding.headingTextView.letterSpacing = spacingValue
                 viewModel.onEvent(PageEditEvent.UpdateLetterSpacing(spacingValue))
             }
 

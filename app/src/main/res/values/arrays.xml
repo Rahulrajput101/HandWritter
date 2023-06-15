@@ -9,8 +9,12 @@
         <item>Dancing Script </item>
         <item>Permanent Marker</item>
         <item>Sacramento Regular</item>
-
     </string-array>
+
+     <string-array name = "ph_styles_array">
+         <item>Philipine1</item>
+     </string-array>
+
     <string-array name="font_sizes_array">
         <item>12.0</item>
         <item>14.0</item>
@@ -51,7 +55,7 @@
         <item>Arabic</item>
         <item>Russian</item>
         <item>Urdu</item>
-        <item>Filipino</item>
+        <item>Philipine</item>
     </string-array>
 
     <string-array name="alignment_array">
