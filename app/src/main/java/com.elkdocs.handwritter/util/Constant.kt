@@ -16,6 +16,10 @@ object Constant {
 
     const val PHILIPINE1 = "Philipine1"
 
+    const val ARABIC_1 = "Arabic 1"
+    const val ARABIC_2 = "Arabic 2"
+
+
     //Hindi
     //Arabic
     //Russian
@@ -53,6 +57,15 @@ object Constant {
     )
     val REV_PH_FONT_STYLE_MAP = mapOf(
         R.font.philipine1 to PHILIPINE1
+    )
+
+    val Ar_FONT_STYLE_MAP = mapOf(
+         ARABIC_1 to R.font.arabic_1,
+         ARABIC_2 to R.font.arabic_2
+    )
+    val REV_Ar_FONT_STYLE_MAP = mapOf(
+        R.font.arabic_1 to ARABIC_1,
+        R.font.arabic_2 to ARABIC_2,
     )
 
     val LANGUAGE_MAP = mapOf(

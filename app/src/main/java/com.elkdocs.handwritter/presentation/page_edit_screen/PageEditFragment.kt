@@ -50,6 +50,7 @@ import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Compa
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.Arabic
 import com.elkdocs.handwritter.util.Constant.English
 import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
@@ -58,6 +59,7 @@ import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
+import com.elkdocs.handwritter.util.Constant.REV_Ar_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REV_PH_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
@@ -512,6 +514,7 @@ class PageEditFragment : Fragment() {
        val selectedFont = when(page.language) {
             English -> REVERSE_FONT_STYLE_MAP[page.fontStyle]
             PHILIPINE -> REV_PH_FONT_STYLE_MAP[page.fontStyle]
+            Arabic -> REV_Ar_FONT_STYLE_MAP[page.fontStyle]
             else -> ""
         }
 
@@ -780,6 +783,7 @@ class PageEditFragment : Fragment() {
         val fontStyles =when(viewModel.state.value.language){
             English ->  resources.getStringArray(R.array.font_styles_array)
             PHILIPINE -> resources.getStringArray(R.array.ph_styles_array)
+            Arabic -> resources.getStringArray(R.array.ar_styles_array)
             else -> resources.getStringArray(R.array.font_styles_array)
         }
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
@@ -790,7 +794,14 @@ class PageEditFragment : Fragment() {
             binding.boldText.setTextColor(Color.BLACK)
             binding.italicText.setTextColor(Color.BLACK)
             Toast.makeText(requireContext(),fontStyle,Toast.LENGTH_SHORT).show()
-            updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+
+             when(viewModel.state.value.language){
+                 English ->  updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+                 PHILIPINE -> updateFontStyle(Constant.PH_FONT_STYLE_MAP[fontStyle])
+                 Arabic ->  updateFontStyle(Constant.Ar_FONT_STYLE_MAP[fontStyle])
+                 else ->  updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+             }
+           // updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
         }
     }
 
