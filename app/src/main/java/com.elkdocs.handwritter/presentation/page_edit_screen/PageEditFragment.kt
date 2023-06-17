@@ -56,11 +56,13 @@ import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.PHILIPINE
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
-import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
 import com.elkdocs.handwritter.util.Constant.REV_Ar_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REV_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REV_PH_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REV_RS_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.Russian
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
@@ -99,12 +101,14 @@ class PageEditFragment : Fragment() {
 
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
+
         //taking the saved details of the page for setup the ui
         val pageId = navArgs.pageId
 
@@ -512,11 +516,14 @@ class PageEditFragment : Fragment() {
         }
 
        val selectedFont = when(page.language) {
-            English -> REVERSE_FONT_STYLE_MAP[page.fontStyle]
+            English -> REV_FONT_STYLE_MAP[page.fontStyle]
             PHILIPINE -> REV_PH_FONT_STYLE_MAP[page.fontStyle]
             Arabic -> REV_Ar_FONT_STYLE_MAP[page.fontStyle]
+            Russian -> REV_RS_FONT_STYLE_MAP[page.fontStyle]
             else -> ""
         }
+
+        Toast.makeText(requireContext(),selectedFont,Toast.LENGTH_SHORT).show()
 
         binding.fontStyleAutoComplete.setText(selectedFont)
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
@@ -779,32 +786,33 @@ class PageEditFragment : Fragment() {
     }
 
     private fun fontStyleAdapter() {
-
-        val fontStyles =when(viewModel.state.value.language){
-            English ->  resources.getStringArray(R.array.font_styles_array)
-            PHILIPINE -> resources.getStringArray(R.array.ph_styles_array)
-            Arabic -> resources.getStringArray(R.array.ar_styles_array)
-            else -> resources.getStringArray(R.array.font_styles_array)
-        }
+        val fontStyles = getFontListForLanguage(viewModel.state.value.language)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
-        binding.fontStyleAutoComplete.setText(arrayAdapter.getItem(0))
         binding.fontStyleAutoComplete.setAdapter(arrayAdapter)
         binding.fontStyleAutoComplete.setOnItemClickListener { parent, view, position, id ->
             val fontStyle = parent.getItemAtPosition(position).toString()
             binding.boldText.setTextColor(Color.BLACK)
             binding.italicText.setTextColor(Color.BLACK)
-            Toast.makeText(requireContext(),fontStyle,Toast.LENGTH_SHORT).show()
 
-             when(viewModel.state.value.language){
-                 English ->  updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
-                 PHILIPINE -> updateFontStyle(Constant.PH_FONT_STYLE_MAP[fontStyle])
-                 Arabic ->  updateFontStyle(Constant.Ar_FONT_STYLE_MAP[fontStyle])
-                 else ->  updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
-             }
-           // updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+            when (viewModel.state.value.language) {
+                English -> updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+                PHILIPINE -> updateFontStyle(Constant.PH_FONT_STYLE_MAP[fontStyle])
+                Arabic -> updateFontStyle(Constant.Ar_FONT_STYLE_MAP[fontStyle])
+                Russian -> updateFontStyle(Constant.RS_FONT_STYLE_MAP[fontStyle])
+                else -> updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+            }
         }
     }
 
+    private fun getFontListForLanguage(language: String): Array<String> {
+        return when (language) {
+            English -> resources.getStringArray(R.array.font_styles_array)
+            PHILIPINE -> resources.getStringArray(R.array.ph_styles_array)
+            Arabic -> resources.getStringArray(R.array.ar_styles_array)
+            Russian -> resources.getStringArray(R.array.rs_styles_array)
+            else -> resources.getStringArray(R.array.font_styles_array)
+        }
+    }
 
 
     private fun updateFontStyle(fontResourceId: Int?) {
@@ -815,14 +823,13 @@ class PageEditFragment : Fragment() {
             binding.pageNumberTextView.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
             binding.headingTextView.typeface = typeface
-
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
     }
 
     private fun languageAdapter() {
-        val fontStyles = resources.getStringArray(R.array.languages_array)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
+        val language = resources.getStringArray(R.array.languages_array)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, language)
         binding.languageAutoComplete.setAdapter(arrayAdapter)
         binding.languageAutoComplete.setOnItemClickListener { parent, view, position, id ->
             val fontStyle = parent.getItemAtPosition(position).toString()
@@ -831,6 +838,9 @@ class PageEditFragment : Fragment() {
             viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
             updateLanguage(Constant.LANGUAGE_MAP[fontStyle])
 
+            //list will change according to the language
+            val getFontStyleList = getFontListForLanguage(viewModel.state.value.language)
+            binding.fontStyleAutoComplete.setText(getFontStyleList[0])
             fontStyleAdapter()
         }
     }

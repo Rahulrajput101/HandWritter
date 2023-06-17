@@ -18,7 +18,7 @@ import java.util.Locale
 class FolderAdapter(
     val onFolderClick : (folderId : Long,folderName : String) -> Unit,
     val onFolderLongClick : (folder: MyFolderModel) -> Unit,
-    val onMoreOptionClick: (folderId: Long,folderName : String, itemImageView : ImageView) -> Unit,
+    val onMoreOptionClick: (folderId: Long,folderName : String, date : String,itemImageView : ImageView) -> Unit,
     private val isLinear : Boolean,
 ) : RecyclerView.Adapter<FolderAdapter.MyViewHolder>() {
 
@@ -96,12 +96,23 @@ class FolderAdapter(
         }
     }
 
+
+//    fun toggleSelectAll() {
+//        if (selectedItems.size == folderListWithPages.size) {
+//            selectedItems.clear()
+//        } else {
+//            selectedItems.addAll(folderListWithPages.filter { !selectedItems.contains(it) })
+//        }
+//        folderListWithPages.forEach { it.isSelected = selectedItems.contains(it) }
+//        notifyDataSetChanged()
+//    }
+
     class MyViewHolder(private val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             folder: MyFolderModel,
             isSelectModeEnabled: Boolean,
             selectedItems : ArrayList<MyFolderModel>,
-            onShareClick : (folderId : Long,folderName : String, imageView : ImageView) -> Unit) {
+            onShareClick : (folderId : Long,folderName : String,date:String, imageView : ImageView) -> Unit) {
             when (binding) {
 
                 is ItemFolderListViewBinding -> {
@@ -136,7 +147,7 @@ class FolderAdapter(
                     }
 
                     binding.ivMoreOptionsListView.setOnClickListener {
-                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,binding.ivMoreOptionsListView) }
+                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,date,binding.ivMoreOptionsListView) }
                     }
                 }
 
@@ -170,7 +181,8 @@ class FolderAdapter(
                     }
 
                     binding.ivMoreOptions.setOnClickListener {
-                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,binding.ivMoreOptions) }
+
+                        folder.folderId?.let { it1 -> onShareClick(it1,folder.folderName,date,binding.ivMoreOptions) }
                     }
                 }
                 else -> throw IllegalArgumentException("Invalid view binding")

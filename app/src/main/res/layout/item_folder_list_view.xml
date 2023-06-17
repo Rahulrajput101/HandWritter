@@ -63,7 +63,7 @@
                                 android:maxWidth="160dp"
                                 android:maxLines="1"
                                 android:text="folderName"
-                                android:textColor="@android:color/black" />
+                                />
 
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/et_folder_name_list_view"

@@ -3,6 +3,7 @@ package com.elkdocs.handwritter.data.data_source
 import androidx.room.*
 import com.elkdocs.handwritter.domain.model.MyFolderModel
 import com.elkdocs.handwritter.domain.model.MyPageModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -49,6 +50,7 @@ interface MyDao {
         // Delete the folder itself
         val folder = getMyFolder(folderId)
         deleteMyFolder(folder)
+
     }
 
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")

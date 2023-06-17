@@ -205,4 +205,8 @@ object OtherUtility {
 
         return finalBitmap
     }
+
+    fun reverseFontStyleMap(fontStyleMap: Map<String, Int>): Map<Int, String> {
+        return fontStyleMap.entries.associate { (key, value) -> value to key }
+    }
 }

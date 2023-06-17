@@ -104,8 +104,8 @@ class MainFragment : Fragment(),MenuProvider {
                     setSelectModeEnabled(true)
                 }
             },
-            onMoreOptionClick = { folderId,folderName, itemImageView ->
-                popupMenu(folderId,folderName,itemImageView)
+            onMoreOptionClick = { folderId,folderName, date ,itemImageView ->
+                popupMenu(folderId,folderName,date,itemImageView)
             },
             isLinear = isLinear
         )
@@ -131,7 +131,6 @@ class MainFragment : Fragment(),MenuProvider {
         
         setObservers()
 
-
         binding.gridImageView.setOnClickListener {
             val newIsLinear = !sharedPreferences.getBoolean(IS_LINEAR, false)
             setViewType(newIsLinear)
@@ -144,9 +143,9 @@ class MainFragment : Fragment(),MenuProvider {
                         setSelectModeEnabled(true)
                     }
                 },
-                onMoreOptionClick = { folderId,folderName, itemImageView ->
+                onMoreOptionClick = { folderId,folderName, date,itemImageView ->
                     //onShareClick(it)
-                    popupMenu(folderId,folderName,itemImageView)
+                    popupMenu(folderId,folderName,date,itemImageView)
 
                 },
                 isLinear = newIsLinear
@@ -162,11 +161,12 @@ class MainFragment : Fragment(),MenuProvider {
     }
 
 
-    private fun popupMenu(id: Long, folderName: String, itemImageView: ImageView) {
+    private fun popupMenu(id: Long, folderName: String, date : String,itemImageView: ImageView) {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val dialogBinding = CustomPopupMenuBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(dialogBinding.root)
         dialogBinding.folderName.text = folderName
+        dialogBinding.folderDateMenu.text = date
 
         dialogBinding.itemDownload.setOnClickListener {
             getPdfFile(id, folderName) { pdfFile ->
@@ -307,7 +307,6 @@ class MainFragment : Fragment(),MenuProvider {
                         it.forEach { folder ->
                             folder.folderId?.let { id ->
                                 viewModel.onEvent(FolderEvent.DeleteFolderWithPages(id)){ folderId,folderName ->
-
                                 }
                             }
                         }

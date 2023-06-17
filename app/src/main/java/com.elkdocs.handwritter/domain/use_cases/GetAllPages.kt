@@ -9,6 +9,7 @@ class GetAllPages @Inject constructor(
     private val repository: MyRepository
 ) {
     operator fun invoke(folderId : Long) : Flow<List<MyPageModel>> {
+
         return repository.getAllPages(folderId)
     }
 }

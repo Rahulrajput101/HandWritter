@@ -150,16 +150,19 @@
 
 
                 <androidx.cardview.widget.CardView
+
+                    android:id="@+id/hr_card_view_1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@color/light_grey"
+                    app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
 
                     <Spinner
+
                         android:id="@+id/dropdown_fontSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -172,6 +175,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/hr_card_view_2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -193,6 +197,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/hr_card_view_3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -235,6 +240,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/hr_card_view_4"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -256,6 +262,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/hr_card_view_5"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"

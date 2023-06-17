@@ -12,13 +12,26 @@
     </string-array>
 
      <string-array name = "ph_styles_array">
-         <item>Philipine1</item>
+         <item>Philipine 1</item>
+         <item>Philipine 2</item>
+         <item>Philipine 3</item>
+         <item>Philipine 4</item>
+         <item>Philipine 5</item>
+         <item>Philipine 6</item>
      </string-array>
 
     <string-array name = "ar_styles_array">
         <item>Arabic 1</item>
         <item>Arabic 2</item>
     </string-array>
+
+    <string-array name = "rs_styles_array">
+        <item>Russian 1</item>
+        <item>Russian 2</item>
+        <item>Russian 3</item>
+        <item>Russian 4</item>
+    </string-array>
+
 
     <string-array name="font_sizes_array">
         <item>12.0</item>
