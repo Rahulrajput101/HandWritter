@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="font_styles_array">
+        <item>Caveat Variable Font</item>
         <item>Shadows Into Light Regular</item>
         <item>Tillana Regular</item>
         <item>Zeyada Regular</item>
         <item>Indie Flower Regular</item>
-        <item>Caveat Variable Font</item>
         <item>Dancing Script </item>
         <item>Permanent Marker</item>
         <item>Sacramento Regular</item>
+        <item>Alex Brush Regular</item>
+        <item>Bilbo Regular</item>
+    </string-array>
+
+    <string-array name="hi_styles_array">
+        <item>fgUnh 1</item>
     </string-array>
 
      <string-array name = "ph_styles_array">
@@ -23,6 +29,11 @@
     <string-array name = "ar_styles_array">
         <item>Arabic 1</item>
         <item>Arabic 2</item>
+    </string-array>
+
+    <string-array name = "ur_styles_array">
+        <item>Urdu 1</item>
+        <item>Urdu 2</item>
     </string-array>
 
     <string-array name = "rs_styles_array">

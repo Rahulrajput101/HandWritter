@@ -133,7 +133,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.5"
-                        app:srcCompat="@drawable/folder_add" />
+                        app:srcCompat="@drawable/add_folder_icon" />
 
                     <ImageView
                         android:id="@+id/select_all_image_view"
@@ -161,7 +161,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/select_all_image_view"
                         app:layout_constraintEnd_toStartOf="@+id/select_all_image_view"
                         app:layout_constraintTop_toTopOf="@+id/select_all_image_view"
-                        app:srcCompat="@drawable/red_delete_icon"
+                        app:srcCompat="@drawable/baseline_delete_outline_24"
                        />
 
                     <ImageView
@@ -174,7 +174,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/add_folder_image_view"
                         app:layout_constraintEnd_toStartOf="@+id/add_folder_image_view"
                         app:layout_constraintTop_toTopOf="@+id/add_folder_image_view"
-                        app:srcCompat="@drawable/grid_list" />
+                        app:srcCompat="@drawable/grid_view_icon" />
 
 
                     <ImageView
@@ -187,7 +187,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/grid_image_view"
                         app:layout_constraintEnd_toStartOf="@+id/grid_image_view"
                         app:layout_constraintTop_toTopOf="@+id/grid_image_view"
-                        app:srcCompat="@drawable/checkmark_fill" />
+                        app:srcCompat="@drawable/check_file_icon" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

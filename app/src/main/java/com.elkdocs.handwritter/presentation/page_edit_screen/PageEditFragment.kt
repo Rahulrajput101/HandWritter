@@ -2,20 +2,15 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Layout.Alignment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.GestureDetector
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -50,19 +45,29 @@ import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Compa
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.inputDateFormat
 import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditState.Companion.outputDateFormat
 import com.elkdocs.handwritter.util.Constant
+import com.elkdocs.handwritter.util.Constant.Ar_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.Arabic
 import com.elkdocs.handwritter.util.Constant.English
 import com.elkdocs.handwritter.util.Constant.FONT_SIZES_MAP
+import com.elkdocs.handwritter.util.Constant.FONT_STYLES_MAP
+import com.elkdocs.handwritter.util.Constant.HI_FONT_STYLES_MAP
+import com.elkdocs.handwritter.util.Constant.Hindi
 import com.elkdocs.handwritter.util.Constant.INK_COLOR_MAP
+import com.elkdocs.handwritter.util.Constant.LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.PHILIPINE
+import com.elkdocs.handwritter.util.Constant.PH_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_FONT_SIZE_MAP
-import com.elkdocs.handwritter.util.Constant.REVERSE_LANGUAGE_MAP
 import com.elkdocs.handwritter.util.Constant.REVERSE_LINE_COLOR_MAP
-import com.elkdocs.handwritter.util.Constant.REV_Ar_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REV_AR_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REV_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REV_HI_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REV_PH_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.REV_RS_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.REV_UR_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.RS_FONT_STYLE_MAP
 import com.elkdocs.handwritter.util.Constant.Russian
+import com.elkdocs.handwritter.util.Constant.Ur_FONT_STYLE_MAP
+import com.elkdocs.handwritter.util.Constant.Urdu
 import com.elkdocs.handwritter.util.OtherUtility.resizeBitmap
 import com.elkdocs.handwritter.util.OtherUtility.setTypeface
 import com.elkdocs.handwritter.util.OtherUtility.spToPx
@@ -74,14 +79,11 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MOD
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Named
 
 
 @AndroidEntryPoint
@@ -487,8 +489,6 @@ class PageEditFragment : Fragment() {
             letterSpacing = page.letterSpace
         }
 
-
-
         //toggling heading button color
         val headingButtonColor = if (page.headingText.isNotEmpty()) Color.BLUE else Color.BLACK
         binding.addHeadingButton.setTextColor(headingButtonColor)
@@ -501,7 +501,6 @@ class PageEditFragment : Fragment() {
         val dateColor = if (page.date.isNotEmpty()) Color.BLUE else Color.BLACK
         binding.dateTextButton.setTextColor(dateColor)
         binding.dateText.text = page.date
-
 
         //setting up seekbars
         binding.seekbarForLetterAndWord.progress = (page.letterSpace * 100).toInt()
@@ -517,13 +516,15 @@ class PageEditFragment : Fragment() {
 
        val selectedFont = when(page.language) {
             English -> REV_FONT_STYLE_MAP[page.fontStyle]
+            Hindi -> REV_HI_FONT_STYLE_MAP[page.fontStyle]
             PHILIPINE -> REV_PH_FONT_STYLE_MAP[page.fontStyle]
-            Arabic -> REV_Ar_FONT_STYLE_MAP[page.fontStyle]
+            Arabic -> REV_AR_FONT_STYLE_MAP[page.fontStyle]
             Russian -> REV_RS_FONT_STYLE_MAP[page.fontStyle]
-            else -> ""
+            Urdu -> REV_UR_FONT_STYLE_MAP[page.fontStyle]
+            else -> REV_FONT_STYLE_MAP[page.fontStyle]
         }
 
-        Toast.makeText(requireContext(),selectedFont,Toast.LENGTH_SHORT).show()
+
 
         binding.fontStyleAutoComplete.setText(selectedFont)
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
@@ -547,25 +548,23 @@ class PageEditFragment : Fragment() {
             binding.headlineParentConstraint.post {
                 updateHeadingTextPosition(binding.headingTextView,page.headingTextViewX,page.headingTextViewY)
             }
-            //delay(500)
-
         }
 
         //updateDatePosition(page.dateTextViewX,page.dateTextViewY)
         INK_COLOR_MAP[page.inkColor]?.let {
             updateInkColor(page.inkColor, it)
         }
+
         binding.dropdownAlignment.post {
             updateTextAlignment(page.textAlignment)
             binding.dropdownAlignment.setSelection(page.textAlignment)
         }
+
         binding.dropdownFontSize.post {
             updateFontSize(page.fontSize)
             REVERSE_FONT_SIZE_MAP[page.fontSize]?.let { binding.dropdownFontSize.setSelection(it) }
-            //val p = binding.dropdownFontSize.setSelection()
         }
     }
-
 
 
     private fun updateDate(addDate : String){
@@ -589,7 +588,7 @@ class PageEditFragment : Fragment() {
             }
         } else {
             binding.dateTextButton.setTextColor(Color.BLACK)
-            binding.dateText.text =""
+            binding.dateText.text = ""
             viewModel.onEvent(PageEditEvent.UpdateDateTextPosition(0f,0f))
             viewModel.onEvent(PageEditEvent.UpdateDate(""))
         }
@@ -787,7 +786,8 @@ class PageEditFragment : Fragment() {
 
     private fun fontStyleAdapter() {
         val fontStyles = getFontListForLanguage(viewModel.state.value.language)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, fontStyles)
+        val fontMap = getFontMapForLanguage(viewModel.state.value.language)
+        val arrayAdapter = FontStyleAdapter(requireContext(),R.layout.item_drop_down,fontStyles ,fontMap)
         binding.fontStyleAutoComplete.setAdapter(arrayAdapter)
         binding.fontStyleAutoComplete.setOnItemClickListener { parent, view, position, id ->
             val fontStyle = parent.getItemAtPosition(position).toString()
@@ -795,11 +795,13 @@ class PageEditFragment : Fragment() {
             binding.italicText.setTextColor(Color.BLACK)
 
             when (viewModel.state.value.language) {
-                English -> updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
-                PHILIPINE -> updateFontStyle(Constant.PH_FONT_STYLE_MAP[fontStyle])
-                Arabic -> updateFontStyle(Constant.Ar_FONT_STYLE_MAP[fontStyle])
-                Russian -> updateFontStyle(Constant.RS_FONT_STYLE_MAP[fontStyle])
-                else -> updateFontStyle(Constant.FONT_STYLES_MAP[fontStyle])
+                English -> updateFontStyle(FONT_STYLES_MAP[fontStyle])
+                Hindi -> updateFontStyle(HI_FONT_STYLES_MAP[fontStyle])
+                PHILIPINE -> updateFontStyle(PH_FONT_STYLE_MAP[fontStyle])
+                Arabic -> updateFontStyle(Ar_FONT_STYLE_MAP[fontStyle])
+                Russian -> updateFontStyle(RS_FONT_STYLE_MAP[fontStyle])
+                Urdu -> updateFontStyle(Ur_FONT_STYLE_MAP[fontStyle])
+                else -> updateFontStyle(FONT_STYLES_MAP[fontStyle])
             }
         }
     }
@@ -807,10 +809,24 @@ class PageEditFragment : Fragment() {
     private fun getFontListForLanguage(language: String): Array<String> {
         return when (language) {
             English -> resources.getStringArray(R.array.font_styles_array)
+            Hindi -> resources.getStringArray(R.array.hi_styles_array)
             PHILIPINE -> resources.getStringArray(R.array.ph_styles_array)
             Arabic -> resources.getStringArray(R.array.ar_styles_array)
             Russian -> resources.getStringArray(R.array.rs_styles_array)
+            Urdu -> resources.getStringArray(R.array.ur_styles_array)
             else -> resources.getStringArray(R.array.font_styles_array)
+        }
+    }
+
+    private fun getFontMapForLanguage(language: String): Map<String, Int> {
+        return when (language) {
+            English -> FONT_STYLES_MAP
+            Hindi -> HI_FONT_STYLES_MAP
+            PHILIPINE -> PH_FONT_STYLE_MAP
+            Arabic -> Ar_FONT_STYLE_MAP
+            Russian -> RS_FONT_STYLE_MAP
+            Urdu -> Ur_FONT_STYLE_MAP
+            else -> FONT_STYLES_MAP
         }
     }
 
@@ -823,24 +839,46 @@ class PageEditFragment : Fragment() {
             binding.pageNumberTextView.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
             binding.headingTextView.typeface = typeface
+            binding.fontStyleAutoComplete.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
     }
 
+//    private fun languageAdapter() {
+//        val language = resources.getStringArray(R.array.languages_array)
+//        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, language)
+//        binding.languageAutoComplete.setAdapter(arrayAdapter)
+//        binding.languageAutoComplete.setOnItemClickListener { parent, view, position, id ->
+//            val fontStyle = parent.getItemAtPosition(position).toString()
+//            binding.boldText.setTextColor(Color.BLACK)
+//            binding.italicText.setTextColor(Color.BLACK)
+//            viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
+//            updateLanguage(LANGUAGE_MAP[fontStyle])
+//
+//            //list will change according to the language
+//            val getFontStyleList = getFontListForLanguage(viewModel.state.value.language)
+//            binding.fontStyleAutoComplete.setText(getFontStyleList[0])
+//
+//            fontStyleAdapter()
+//        }
+//    }
+//
+
     private fun languageAdapter() {
-        val language = resources.getStringArray(R.array.languages_array)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, language)
+        val languageArray = resources.getStringArray(R.array.languages_array)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, languageArray)
         binding.languageAutoComplete.setAdapter(arrayAdapter)
+
         binding.languageAutoComplete.setOnItemClickListener { parent, view, position, id ->
-            val fontStyle = parent.getItemAtPosition(position).toString()
+            val selectedLanguage = languageArray[position]
             binding.boldText.setTextColor(Color.BLACK)
             binding.italicText.setTextColor(Color.BLACK)
-            viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
-            updateLanguage(Constant.LANGUAGE_MAP[fontStyle])
+            viewModel.onEvent(PageEditEvent.UpdateLanguage(selectedLanguage))
+            updateLanguage(LANGUAGE_MAP[selectedLanguage])
 
-            //list will change according to the language
-            val getFontStyleList = getFontListForLanguage(viewModel.state.value.language)
-            binding.fontStyleAutoComplete.setText(getFontStyleList[0])
+            // Update the font style list based on the selected language
+            val fontStyleList = getFontListForLanguage(selectedLanguage)
+            binding.fontStyleAutoComplete.setText(fontStyleList[0])
             fontStyleAdapter()
         }
     }
@@ -867,6 +905,7 @@ class PageEditFragment : Fragment() {
             binding.dateText.typeface = typeface
             binding.pageNumberTextView.typeface = typeface
             binding.demoStyleTextView.typeface = typeface
+            binding.fontStyleAutoComplete.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
     }
@@ -878,7 +917,6 @@ class PageEditFragment : Fragment() {
         binding.headlineParentConstraint.rotationY = rotationAngle
         binding.dateTextConstraintLayout.rotationY =rotationAngle
         binding.pageNumberTextView.rotationY = rotationAngle
-        //binding.demoStyleTextView.rotationY = rotationAngle
         isLayoutFlipped = !isLayoutFlipped
     }
 

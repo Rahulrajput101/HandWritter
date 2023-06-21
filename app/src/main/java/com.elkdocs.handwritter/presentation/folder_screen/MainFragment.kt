@@ -390,8 +390,10 @@ class MainFragment : Fragment(),MenuProvider {
         sharedPreferences.edit().putBoolean(IS_LINEAR, isLinear).apply()
         if (isLinear) {
             binding.rvMyFolderListView.layoutManager = LinearLayoutManager(requireContext())
+            binding.gridImageView.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.grid_view_icon))
         } else {
             binding.rvMyFolderListView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.gridImageView.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.list_view_icon))
         }
     }
 
@@ -534,9 +536,9 @@ class MainFragment : Fragment(),MenuProvider {
         val color = ContextCompat.getColor(requireContext(), colorResId)
 
         with(binding) {
-            checkFolderImageView.setColorFilter(color)
-            gridImageView.setColorFilter(color)
-            addFolderImageView.setColorFilter(color)
+          //  checkFolderImageView.setColorFilter(color)
+           // gridImageView.setColorFilter(color)
+            //addFolderImageView.setColorFilter(color)
             menuIcon.setColorFilter(color)
             //selectAllImageView.setColorFilter(color)
             leftBack.setColorFilter(color)

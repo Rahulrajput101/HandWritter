@@ -76,10 +76,10 @@ class PageViewerAdapter(
 
     fun clearSelectedItems() {
         selectedItems.clear()
+        notifyDataSetChanged()
     }
 
     fun toggleSelectAll() {
-        Log.v("MYTAG", "Selected Item: ${selectedItems.size} Total Item: ${pageList.size}")
         if (selectedItems.size == pageList.size) {
             pageList.forEach {
                 it.isSelected = false

@@ -14,6 +14,8 @@ object Constant {
     const val DANCING_SCRIPT = "Dancing Script"
     const val PERMANENT_MARKER = "Permanent Marker"
     const val SACRAMENTO_REGULAR = "Sacramento Regular"
+    const val ALEX_BRUSH_REGULAR= "Alex Brush Regular"
+    const val BILBO_REGULAR = "Bilbo Regular"
 
     const val PHILIPINE_1 = "Philipine 1"
     const val PHILIPINE_2 = "Philipine 2"
@@ -25,12 +27,15 @@ object Constant {
     const val ARABIC_1 = "Arabic 1"
     const val ARABIC_2 = "Arabic 2"
 
+    const val URDU_1 = "Urdu 1"
+    const val URDU_2 = "Urdu 2"
+
     const val RUSSIAN_1 = "Russian 1"
     const val RUSSIAN_2 = "Russian 2"
     const val RUSSIAN_3 = "Russian 3"
     const val RUSSIAN_4 = "Russian 4"
 
-
+    const val HINDI_1 = "fgUnh 1"
 
 
     const val English = "English"
@@ -47,17 +52,15 @@ object Constant {
         CAVEAT_VARIABLE_FONT to R.font.caveat_variablefont_wght,
         DANCING_SCRIPT to R.font.dancing_script_variablefont_wght,
         PERMANENT_MARKER to R.font.permanent_marker_regular,
-        SACRAMENTO_REGULAR to R.font.sacramento_regular
+        SACRAMENTO_REGULAR to R.font.sacramento_regular,
+        ALEX_BRUSH_REGULAR to R.font.alex_brush_regular_en,
+        BILBO_REGULAR to R.font.bilbo_regular_en,
     )
-//    val REVERSE_FONT_STYLE_MAP = mapOf(
-//        R.font.shadows_into_light_regular to SHADOWS_INTO_LIGHT_REGULAR,
-//        R.font.tillana_regular to TILLANA_REGULAR,
-//        R.font.zeyada_regular to INDIE_FLOWER_REGULAR,
-//        R.font.caveat_variablefont_wght to CAVEAT_VARIABLE_FONT,
-//        R.font.dancing_script_variablefont_wght to DANCING_SCRIPT,
-//        R.font.permanent_marker_regular to PERMANENT_MARKER,
-//        R.font.sacramento_regular to SACRAMENTO_REGULAR
-//    )
+
+    val HI_FONT_STYLES_MAP = mapOf(
+        HINDI_1 to R.font.hindi
+    )
+
 
     val PH_FONT_STYLE_MAP = mapOf(
        PHILIPINE_1 to R.font.kalam_fl_en,
@@ -68,24 +71,18 @@ object Constant {
        PHILIPINE_6 to R.font.journal_fl_en,
     )
 
-//    val REV_PH_FONT_STYLE_MAP = mapOf(
-//        R.font.kalam_fl_en to PHILIPINE_1,
-//        R.font.amatic_fl_en to PHILIPINE_2,
-//        R.font.blokletters_fl to PHILIPINE_3,
-//        R.font.desyrel_fl_en to PHILIPINE_4,
-//        R.font.daniel_fl_en to PHILIPINE_5,
-//        R.font.journal_fl_en to PHILIPINE_6,
-//    )
+
 
     val Ar_FONT_STYLE_MAP = mapOf(
          ARABIC_1 to R.font.scheherazade_ar,
          ARABIC_2 to R.font.jomhuria_ar
     )
 
-//    val REV_Ar_FONT_STYLE_MAP = mapOf(
-//        R.font.scheherazade_ar to ARABIC_1,
-//        R.font.jomhuria_ar to ARABIC_2,
-//    )
+    val Ur_FONT_STYLE_MAP = mapOf(
+        URDU_1 to R.font.belal_ur,
+        URDU_2 to R.font.jjameel_ur
+    )
+
 
     val RS_FONT_STYLE_MAP = mapOf(
         RUSSIAN_1 to R.font.dejavusans_rs,
@@ -94,17 +91,13 @@ object Constant {
         RUSSIAN_4 to R.font.alice_rs,
     )
 
-//    val REV_RS_FONT_STYLE_MAP = mapOf(
-//        R.font.dejavusans_rs to RUSSIAN_1,
-//        R.font.wagnasty_rs to RUSSIAN_2,
-//        R.font.opensans_rs_en to RUSSIAN_3,
-//        R.font.alice_rs to RUSSIAN_4,
-//    )
 
     val REV_FONT_STYLE_MAP = reverseFontStyleMap(FONT_STYLES_MAP)
+    val REV_HI_FONT_STYLE_MAP = reverseFontStyleMap(HI_FONT_STYLES_MAP)
     val REV_PH_FONT_STYLE_MAP = reverseFontStyleMap(PH_FONT_STYLE_MAP)
-    val REV_Ar_FONT_STYLE_MAP = reverseFontStyleMap(Ar_FONT_STYLE_MAP)
+    val REV_AR_FONT_STYLE_MAP = reverseFontStyleMap(Ar_FONT_STYLE_MAP)
     val REV_RS_FONT_STYLE_MAP = reverseFontStyleMap(RS_FONT_STYLE_MAP)
+    val REV_UR_FONT_STYLE_MAP = reverseFontStyleMap(Ur_FONT_STYLE_MAP)
 
 
     val LANGUAGE_MAP = mapOf(
@@ -114,12 +107,6 @@ object Constant {
         Russian to R.font.dejavusans_rs,
         Urdu to R.font.urdu,
         PHILIPINE to R.font.kalam_fl_en,
-    )
-    val REVERSE_LANGUAGE_MAP = mapOf(
-        R.font.caveat_variablefont_wght to English,
-        R.font.hindi to Hindi,
-        R.font.arabic to Arabic,
-        R.font.russian to Russian
     )
 
     const val FONT_SIZE_12 = 0

@@ -12,8 +12,8 @@ interface MyDao {
     @Upsert
     suspend fun addMyFolder(myFolderModel: MyFolderModel): Long
 
-    @Delete
-    suspend fun deleteMyFolder(myFolderModel: MyFolderModel)
+    @Query("DELETE FROM my_folders WHERE folderId = :folderId")
+    suspend fun deleteMyFolder(folderId: Long)
 
 
     @Query("Select * from my_folders")
@@ -45,12 +45,12 @@ interface MyDao {
 
     @Transaction
     suspend fun deleteMyFolderWithPages(folderId: Long) {
+        // Delete the folder itself
+//        val folder = getMyFolder(folderId)
+        deleteMyFolder(folderId)
+
         // Delete all pages associated with the folder
         deletePagesByFolderId(folderId)
-        // Delete the folder itself
-        val folder = getMyFolder(folderId)
-        deleteMyFolder(folder)
-
     }
 
     @Query("UPDATE my_folders SET pageCount = :pageCount WHERE folderId = :folderId")

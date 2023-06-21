@@ -3,6 +3,7 @@ package com.elkdocs.handwritter.presentation.page_viewer_screen
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
 import com.elkdocs.handwritter.domain.use_cases.DeleteMyFolderWithPages
 import com.elkdocs.handwritter.domain.use_cases.DeletePage
@@ -84,6 +85,10 @@ class PageViewerViewModel @Inject constructor(
 
     suspend fun deleteFolder(folderId: Long){
         deleteMyFolderWithPages(folderId)
+    }
+
+    suspend fun deleteAll(page : MyPageModel){
+        deletePage(page)
     }
 
 
