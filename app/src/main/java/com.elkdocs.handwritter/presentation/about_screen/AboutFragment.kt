@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentAboutBinding
 import com.elkdocs.handwritter.databinding.FragmentMainBinding
@@ -19,6 +20,13 @@ class AboutFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentAboutBinding.inflate(layoutInflater)
+
+        binding.abBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+
+
        return binding.root
     }
 
