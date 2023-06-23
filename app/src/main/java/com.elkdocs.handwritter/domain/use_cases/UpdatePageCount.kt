@@ -12,14 +12,9 @@ class UpdatePageCount @Inject constructor(
             //for decrement the pageCount
              val pageCount = folder.pageCount - totalPages
             repository.updateFolderPageCount(folderId,pageCount)
-
         }else{
-
             val pageCount = folder.pageCount + 1
             repository.updateFolderPageCount(folderId , pageCount)
         }
-
-
-
     }
 }

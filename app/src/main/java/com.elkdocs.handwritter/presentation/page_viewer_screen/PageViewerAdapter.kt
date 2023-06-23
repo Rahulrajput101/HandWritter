@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
@@ -53,12 +54,9 @@ class PageViewerAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = pageList[position]
-//        holder.bind(item)
-//       holder.itemView.setOnClickListener {
-//           onPageClick(item)
-//       }
 
         holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnClickListener {
+            Log.v("Papa","$isSelectModeEnabled")
             if (isSelectModeEnabled) {
                 item.isSelected = !item.isSelected // toggle isSelected state
                 holder.bind(item, onDeleteClick, isSelectModeEnabled) // re-bind the view to update the checkbox state
@@ -67,10 +65,6 @@ class PageViewerAdapter(
             }
         }
 
-//        holder.itemView.rootView.findViewById<CardView>(R.id.image_card_view).setOnLongClickListener {
-//            onPageLongClick(item)
-//            true
-//        }
         holder.bind(item, onDeleteClick, isSelectModeEnabled)
     }
 
@@ -86,7 +80,6 @@ class PageViewerAdapter(
             }
             selectedItems.clear()
         } else {
-
             clearSelectedItems()
             pageList.forEach { page ->
                 page.isSelected = true
@@ -120,6 +113,15 @@ class PageViewerAdapter(
                     selectedItems.remove(page)
                 }
             }
+
+//            binding.checkBox.setOnClickListener {
+//                if (binding.checkBox.isChecked) {
+//                    if (!selectedItems.any { it.pageId == page.pageId })
+//                        selectedItems.add(page)
+//                } else {
+//                    selectedItems.remove(page)
+//                }
+//            }
         }
     }
 }

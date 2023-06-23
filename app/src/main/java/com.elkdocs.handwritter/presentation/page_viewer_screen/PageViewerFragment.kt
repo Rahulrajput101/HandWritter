@@ -84,7 +84,6 @@ class PageViewerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
 
         adapter = PageViewerAdapter(
@@ -93,10 +92,10 @@ class PageViewerFragment : Fragment() {
                     PageViewerFragmentDirections.actionPageViewerFragmentToPageEditFragment(pageDetail.pageId!!)
                 )
             },
-            onDeleteClick = { qrData ->
+            onDeleteClick = { _ ->
                 //showDeleteConfirmationDialog(qrData)
             },
-            onPageLongClick = { qrData ->
+            onPageLongClick = { _ ->
                 if (!adapter.isSelectModeEnabled) {
                     setSelectModeEnabled(true)
                 }
@@ -150,6 +149,7 @@ class PageViewerFragment : Fragment() {
         binding.closeButton.setOnClickListener {
             setSelectModeEnabled(false)
             adapter.clearSelectedItems()
+            adapter.notifyDataSetChanged()
         }
 
         binding.pdfIcon.setOnClickListener {
@@ -222,43 +222,78 @@ class PageViewerFragment : Fragment() {
 //            .create()
 //            .show()
 //    }
-private fun showDeleteAllDialog() {
-    MaterialAlertDialogBuilder(requireContext())
-        .setMessage("Are you sure you want to delete selected items?")
-        .setPositiveButton("Delete") { dialog, which ->
-            val selectedList = adapter.selectedItems.toList()
-            val isDeleteAll = selectedList.size == adapter.itemCount
+//private fun showDeleteAllDialog() {
+//    MaterialAlertDialogBuilder(requireContext())
+//        .setMessage("Are you sure you want to delete selected items?")
+//        .setPositiveButton("Delete") { dialog, which ->
+//            val selectedList = adapter.selectedItems.toList()
+//            val isDeleteAll = selectedList.size == adapter.itemCount
+//
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                if (selectedList.isNotEmpty()) {
+//                    if (isDeleteAll) {
+//                        viewModel.deleteFolder(navArgs.folderId)
+//                        withContext(Dispatchers.Main) {
+//                            findNavController().navigateUp()
+//                        }
+//                    } else {
+//                        selectedList.forEach { page ->
+////                            viewModel.onEvent(PageViewerEvent.DeletePage(page, selectedList.size))
+//                            viewModel.deleteAll(page)
+//                        }
+//                    }
+//                }
+//            }
+//
+//            viewModel.onEvent(PageViewerEvent.DecreasePageCount(navArgs.folderId, selectedList.size))
+//            adapter.clearSelectedItems()
+//            setSelectModeEnabled(false)
+//
+//        }
+//        .setNegativeButton("Cancel") { dialog, which ->
+//            dialog.dismiss()
+//        }
+//        .create()
+//        .show()
+//}
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                if (selectedList.isNotEmpty()) {
-                    if (isDeleteAll) {
-                        viewModel.deleteFolder(navArgs.folderId)
-                        withContext(Dispatchers.Main) {
-                            findNavController().navigateUp()
-                        }
-                    } else {
-                        selectedList.forEach { page ->
-//                            viewModel.onEvent(PageViewerEvent.DeletePage(page, selectedList.size))
-                            viewModel.deleteAll(page)
-                        }
-                        withContext(Dispatchers.Main) {
-                            adapter.clearSelectedItems()
-                            setSelectModeEnabled(false)
+
+    private fun showDeleteAllDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Are you sure you want to delete selected items?")
+            .setPositiveButton("Delete") { dialog, which ->
+                val selectedList = adapter.selectedItems.toList()
+                val isDeleteAll = selectedList.size == adapter.itemCount
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    if (selectedList.isNotEmpty()) {
+                        if (isDeleteAll) {
+                            viewModel.deleteFolder(navArgs.folderId)
+                            withContext(Dispatchers.Main) {
+                                findNavController().navigateUp()
+                            }
+                        } else {
+                            selectedList.forEach { page ->
+                                viewModel.deleteAll(page)
+
+                            }
+                            viewModel.onEvent(PageViewerEvent.DecreasePageCount(navArgs.folderId, selectedList.size))
                         }
                     }
                 }
-            }
 
-            viewModel.onEvent(PageViewerEvent.DecreasePageCount(navArgs.folderId, selectedList.size))
-            adapter.clearSelectedItems()
-            setSelectModeEnabled(false)
-        }
-        .setNegativeButton("Cancel") { dialog, which ->
-            dialog.dismiss()
-        }
-        .create()
-        .show()
-}
+                adapter.clearSelectedItems()
+                setSelectModeEnabled(false)
+
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
 
     private fun addingInitialPageForFirstTime() {
 
@@ -306,6 +341,7 @@ private fun showDeleteAllDialog() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allPages.collectLatest {
                     adapter.setAllPages(it)
+                    adapter.clearSelectedItems()
                 }
             }
         }

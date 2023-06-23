@@ -54,9 +54,6 @@ class FolderAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = folderListWithPages[position]
         holder.bind(item,isSelectModeEnabled,selectedItems,onMoreOptionClick)
-//        holder.itemView.setOnClickListener {
-//            onFolderClick(item.folderId!!)
-//        }
 
         holder.itemView.setOnClickListener {
             if (isSelectModeEnabled) {
