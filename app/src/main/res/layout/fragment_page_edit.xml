@@ -71,7 +71,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_edit_file_activity"
-            app:layout_constraintVertical_bias="0.5">
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -147,19 +147,18 @@
 
 
                 <androidx.cardview.widget.CardView
-
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:id="@+id/hr_card_view_1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    app:cardBackgroundColor="@color/light_gre2"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@color/light_gre2"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
 
                     <Spinner
-
                         android:id="@+id/dropdown_fontSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -170,6 +169,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:id="@+id/hr_card_view_2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -192,10 +192,12 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:id="@+id/hr_card_view_3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
                     app:cardBackgroundColor="@color/light_gre2"
@@ -203,6 +205,7 @@
                     app:cardElevation="0dp">
 
                     <CheckedTextView
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
                         android:id="@+id/dateTextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -234,6 +237,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:id="@+id/hr_card_view_4"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -245,6 +249,7 @@
                     app:cardElevation="0dp">
 
                     <CheckedTextView
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
                         android:id="@+id/addPageNuumberButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -256,17 +261,19 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:id="@+id/hr_card_view_5"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="8dp"
                     app:cardBackgroundColor="@color/light_gre2"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="8dp"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="0dp">
 
                     <CheckedTextView
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
                         android:id="@+id/addHeadingButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

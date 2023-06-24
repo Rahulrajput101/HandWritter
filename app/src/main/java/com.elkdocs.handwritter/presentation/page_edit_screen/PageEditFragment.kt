@@ -2,6 +2,7 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -20,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
@@ -84,6 +86,8 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Named
 
 
 @AndroidEntryPoint
@@ -95,13 +99,16 @@ class PageEditFragment : Fragment() {
     private var edtPageLayoutView: View? = null
     private lateinit var pageArgs : MyPageModel
     private var isLayoutFlipped: Boolean = false
+    private var horizontalViewSelectedTextColor : Int = Color.BLUE
 
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
     private var startX: Float = 0f
     private var startY: Float = 0f
 
-
+    @Inject
+    @Named("theme")
+    lateinit var appThemePref: SharedPreferences
 
 
     override fun onCreateView(
@@ -110,6 +117,7 @@ class PageEditFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
+        //setIconColorByTheme()
 
         //taking the saved details of the page for setup the ui
         val pageId = navArgs.pageId
@@ -380,7 +388,7 @@ class PageEditFragment : Fragment() {
                     val pageNumber = pageNumberEditText.text.toString()
                     if(pageNumber.isNotEmpty()){
                         binding.pageNumberTextView.text = pageNumber
-                        binding.addPageNuumberButton.setTextColor(Color.BLUE)
+                        binding.addPageNuumberButton.setTextColor(horizontalViewSelectedTextColor)
                         viewModel.onEvent(PageEditEvent.UpdatePageNumber(pageNumber))
                     }
                 }
@@ -490,15 +498,15 @@ class PageEditFragment : Fragment() {
         }
 
         //toggling heading button color
-        val headingButtonColor = if (page.headingText.isNotEmpty()) Color.BLUE else Color.BLACK
+        val headingButtonColor = if (page.headingText.isNotEmpty()) horizontalViewSelectedTextColor else Color.BLACK
         binding.addHeadingButton.setTextColor(headingButtonColor)
         // Page number
-        val pageNumberColor = if (page.pageNumber.isNotEmpty()) Color.BLUE else Color.BLACK
+        val pageNumberColor = if (page.pageNumber.isNotEmpty()) horizontalViewSelectedTextColor else Color.BLACK
         binding.addPageNuumberButton.setTextColor(pageNumberColor)
         binding.pageNumberTextView.text = page.pageNumber
 
         // Saved date
-        val dateColor = if (page.date.isNotEmpty()) Color.BLUE else Color.BLACK
+        val dateColor = if (page.date.isNotEmpty()) horizontalViewSelectedTextColor else Color.BLACK
         binding.dateTextButton.setTextColor(dateColor)
         binding.dateText.text = page.date
 
@@ -573,7 +581,7 @@ class PageEditFragment : Fragment() {
                 val date = inputDateFormat.parse(it)
                 date?.let {
                     val formattedDate = outputDateFormat.format(date)
-                    binding.dateTextButton.setTextColor(Color.BLUE)
+                    binding.dateTextButton.setTextColor(horizontalViewSelectedTextColor)
                    val x = binding.dateText.x
                     val y = binding.dateText.y
                     binding.dateText.text = formattedDate
@@ -623,7 +631,7 @@ class PageEditFragment : Fragment() {
     private fun updateUnderlineText(underline: Boolean) {
             if (underline) {
                 // Add underline
-                binding.underlineText.setTextColor(Color.BLUE)
+                binding.underlineText.setTextColor(horizontalViewSelectedTextColor)
                 binding.ivTextEditView.paintFlags =binding.ivTextEditView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             } else {
                 // Remove underline
@@ -645,7 +653,7 @@ class PageEditFragment : Fragment() {
                 binding.italicText.setTextColor(Color.BLACK)
                 updateFontType(viewModel.state.value.fontStyle, if (isBold) Typeface.NORMAL else Typeface.BOLD)
                 if (!isBold) {
-                    binding.boldText.setTextColor(Color.BLUE)
+                    binding.boldText.setTextColor(horizontalViewSelectedTextColor)
                 } else {
                     binding.boldText.setTextColor(Color.BLACK)
                 }
@@ -655,7 +663,7 @@ class PageEditFragment : Fragment() {
                 binding.boldText.setTextColor(Color.BLACK)
                 updateFontType(viewModel.state.value.fontStyle, if (isItalic) Typeface.NORMAL else Typeface.ITALIC)
                 if (!isItalic) {
-                    binding.italicText.setTextColor(Color.BLUE)
+                    binding.italicText.setTextColor(horizontalViewSelectedTextColor)
 
                 } else {
                     binding.italicText.setTextColor(Color.BLACK)
@@ -1099,6 +1107,33 @@ class PageEditFragment : Fragment() {
         }, currentYear, currentMonth, currentDay)
 
         datePickerDialog.show()
+    }
+
+    private fun setIconColorByTheme() {
+
+//        val colorResId = when (appThemePref.getInt(Constant.APP_THEME_PREF, R.style.AppTheme_teal)) {
+//            R.style.AppTheme -> R.color.md_theme_light_tertiaryContainer
+//            R.style.AppTheme_Green -> R.color.md_theme_light_tertiaryContainer2
+//            R.style.AppTheme_pink -> R.color.md_theme_light_tertiaryContainer3
+//            R.style.AppTheme_teal -> R.color.md_theme_light_tertiaryContainer4
+//            R.style.AppTheme_purple -> R.color.md_theme_light_tertiaryContainer5
+//            else -> R.color.md_theme_light_tertiaryContainer4
+//        }
+
+        val colorResId2 = when (appThemePref.getInt(Constant.APP_THEME_PREF, R.style.AppTheme_teal)) {
+            R.style.AppTheme -> R.color.md_theme_light_surfaceTint
+            R.style.AppTheme_Green -> R.color.md_theme_light_surfaceTint2
+            R.style.AppTheme_pink -> R.color.md_theme_light_surfaceTint3
+            R.style.AppTheme_teal -> R.color.md_theme_light_surfaceTint4
+            R.style.AppTheme_purple -> R.color.md_theme_light_surfaceTint5
+            else -> R.color.md_theme_light_surfaceTint
+        }
+
+        //val color = ContextCompat.getColor(requireContext(), colorResId)
+        val color2 = ContextCompat.getColor(requireContext(), colorResId2)
+
+
+        horizontalViewSelectedTextColor = color2
     }
 
 }
