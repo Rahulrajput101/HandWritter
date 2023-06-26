@@ -195,9 +195,10 @@ class MainFragment : Fragment(),MenuProvider {
         }
 
         dialogBinding.itemPdf.setOnClickListener {
-            getPdfFile(id, folderName) {
-                openPdfFile(requireContext(), it)
-            }
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
+//            getPdfFile(id, folderName) {
+//                openPdfFile(requireContext(), it)
+//            }
             bottomSheetDialog.dismiss()
         }
 
@@ -400,12 +401,13 @@ class MainFragment : Fragment(),MenuProvider {
 
     private fun addFolderAndNavigate(){
         val folder = MyFolderModel(
-            folderName = "",
+            folderName = "Docs"+System.currentTimeMillis().toString(),
             folderIcon = "",
             pageCount = 0,
             lastUpdated = System.currentTimeMillis()
         )
         viewModel.onEvent(FolderEvent.AddFolder(folder)){ folderId,folderName ->
+            Toast.makeText(requireContext(),folderName,Toast.LENGTH_SHORT).show()
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(folderId,folderName))
 
         }
@@ -530,7 +532,7 @@ class MainFragment : Fragment(),MenuProvider {
             R.style.AppTheme_pink -> R.color.md_theme_light_tertiaryContainer3
             R.style.AppTheme_teal -> R.color.md_theme_light_tertiaryContainer4
             R.style.AppTheme_purple -> R.color.md_theme_light_tertiaryContainer5
-            else -> R.color.md_theme_light_tertiaryContainer4
+            else -> R.color.md_theme_light_tertiaryContainer
         }
 
         val color = ContextCompat.getColor(requireContext(), colorResId)

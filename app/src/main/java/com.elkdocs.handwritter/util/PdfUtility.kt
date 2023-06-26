@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
 import com.itextpdf.text.Document
 import com.itextpdf.text.Image
 import com.itextpdf.text.pdf.PdfWriter
@@ -22,10 +23,10 @@ object PdfUtility {
 
     private val executor: ExecutorService = Executors.newSingleThreadExecutor()
 
-    fun createPdf(context: Context, bitmaps: List<Bitmap>,fileName : String, onPdfGenerated: (File) -> Unit) {
+    fun createPdf(context: Context, bitmaps: List<Bitmap>,fileName : String,quality : Int = 100, onPdfGenerated: (File) -> Unit) {
         executor.execute {
             val pdfFile = createPdfFile(context,fileName)
-            generatePdf(pdfFile, bitmaps)
+            generatePdf(pdfFile, bitmaps,quality)
             onPdfGenerated(pdfFile)
 
             // Open the PDF file using a PDF viewer activity
@@ -39,14 +40,19 @@ object PdfUtility {
         return File(dir, fileName)
     }
 
-    private fun generatePdf(pdfFile: File, bitmaps: List<Bitmap>) {
+    fun createFiles(context: Context, documentFile: DocumentFile,mimeType : String ="application/pdf", fileName: String): DocumentFile? {
+        val newFile = documentFile.createFile(mimeType, fileName)
+        return newFile
+    }
+
+     fun generatePdf(pdfFile: File, bitmaps: List<Bitmap>,quality: Int) {
         val document = Document()
         val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
         document.open()
 
         for (bitmap in bitmaps) {
             val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
             val imageBytes = stream.toByteArray()
             val image = Image.getInstance(imageBytes)
             document.pageSize = image
@@ -57,6 +63,32 @@ object PdfUtility {
 
         document.close()
         writer.close()
+    }
+    fun generatePdfs(context: Context,pdfFile: DocumentFile, bitmaps: List<Bitmap>, quality: Int) {
+        val outputStream = context.contentResolver.openOutputStream(pdfFile.uri)
+        outputStream.use { stream ->
+            if (stream != null) {
+                val document = Document()
+                val writer = PdfWriter.getInstance(document, stream)
+                document.open()
+
+                for (bitmap in bitmaps) {
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
+                    val imageBytes = byteArrayOutputStream.toByteArray()
+                    val image = Image.getInstance(imageBytes)
+                    document.pageSize = image
+                    document.newPage()
+                    image.setAbsolutePosition(0f, 0f)
+                    document.add(image)
+                }
+
+                document.close()
+                writer.close()
+            } else {
+                Toast.makeText(context, "Failed to create PDF file", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
      fun openPdfFile(context: Context, pdfFile: File) {
@@ -79,27 +111,6 @@ object PdfUtility {
     }
 
 
-//    fun downloadPdfToGallery(context: Context, pdfFile: File) {
-//        val sourceFile = File(pdfFile.path)
-//        val fileName = pdfFile.name
-//
-//        val destinationDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val destinationFile = File(destinationDir, fileName)
-//
-//        try {
-//            sourceFile.copyTo(destinationFile, overwrite = true)
-//
-//            // Trigger media scan to make the downloaded file visible in the gallery app
-//            MediaScannerConnection.scanFile(context, arrayOf(destinationFile.path), null, null)
-//
-//            // Display a success message to the user
-//            Toast.makeText(context, "PDF saved successfully", Toast.LENGTH_SHORT).show()
-//        } catch (e: Exception) {
-//            // Display an error message to the user
-//            Toast.makeText(context, "Failed to save PDF", Toast.LENGTH_SHORT).show()
-//            e.printStackTrace()
-//        }
-//    }
 
     fun downloadPdfToGallery(context: Context, pdfFile: File): Boolean {
         val sourceFile = File(pdfFile.path)
@@ -120,4 +131,23 @@ object PdfUtility {
             false // Failed to save PDF
         }
     }
+
+//    fun downloadPdf(context: Context, pdfFile: File): Boolean {
+//        val fileName = pdfFile.name
+//
+//        val destinationDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+//        val destinationFile = File(destinationDir, fileName)
+//
+//        return try {
+//            pdfFile.copyTo(destinationFile, overwrite = true)
+//
+//            // Trigger media scan to make the downloaded file visible in the gallery app
+//            MediaScannerConnection.scanFile(context, arrayOf(destinationFile.path), null, null)
+//
+//            true // PDF saved successfully
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            false // Failed to save PDF
+//        }
+//    }
 }

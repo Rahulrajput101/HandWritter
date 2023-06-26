@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_PDF_format"
+        android:title="PDF"
+        />
+    <item android:id="@+id/menu_JPEG_format"
+        android:title="JPEG"/>
+
+</menu>

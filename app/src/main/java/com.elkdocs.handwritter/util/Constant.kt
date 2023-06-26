@@ -216,7 +216,10 @@ object Constant {
     const val IS_LINEAR = " KEY_LOOK"
     const val APP_THEME_PREF = "app_theme_pref"
 
-    const val PAGE_EDIT_STATE_PREF = "page_edit_state_pref"
+
+    const val EXTRA_FROM_FILE_VIEWER_TO_CAMERA = "extra_from_file_viewer_to_camera"
+    const val EXTRA_FROM_FILE_VIEWER_TO_PDF_MANAGER = "extra_from_file_viewer_to_pdf_manager"
+    const val EXTRA_STRING_FROM_FILE_VIEWER_TO_PDF_MANAGER = "extra_string_from_file_viewer_to_pdf_manager"
 
 //    For Black:
 //

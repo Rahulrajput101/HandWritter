@@ -11,7 +11,6 @@ import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.util.Constant.APP_THEME_PREF
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
-import com.elkdocs.handwritter.util.Constant.PAGE_EDIT_STATE_PREF
 import com.elkdocs.handwritter.util.Constant.SHARED_PREFERENCE_NAME
 import dagger.Module
 import dagger.Provides

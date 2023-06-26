@@ -20,6 +20,12 @@
         <action
             android:id="@+id/action_mainFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_aboutFragment2"
+            app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_exportDocumentFragment"
+            app:destination="@id/exportDocumentFragment" />
     </fragment>
     <fragment
         android:id="@+id/pageViewerFragment"
@@ -35,6 +41,9 @@
         <argument
             android:name="folderName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_pageViewerFragment_to_exportDocumentFragment"
+            app:destination="@id/exportDocumentFragment" />
     </fragment>
     <fragment
         android:id="@+id/pageEditFragment"
@@ -49,4 +58,17 @@
         android:id="@+id/aboutFragment"
         android:name="com.elkdocs.handwritter.presentation.about_screen.AboutFragment"
         android:label="AboutFragment" />
+    <fragment
+        android:id="@+id/exportDocumentFragment"
+        android:name="com.elkdocs.handwritter.presentation.export_screen.ExportFragment"
+        android:label="fragment_export_document"
+        tools:layout="@layout/fragment_export_document" >
+
+        <argument
+            android:name="folderId"
+            app:argType="long" />
+        <argument
+            android:name="folderName"
+            app:argType="string" />
+    </fragment>
 </navigation>

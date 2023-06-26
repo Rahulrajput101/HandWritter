@@ -11,7 +11,9 @@ import com.elkdocs.handwritter.domain.use_cases.GetAllFolders
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import com.elkdocs.handwritter.domain.use_cases.UpdateFolderTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -50,8 +53,8 @@ class FolderViewModel @Inject constructor(
         when(event){
             is FolderEvent.AddFolder -> {
                 viewModelScope.launch {
-                    val  id = addNewFolder(event.myFolderModel)
-                    callback(id,event.myFolderModel.folderName)
+                        val  id = addNewFolder(event.myFolderModel)
+                        callback(id,event.myFolderModel.folderName)
                 }
             }
 
