@@ -26,9 +26,16 @@ object Constant {
 
     const val ARABIC_1 = "Arabic 1"
     const val ARABIC_2 = "Arabic 2"
+    const val ARABIC_3 = "Arabic 3"
+    const val ARABIC_4 = "Arabic 4"
+    const val ARABIC_5 = "Arabic 5"
+    const val ARABIC_6 = "Arabic 6"
+    const val ARABIC_7 = "Arabic 7"
+    const val ARABIC_8 = "Arabic 8"
 
     const val URDU_1 = "Urdu 1"
     const val URDU_2 = "Urdu 2"
+    const val URDU_3 = "Urdu 3"
 
     const val RUSSIAN_1 = "Russian 1"
     const val RUSSIAN_2 = "Russian 2"
@@ -72,15 +79,21 @@ object Constant {
     )
 
 
-
     val Ar_FONT_STYLE_MAP = mapOf(
          ARABIC_1 to R.font.scheherazade_ar,
-         ARABIC_2 to R.font.jomhuria_ar
+         ARABIC_2 to R.font.jomhuria_ar,
+         ARABIC_3 to R.font.solitreo_ar,
+         ARABIC_4 to R.font.dongol_ar,
+         ARABIC_5 to R.font.marhey_ar,
+         ARABIC_6 to R.font.lemonada_ar,
+         ARABIC_7 to R.font.hasubi_mono_ar,
+         ARABIC_8 to R.font.sarmady_ar_ur
     )
 
     val Ur_FONT_STYLE_MAP = mapOf(
         URDU_1 to R.font.belal_ur,
-        URDU_2 to R.font.jjameel_ur
+        URDU_2 to R.font.jjameel_ur,
+        URDU_3 to R.font.sarmady_ar_ur
     )
 
 

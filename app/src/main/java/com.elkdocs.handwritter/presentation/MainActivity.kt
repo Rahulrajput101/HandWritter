@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setTheme(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_teal))
-         setContentView(binding.root)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setTheme(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_Green))
+        setContentView(binding.root)
+        //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             // SDK version is 29 or higher, Scoped Storage is used instead of WRITE_EXTERNAL_STORAGE permission

@@ -29,11 +29,18 @@
     <string-array name = "ar_styles_array">
         <item>Arabic 1</item>
         <item>Arabic 2</item>
+        <item>Arabic 3</item>
+        <item>Arabic 4</item>
+        <item>Arabic 5</item>
+        <item>Arabic 6</item>
+        <item>Arabic 7</item>
+        <item>Arabic 8</item>
     </string-array>
 
     <string-array name = "ur_styles_array">
         <item>Urdu 1</item>
         <item>Urdu 2</item>
+        <item>Urdu 3</item>
     </string-array>
 
     <string-array name = "rs_styles_array">

@@ -169,21 +169,22 @@ class MainFragment : Fragment(),MenuProvider {
         dialogBinding.folderDateMenu.text = date
 
         dialogBinding.itemDownload.setOnClickListener {
-            getPdfFile(id, folderName) { pdfFile ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
-
-                    withContext(Dispatchers.Main) {
-                        if (isSuccessful) {
-                            Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-            }
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
+//            getPdfFile(id, folderName) { pdfFile ->
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
+//
+//                    withContext(Dispatchers.Main) {
+//                        if (isSuccessful) {
+//                            Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT)
+//                                .show()
+//                        } else {
+//                            Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT)
+//                                .show()
+//                        }
+//                    }
+//                }
+//            }
             bottomSheetDialog.dismiss()
         }
 
@@ -195,10 +196,10 @@ class MainFragment : Fragment(),MenuProvider {
         }
 
         dialogBinding.itemPdf.setOnClickListener {
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
-//            getPdfFile(id, folderName) {
-//                openPdfFile(requireContext(), it)
-//            }
+           // findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
+            getPdfFile(id, folderName) {
+                openPdfFile(requireContext(), it)
+            }
             bottomSheetDialog.dismiss()
         }
 
@@ -526,13 +527,13 @@ class MainFragment : Fragment(),MenuProvider {
     //  }
     private fun setIconColorByTheme() {
 
-        val colorResId = when (appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_teal)) {
+        val colorResId = when (appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_Green)) {
             R.style.AppTheme -> R.color.md_theme_light_tertiaryContainer
             R.style.AppTheme_Green -> R.color.md_theme_light_tertiaryContainer2
             R.style.AppTheme_pink -> R.color.md_theme_light_tertiaryContainer3
             R.style.AppTheme_teal -> R.color.md_theme_light_tertiaryContainer4
             R.style.AppTheme_purple -> R.color.md_theme_light_tertiaryContainer5
-            else -> R.color.md_theme_light_tertiaryContainer
+            else -> R.color.md_theme_light_tertiaryContainer2
         }
 
         val color = ContextCompat.getColor(requireContext(), colorResId)

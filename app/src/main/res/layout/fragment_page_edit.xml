@@ -69,6 +69,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/fl_image_view"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_edit_file_activity"
             app:layout_constraintVertical_bias="0.0">
@@ -93,6 +94,7 @@
                         android:id="@+id/bold_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
                         android:text="Bold"
@@ -116,6 +118,7 @@
                         android:id="@+id/italic_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
                         android:text="Italic"
@@ -146,39 +149,39 @@
                 </androidx.cardview.widget.CardView>
 
 
-                <androidx.cardview.widget.CardView
-                    style="@style/Widget.Material3.CardView.Filled"
+                <FrameLayout
                     android:id="@+id/hr_card_view_1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/light_gre2"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="15dp"
                     android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp">
+                    android:background="@drawable/left_rounded_corner"
+                    android:padding="2dp">
 
                     <Spinner
                         android:id="@+id/dropdown_fontSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
+                        android:fontFamily="@font/work_sans"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
-                </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
 
-                <androidx.cardview.widget.CardView
-                    style="@style/Widget.Material3.CardView.Filled"
+                <FrameLayout
                     android:id="@+id/hr_card_view_2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@color/light_gre2"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp">
+                    android:background="@drawable/right_rounded_corner"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true">
 
                     <ImageView
                         android:id="@+id/ink_color_icon"
@@ -189,33 +192,55 @@
                         android:src="@drawable/black_ink"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
-                </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
-                <androidx.cardview.widget.CardView
-
+                <FrameLayout
+                    android:id="@+id/hr_card_view_4"
                     style="@style/Widget.Material3.CardView.Filled"
-                    android:id="@+id/hr_card_view_3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@color/light_gre2"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp">
+                    android:background="@drawable/left_rounded_corner"
+                    >
 
                     <CheckedTextView
+                        android:id="@+id/addPageNuumberButton"
                         style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
-                        android:id="@+id/dateTextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:padding="8dp"
+                        android:text="Page No."
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/hr_card_view_3"
+                    style="@style/Widget.Material3.CardView.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/light_gre2"
+                   >
+
+                    <CheckedTextView
+                        android:id="@+id/dateTextButton"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
                         android:text="Date"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
-                </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -236,53 +261,29 @@
                 </LinearLayout>
 
 
-                <androidx.cardview.widget.CardView
-                    style="@style/Widget.Material3.CardView.Filled"
-                    android:id="@+id/hr_card_view_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@color/light_gre2"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp">
 
-                    <CheckedTextView
-                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
-                        android:id="@+id/addPageNuumberButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:padding="8dp"
-                        android:text="Page No."
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    style="@style/Widget.Material3.CardView.Filled"
+                <FrameLayout
                     android:id="@+id/hr_card_view_5"
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/light_gre2"
                     android:layout_marginStart="2dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="3dp"
                     android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="0dp">
+                    android:background="@drawable/right_rounded_corner">
 
                     <CheckedTextView
-                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
                         android:id="@+id/addHeadingButton"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
                         android:text="Heading"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
-                </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -554,6 +555,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="12dp"
                                     android:layout_marginStart="8dp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/work_sans"
                                     android:text="Language" />
 
                                 <com.google.android.material.textfield.TextInputLayout
@@ -584,6 +587,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
                                     android:layout_marginStart="8dp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/work_sans"
                                     android:text="Font Style" />
 
                                 <com.google.android.material.textfield.TextInputLayout
@@ -613,6 +618,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="15dp"
                                     android:layout_marginStart="8dp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/work_sans"
                                     android:text="Line Color" />
 
                                 <com.google.android.material.textfield.TextInputLayout
@@ -662,6 +669,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="12dp"
                                     android:layout_marginStart="8dp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/work_sans"
                                     android:text="Spacing between letter and word" />
 
                                 <SeekBar
@@ -675,6 +684,8 @@
 
                                 <TextView
                                     style="@style/TextAppearance.AppCompat.Body2"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/work_sans"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
@@ -716,6 +727,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="12dp"
                                 android:layout_marginStart="8dp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/work_sans"
                                 android:text="Select Background" />
 
                             <androidx.recyclerview.widget.RecyclerView

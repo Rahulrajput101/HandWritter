@@ -187,7 +187,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textSize="14sp"
-                android:text="Save to device"
+                android:text="Download"
+                android:fontFamily="@font/work_sans"
                 android:layout_gravity="center"
                 app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
                 app:layout_constraintStart_toEndOf="@+id/item_rename_icon"
@@ -220,7 +221,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Convert to PDF"
+                android:text="Open PDF"
+                android:fontFamily="@font/work_sans"
                 android:layout_gravity="center"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
@@ -254,6 +256,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Share"
+                android:fontFamily="@font/work_sans"
                 android:layout_gravity="center"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
@@ -287,6 +290,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Rename"
+                android:fontFamily="@font/work_sans"
                 android:layout_gravity="center"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_rename_icon"
@@ -325,7 +329,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Delete" />
+                android:text="Delete"
+                android:fontFamily="@font/work_sans"/>
         </LinearLayout>
 
         <TextView
@@ -334,6 +339,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="TextView"
+            android:fontFamily="@font/work_sans"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="@+id/folder_name"
             app:layout_constraintHorizontal_bias="0.0"

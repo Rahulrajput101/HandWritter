@@ -62,15 +62,17 @@
 
                   <TextView
                       android:id="@+id/ab_textView"
-                      style="@style/TextAppearance.Material3.BodyLarge"
+
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_marginTop="24dp"
                       android:text="Hand Writer"
+                      android:textStyle="bold"
+                      android:textSize="18sp"
+                      android:fontFamily="@font/work_sans"
                       app:layout_constraintEnd_toEndOf="@+id/ab_imageView"
                       app:layout_constraintStart_toStartOf="@+id/ab_imageView"
                       app:layout_constraintTop_toBottomOf="@+id/ab_imageView" />
-
 
                   <androidx.constraintlayout.widget.ConstraintLayout
                       android:id="@+id/ab_report_bug"
@@ -102,6 +104,7 @@
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
                           android:text="Report Bugs"
+                          android:fontFamily="@font/work_sans"
                           app:layout_constraintStart_toEndOf="@+id/ab_imageView2"
                           app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,6 +116,7 @@
                           android:text="Report bug and give us some feedback"
                           android:textColor="@color/medium_gray"
                           android:textSize="12sp"
+                          android:fontFamily="@font/work_sans"
                           app:layout_constraintStart_toStartOf="@+id/textView4"
                           app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -143,6 +147,7 @@
                           style="@style/Widget.AppCompat.TextView.SpinnerItem"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
+                          android:fontFamily="@font/work_sans"
                           android:layout_marginStart="16dp"
                           android:text="Contact us" />
 
@@ -174,6 +179,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
+                          android:fontFamily="@font/work_sans"
                           android:text="Licenses" />
 
                   </LinearLayout>
@@ -204,6 +210,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
+                          android:fontFamily="@font/work_sans"
                           android:text="Privacy Policy" />
 
                   </LinearLayout>
@@ -238,6 +245,7 @@
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
                           android:text="Version"
+                          android:fontFamily="@font/work_sans"
                           app:layout_constraintStart_toEndOf="@+id/imageView2"
                           app:layout_constraintTop_toTopOf="parent" />
 
@@ -246,6 +254,7 @@
                           style="@style/Widget.AppCompat.TextView.SpinnerItem"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
+                          android:fontFamily="@font/work_sans"
                           android:text="0.0.1"
                           android:textColor="@color/medium_gray"
                           android:textSize="12sp"
@@ -284,6 +293,7 @@
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
                           android:text="Follow us on Instagram"
+                          android:fontFamily="@font/work_sans"
                           app:layout_constraintStart_toEndOf="@+id/imageView3"
                           app:layout_constraintTop_toTopOf="parent" />
 
@@ -292,6 +302,7 @@
                           style="@style/Widget.AppCompat.TextView.SpinnerItem"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
+                          android:fontFamily="@font/work_sans"
                           android:text="Follow us on Instagram to get our latest updates"
                           android:textColor="@color/medium_gray"
                           android:textSize="12sp"
@@ -317,7 +328,7 @@
                           android:layout_height="24dp"
                           android:layout_gravity="center"
                           android:layout_marginStart="16dp"
-                          android:src="@drawable/telegram_icon"
+                          android:src="@drawable/linkedin_rounded_border_svgrepo_com"
                           app:layout_constraintBottom_toBottomOf="parent"
                           app:layout_constraintStart_toStartOf="parent"
                           app:layout_constraintTop_toTopOf="parent"
@@ -329,7 +340,8 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
-                          android:text="Join our Telegram Community"
+                          android:fontFamily="@font/work_sans"
+                          android:text="Follow us on Linkedin"
                           app:layout_constraintBottom_toTopOf="@+id/textView17"
                           app:layout_constraintStart_toEndOf="@+id/imageView5"
                           app:layout_constraintTop_toTopOf="parent"
@@ -340,7 +352,8 @@
                           style="@style/Widget.AppCompat.TextView.SpinnerItem"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Follow us on Instagram to get our latest updates"
+                          android:fontFamily="@font/work_sans"
+                          android:text="To learn more, connect with us on Linkedin"
                           android:textColor="@color/medium_gray"
                           android:textSize="12sp"
                           app:layout_constraintBottom_toBottomOf="parent"
@@ -377,6 +390,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginStart="16dp"
+                          android:fontFamily="@font/work_sans"
                           android:text="Checkout our other apps"
                           app:layout_constraintStart_toEndOf="@+id/imageView4"
                           app:layout_constraintTop_toTopOf="parent" />
@@ -386,6 +400,7 @@
                           style="@style/Widget.AppCompat.TextView.SpinnerItem"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
+                          android:fontFamily="@font/work_sans"
                           android:text="Visit our developer page and checkout our \nother apps"
                           android:textColor="@color/medium_gray"
                           android:textSize="12sp"

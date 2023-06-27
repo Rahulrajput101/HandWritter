@@ -48,9 +48,6 @@ class ExportFragment : Fragment() {
     private val viewModel: ExportViewModel by viewModels()
     private val navArgs: ExportFragmentArgs by navArgs()
 
-    @Inject
-    @Named("theme")
-    lateinit var appThemePref: SharedPreferences
 
     private lateinit var popupMenuFileSize: PopupMenu
     private var documentType = "PDF"
@@ -61,7 +58,7 @@ class ExportFragment : Fragment() {
     private var largeSizeType = "Kb"
     private var mediumSizeType = "Kb"
 
-    private var selectedQuality = 90
+    private var selectedQuality = 100
 
     private val folderPickerLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -93,7 +90,6 @@ class ExportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setIconColorByTheme()
         showProgressDialog()
         handleRenameEvent()
         binding.etFileName.setText(navArgs.folderName)
@@ -217,7 +213,7 @@ class ExportFragment : Fragment() {
                     selectedQuality
                 }
 
-                else -> actualSize
+                else -> 100
             }
              binding.tvFileSize.clearFocus()
             true
@@ -392,24 +388,5 @@ class ExportFragment : Fragment() {
         }
     }
 
-    private fun setIconColorByTheme() {
 
-        val colorResId = when (appThemePref.getInt(Constant.APP_THEME_PREF, R.style.AppTheme_teal)) {
-            R.style.AppTheme -> R.color.md_theme_light_surface
-            R.style.AppTheme_Green -> R.color.md_theme_light_surface2
-            R.style.AppTheme_pink -> R.color.md_theme_light_surface3
-            R.style.AppTheme_teal -> R.color.md_theme_light_surface4
-            R.style.AppTheme_purple -> R.color.md_theme_light_surface5
-            else -> R.color.md_theme_light_surface
-        }
-
-        val color = ContextCompat.getColor(requireContext(), colorResId)
-
-        with(binding) {
-
-             formatTag.setBackgroundColor(color)
-             qualityTag.setBackgroundColor(color)
-
-        }
-    }
 }
