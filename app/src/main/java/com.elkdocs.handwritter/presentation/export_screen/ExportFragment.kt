@@ -262,7 +262,7 @@ class ExportFragment : Fragment() {
         val bitmapList = getBitmap(navArgs.folderId, navArgs.folderName)
 
         if (bitmapList.isNotEmpty()) {
-            Toast.makeText(requireContext(), "Bitmap list not empty", Toast.LENGTH_SHORT).show()
+
 
             var (actualSize, largeSize, mediumSize) = calculateBitmapSizes(bitmapList)
 
@@ -297,7 +297,7 @@ class ExportFragment : Fragment() {
             }
         } else {
             withContext(Dispatchers.Main) {
-                Toast.makeText(requireContext(), "Bitmap list is empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "There are no pages", Toast.LENGTH_SHORT).show()
             }
         }
     }

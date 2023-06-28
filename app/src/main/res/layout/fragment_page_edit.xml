@@ -63,8 +63,8 @@
             android:id="@+id/basicFeaturesOfText"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
+            android:paddingHorizontal="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:background="@android:color/white"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/fl_image_view"
@@ -153,13 +153,14 @@
                     android:id="@+id/hr_card_view_1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
+
                     android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/left_rounded_corner"
                     android:padding="2dp">
 
                     <Spinner
+                        style="@style/Widget.AppCompat.Spinner"
                         android:id="@+id/dropdown_fontSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -185,7 +186,7 @@
 
                     <ImageView
                         android:id="@+id/ink_color_icon"
-                        android:layout_width="50dp"
+                        android:layout_width="54dp"
                         android:layout_height="40dp"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
@@ -200,7 +201,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="1dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/left_rounded_corner"
                     >
@@ -213,7 +213,7 @@
                         android:fontFamily="@font/work_sans"
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="8dp"
-                        android:text="Page No."
+                        android:text="Add Page No."
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -223,7 +223,7 @@
                     style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="3dp"
                     android:layout_marginBottom="8dp"
                     android:background="@color/light_gre2"
                    >
@@ -267,8 +267,7 @@
                     style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="3dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/right_rounded_corner">
 

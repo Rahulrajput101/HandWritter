@@ -85,7 +85,6 @@ class PageViewerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentPageViewerBinding.inflate(layoutInflater)
-        Toast.makeText(requireContext(),navArgs.folderName,Toast.LENGTH_SHORT).show()
         adapter = PageViewerAdapter(
             onPageClick = { pageDetail ->
                 findNavController().navigate(
@@ -163,7 +162,6 @@ class PageViewerFragment : Fragment() {
                 setSelectModeEnabled(true)
                 Snackbar.make(requireView(),"Please select item to delete",Snackbar.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(),"${adapter.selectedItems.size}",Toast.LENGTH_SHORT).show()
                 showDeleteAllDialog()
             }
         }

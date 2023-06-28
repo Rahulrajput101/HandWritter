@@ -458,6 +458,7 @@ class PageEditFragment : Fragment() {
         binding.inkColorIcon.setOnClickListener { inkColorDialog() }
 
         binding.addHeadingButton.setOnClickListener {
+
                updateHeading(binding.headingTextView.text.toString())
         }
 
@@ -522,6 +523,7 @@ class PageEditFragment : Fragment() {
             Typeface.ITALIC -> binding.italicText.setTextColor(Color.BLUE)
         }
 
+
        val selectedFont = when(page.language) {
             English -> REV_FONT_STYLE_MAP[page.fontStyle]
             Hindi -> REV_HI_FONT_STYLE_MAP[page.fontStyle]
@@ -531,7 +533,6 @@ class PageEditFragment : Fragment() {
             Urdu -> REV_UR_FONT_STYLE_MAP[page.fontStyle]
             else -> REV_FONT_STYLE_MAP[page.fontStyle]
         }
-
 
 
         binding.fontStyleAutoComplete.setText(selectedFont)
@@ -603,7 +604,7 @@ class PageEditFragment : Fragment() {
     }
 
     private fun updateHeading(headingText : String){
-        if(headingText.isEmpty()){
+        if(headingText.isBlank()){
             showHeadingDialog()
             val x = binding.headingTextView.x
             val y = binding.headingTextView.y
@@ -895,7 +896,7 @@ class PageEditFragment : Fragment() {
         if (fontResourceId != null) {
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
-            if(fontResourceId == R.font.scheherazade_ar || fontResourceId == R.font.urdu){
+            if(fontResourceId == R.font.scheherazade_ar || fontResourceId == R.font.sarmady_ar_ur){
                 // Flip the layout horizontally if the chosen language is Arabic
                     flipLayout(true)
                     binding.ivTextEditView.gravity = Gravity.END
@@ -1126,13 +1127,11 @@ class PageEditFragment : Fragment() {
             R.style.AppTheme_pink -> R.color.md_theme_light_surfaceTint3
             R.style.AppTheme_teal -> R.color.md_theme_light_surfaceTint4
             R.style.AppTheme_purple -> R.color.md_theme_light_surfaceTint5
-            else -> R.color.md_theme_light_surfaceTint
+            else -> R.color.md_theme_light_surfaceTint2
         }
 
         //val color = ContextCompat.getColor(requireContext(), colorResId)
         val color2 = ContextCompat.getColor(requireContext(), colorResId2)
-
-
         horizontalViewSelectedTextColor = color2
     }
 

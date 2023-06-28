@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/menu_item_high_quality"
+        android:actionLayout="@layout/item_drop_down"
         android:title="High"
     />
 

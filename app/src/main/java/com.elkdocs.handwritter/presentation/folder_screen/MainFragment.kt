@@ -17,9 +17,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -114,18 +116,23 @@ class MainFragment : Fragment(),MenuProvider {
          setViewType(isLinear)
 
         binding.navigationView.setNavigationItemSelectedListener {
+
+
+
             when(it.itemId){
                 R.id.item1 -> {
                     findNavController().navigate(MainFragmentDirections.actionMainFragmentToAboutFragment())
                 }
-                R.id.item2 -> { Toast.makeText(requireContext(),"2",Toast.LENGTH_SHORT).show() }
-                R.id.item3 -> { Toast.makeText(requireContext(),"3",Toast.LENGTH_SHORT).show() }
+                R.id.item2 -> {  }
+                R.id.item3 -> { }
                 R.id.item4 -> {
                     themeDialog()
                 }
             }
             true
         }
+
+
         binding.addFolderImageView.setOnClickListener {addFolderAndNavigate()}
         binding.fabMain.setOnClickListener {addFolderAndNavigate()}
         
@@ -344,7 +351,6 @@ class MainFragment : Fragment(),MenuProvider {
             .setView(renameBinding.root)
             .setPositiveButton("OK") { _, _ ->
                 val newFolderName = renameBinding.editRenameFolder.text.toString()
-                Toast.makeText(requireContext(),newFolderName,Toast.LENGTH_SHORT).show()
              viewModel.onEvent(FolderEvent.UpdateFolderName(newFolderName,folderId)){_,_ ->
              }
 
@@ -408,7 +414,6 @@ class MainFragment : Fragment(),MenuProvider {
             lastUpdated = System.currentTimeMillis()
         )
         viewModel.onEvent(FolderEvent.AddFolder(folder)){ folderId,folderName ->
-            Toast.makeText(requireContext(),folderName,Toast.LENGTH_SHORT).show()
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToPageViewerFragment(folderId,folderName))
 
         }

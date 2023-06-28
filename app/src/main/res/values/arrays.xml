@@ -40,7 +40,6 @@
     <string-array name = "ur_styles_array">
         <item>Urdu 1</item>
         <item>Urdu 2</item>
-        <item>Urdu 3</item>
     </string-array>
 
     <string-array name = "rs_styles_array">

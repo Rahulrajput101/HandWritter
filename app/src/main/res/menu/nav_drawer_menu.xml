@@ -1,25 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- drawer_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
         android:id="@+id/item1"
-        android:title="About"
-        style="@style/NavigationDrawerTextStyle"
-        />
+
+        android:title="About" />
     <item
         android:id="@+id/item2"
-        android:title="Rate us"
-        style="@style/NavigationDrawerTextStyle"/>
+        android:title="Rate us" />
     <item
         android:id="@+id/item3"
-        android:title="Share with friends"
-        style="@style/NavigationDrawerTextStyle"/>
+
+        android:title="Share with friends" />
     <item
         android:id="@+id/item4"
-        android:title="Theme"
-        android:fontFamily="@font/work_sans"
-        style="@style/NavigationDrawerTextStyle"
-        />
-
+        android:title="Theme" />
 </menu>

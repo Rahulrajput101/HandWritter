@@ -26,6 +26,7 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
+
     </style>
 
 
@@ -56,6 +57,7 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface2</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface2</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary2</item>
+
     </style>
 
     <style name="AppTheme.pink" parent="Theme.Material3.Light.NoActionBar">
@@ -85,6 +87,7 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface3</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface3</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary3</item>
+
     </style>
 
     <style name="AppTheme.teal" parent="Theme.Material3.Light.NoActionBar">
@@ -114,6 +117,7 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface4</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface4</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary4</item>
+
     </style>
 
     <style name="AppTheme.purple" parent="Theme.Material3.Light.NoActionBar">
@@ -143,15 +147,7 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface5</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface5</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary5</item>
+
     </style>
 
-    <style name="NavigationDrawerTextStyle">
-        <item name="android:textAppearance">@style/NavigationDrawerTextAppearance</item>
-    </style>
-
-    <style name="NavigationDrawerTextAppearance" parent="TextAppearance.AppCompat">
-        <item name="android:fontFamily">@font/work_sans</item> <!-- Replace "your_font" with the name of your custom font file -->
-        <item name="android:textSize">16sp</item> <!-- Adjust the text size as desired -->
-        <!-- Add more attributes to customize the text appearance (e.g., textColor, textStyle, etc.) -->
-    </style>
 </resources>

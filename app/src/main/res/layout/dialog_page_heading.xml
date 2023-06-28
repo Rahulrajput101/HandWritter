@@ -36,7 +36,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="start|top"
-            android:hint="Enter text"
+            android:hint="Add heading"
             android:inputType="textVisiblePassword|textMultiLine"
             android:longClickable="true"
             android:maxLines="2"
@@ -49,7 +49,7 @@
 
         <Button
             android:id="@+id/bold_dialog"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -62,7 +62,7 @@
 
         <Button
             android:id="@+id/underline_dialog"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
