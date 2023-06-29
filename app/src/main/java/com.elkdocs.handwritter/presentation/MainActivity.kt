@@ -39,76 +39,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setTheme(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_Green))
         setContentView(binding.root)
-        //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            // SDK version is 29 or higher, Scoped Storage is used instead of WRITE_EXTERNAL_STORAGE permission
-            writePermissionGranted = true
-            readPermissionGranted = true
-        } else {
-            // SDK version is lower than 29, request the READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions
-            permissionLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                    handlePermissions(permissions)
-                }
 
-            updateOrRequestPermissions()
-
-        }
-    }
-
-    private fun updateOrRequestPermissions() {
-        val hasReadPermission = ContextCompat.checkSelfPermission(
-            this,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-        val hasWritePermission = ContextCompat.checkSelfPermission(
-            this,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-
-        writePermissionGranted = hasWritePermission
-        if (!writePermissionGranted) {
-            permissionLauncher.launch(
-                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            )
-            return
-        }
-
-        readPermissionGranted = hasReadPermission
-        if (!readPermissionGranted) {
-            permissionLauncher.launch(
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            )
-        }
-    }
-
-    private fun handlePermissions(permissions: Map<String, Boolean>) {
-        val deniedPermissions = permissions.filterValues { !it }
-        if (deniedPermissions.isEmpty()) {
-            // All permissions granted
-            return
-        }
-
-        val deniedPermissionsList = ArrayList<String>()
-        deniedPermissions.keys.forEach { permission ->
-            if (shouldShowRequestPermissionRationale(permission)) {
-                // User has denied the permission before, show rationale and try again
-                deniedPermissionsList.add(permission)
-            } else {
-                // User has permanently denied the permission, show a message or take alternative action
-                Toast.makeText(
-                    this,
-                    "Permission $permission has been permanently denied. Please grant the permission manually.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
-        if (deniedPermissionsList.isNotEmpty()) {
-            // Request the denied permissions again with rationale
-            permissionLauncher.launch(deniedPermissionsList.toTypedArray())
-        }
     }
 
     fun openDrawer() {

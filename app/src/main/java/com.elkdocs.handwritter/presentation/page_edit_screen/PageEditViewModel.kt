@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.elkdocs.handwritter.domain.model.MyPageModel
 import com.elkdocs.handwritter.domain.repository.MyRepository
 import com.elkdocs.handwritter.domain.use_cases.AddNewPage
-import com.elkdocs.handwritter.domain.use_cases.DrawLine
 import com.elkdocs.handwritter.domain.use_cases.GetAllPages
 import com.elkdocs.handwritter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PageEditViewModel @Inject constructor(
     private val addNewPage: AddNewPage,
-    private val drawLine: DrawLine,
-    getAllPages: GetAllPages,
     private val  myRepository: MyRepository
 ) : ViewModel() {
 
@@ -97,14 +94,6 @@ class PageEditViewModel @Inject constructor(
                         )
                     )
                 }
-            }
-
-            is PageEditEvent.DrawLine -> {
-                drawLine(
-                    canvas = event.canvas,
-                    fontSize = state.value.fontSize,
-                    lineColor = Constant.BLUE_LINE_COLOR
-                )
             }
 
             is PageEditEvent.UpdateLetterSpacing -> {

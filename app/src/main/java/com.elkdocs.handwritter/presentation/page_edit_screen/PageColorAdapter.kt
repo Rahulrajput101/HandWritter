@@ -49,7 +49,7 @@ class PageColorAdapter(
             position: Int, selectedPosition: Int,
             showIcon : Boolean
         ){
-               // binding.pageColorItemImageView.setImageResource(R.drawable.default_icon)
+
                 binding.pageColorItemCardView.setCardBackgroundColor(color)
 
             if (position == selectedPosition) {

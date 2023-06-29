@@ -3,6 +3,7 @@ package com.elkdocs.handwritter.presentation.page_edit_screen
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -106,10 +107,6 @@ class PageEditFragment : Fragment() {
     private var startX: Float = 0f
     private var startY: Float = 0f
 
-    @Inject
-    @Named("theme")
-    lateinit var appThemePref: SharedPreferences
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -117,7 +114,6 @@ class PageEditFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment 2
         binding = FragmentPageEditBinding.inflate(layoutInflater)
-        //setIconColorByTheme()
 
         //taking the saved details of the page for setup the ui
         val pageId = navArgs.pageId
@@ -283,12 +279,18 @@ class PageEditFragment : Fragment() {
         }
     }
 
-    private fun updateFontTypeOfHeadingTextView(fontStyle: Int, fontType: Int){
+
+private fun updateFontTypeOfHeadingTextView(fontStyle: Int, fontType: Int) {
+    try {
         val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
-        binding.headingTextView.setTypeface(typeface,fontType)
+        binding.headingTextView.setTypeface(typeface, fontType)
+        viewModel.onEvent(PageEditEvent.UpdateHeadingFontType(fontType))
+    } catch (e: Resources.NotFoundException) {
+        // Fallback to default typeface if font resource is not found
+        binding.headingTextView.setTypeface(null, fontType)
         viewModel.onEvent(PageEditEvent.UpdateHeadingFontType(fontType))
     }
-
+}
     private fun updateUnderlineHeadingTextView(underline: Boolean) {
         binding.headingTextView.text = viewModel.state.value.headingText+" "
         val spannableString = SpannableString(binding.headingTextView.text)
@@ -304,15 +306,6 @@ class PageEditFragment : Fragment() {
         }
         binding.headingTextView.setText(spannableString)
 
-//        val spannableString = SpannableString(text)
-//        val underlineSpans = spannableString.getSpans(0, length, UnderlineSpan::class.java)
-//        if (underline) {
-//            spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        } else {
-//            for (span in underlineSpans) {
-//                spannableString.removeSpan(span)
-//            }
-//        }
 
     }
 
@@ -534,8 +527,10 @@ class PageEditFragment : Fragment() {
             else -> REV_FONT_STYLE_MAP[page.fontStyle]
         }
 
+        selectedFont?.let{
+            binding.fontStyleAutoComplete.setText(it)
+        }?: binding.fontStyleAutoComplete.setText(REV_FONT_STYLE_MAP[page.fontStyle])
 
-        binding.fontStyleAutoComplete.setText(selectedFont)
         binding.lineColorAutoComplete.setText(REVERSE_LINE_COLOR_MAP[page.lineColor])
         binding.languageAutoComplete.setText(page.language)
         viewModel.onEvent(PageEditEvent.UpdateLanguage(page.language))
@@ -839,9 +834,9 @@ class PageEditFragment : Fragment() {
         }
     }
 
-
-    private fun updateFontStyle(fontResourceId: Int?) {
-        if (fontResourceId != null) {
+private fun updateFontStyle(fontResourceId: Int?) {
+    if (fontResourceId != null) {
+        try {
             val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
             binding.ivTextEditView.typeface = typeface
             binding.dateText.typeface = typeface
@@ -850,28 +845,20 @@ class PageEditFragment : Fragment() {
             binding.headingTextView.typeface = typeface
             binding.fontStyleAutoComplete.typeface = typeface
             viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
+        } catch (e: Resources.NotFoundException) {
+            // Fallback to a default font or another suitable font
+           e.printStackTrace()
+//            val fallbackTypeface = Typeface.DEFAULT
+//            binding.ivTextEditView.typeface = fallbackTypeface
+//            binding.dateText.typeface = fallbackTypeface
+//            binding.pageNumberTextView.typeface = fallbackTypeface
+//            binding.demoStyleTextView.typeface = fallbackTypeface
+//            binding.headingTextView.typeface = fallbackTypeface
+//            binding.fontStyleAutoComplete.typeface = fallbackTypeface
+//            viewModel.onEvent(PageEditEvent.UpdateFontStyle(R.font.alex_brush_regular_en))
         }
     }
-
-//    private fun languageAdapter() {
-//        val language = resources.getStringArray(R.array.languages_array)
-//        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_drop_down, language)
-//        binding.languageAutoComplete.setAdapter(arrayAdapter)
-//        binding.languageAutoComplete.setOnItemClickListener { parent, view, position, id ->
-//            val fontStyle = parent.getItemAtPosition(position).toString()
-//            binding.boldText.setTextColor(Color.BLACK)
-//            binding.italicText.setTextColor(Color.BLACK)
-//            viewModel.onEvent(PageEditEvent.UpdateLanguage(fontStyle))
-//            updateLanguage(LANGUAGE_MAP[fontStyle])
-//
-//            //list will change according to the language
-//            val getFontStyleList = getFontListForLanguage(viewModel.state.value.language)
-//            binding.fontStyleAutoComplete.setText(getFontStyleList[0])
-//
-//            fontStyleAdapter()
-//        }
-//    }
-//
+}
 
     private fun languageAdapter() {
         val languageArray = resources.getStringArray(R.array.languages_array)
@@ -892,32 +879,45 @@ class PageEditFragment : Fragment() {
         }
     }
 
+
     private fun updateLanguage(fontResourceId: Int?) {
         if (fontResourceId != null) {
-            val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
-            binding.ivTextEditView.typeface = typeface
-            if(fontResourceId == R.font.scheherazade_ar || fontResourceId == R.font.sarmady_ar_ur){
-                // Flip the layout horizontally if the chosen language is Arabic
+            try {
+                val typeface = ResourcesCompat.getFont(requireContext(), fontResourceId)
+                binding.ivTextEditView.typeface = typeface
+                binding.dateText.typeface = typeface
+                binding.pageNumberTextView.typeface = typeface
+                binding.demoStyleTextView.typeface = typeface
+                binding.fontStyleAutoComplete.typeface = typeface
+
+                if (fontResourceId == R.font.scheherazade_ar || fontResourceId == R.font.sarmady_ar_ur) {
+                    // Flip the layout horizontally if the chosen language is Arabic
                     flipLayout(true)
                     binding.ivTextEditView.gravity = Gravity.END
                     binding.demoStyleTextView.gravity = Gravity.END
                     viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(true))
-
-            } else {
-                // Restore the original layout if the chosen language is not Arabic
+                } else {
+                    // Restore the original layout if the chosen language is not Arabic
                     flipLayout(false)
                     binding.ivTextEditView.gravity = Gravity.START
-                     binding.demoStyleTextView.gravity = Gravity.START
+                    binding.demoStyleTextView.gravity = Gravity.START
                     viewModel.onEvent(PageEditEvent.UpdateLayoutFlipped(false))
+                }
 
+                viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
+            } catch (e: Resources.NotFoundException) {
+                // Fallback to a default typeface or handle the error gracefully
+                binding.ivTextEditView.typeface = Typeface.DEFAULT
+                binding.dateText.typeface = Typeface.DEFAULT
+                binding.pageNumberTextView.typeface = Typeface.DEFAULT
+                binding.demoStyleTextView.typeface = Typeface.DEFAULT
+                binding.fontStyleAutoComplete.typeface = Typeface.DEFAULT
+
+                // Handle any additional error handling or logging as needed
             }
-            binding.dateText.typeface = typeface
-            binding.pageNumberTextView.typeface = typeface
-            binding.demoStyleTextView.typeface = typeface
-            binding.fontStyleAutoComplete.typeface = typeface
-            viewModel.onEvent(PageEditEvent.UpdateFontStyle(fontResourceId))
         }
     }
+
 
     private fun flipLayout(flip : Boolean) {
         val rotationAngle = if (flip) 180f else 0f
@@ -954,16 +954,23 @@ class PageEditFragment : Fragment() {
     }
 
 
-
-    private fun updateFontType(fontStyle: Int, fontType: Int) {
+private fun updateFontType(fontStyle: Int, fontType: Int) {
+    try {
         val typeface = ResourcesCompat.getFont(requireContext(), fontStyle)
         binding.ivTextEditView.setTypeface(typeface, fontType)
         binding.dateText.setTypeface(typeface, fontType)
         binding.pageNumberTextView.setTypeface(typeface, fontType)
-        binding.headingTextView.setTypeface(typeface,fontType)
+        binding.headingTextView.setTypeface(typeface, fontType)
+        viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
+    } catch (e: Resources.NotFoundException) {
+        // Fallback to a default typeface for older versions
+        binding.ivTextEditView.setTypeface(Typeface.DEFAULT, fontType)
+        binding.dateText.setTypeface(Typeface.DEFAULT, fontType)
+        binding.pageNumberTextView.setTypeface(Typeface.DEFAULT, fontType)
+        binding.headingTextView.setTypeface(Typeface.DEFAULT, fontType)
         viewModel.onEvent(PageEditEvent.UpdateFontType(fontType))
     }
-
+}
 
     private fun updateLine(hasLine: Boolean?, fontSize: Float, lineColor: Int, view: View) {
         if (hasLine != null) {
@@ -1110,29 +1117,5 @@ class PageEditFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun setIconColorByTheme() {
-
-//        val colorResId = when (appThemePref.getInt(Constant.APP_THEME_PREF, R.style.AppTheme_teal)) {
-//            R.style.AppTheme -> R.color.md_theme_light_tertiaryContainer
-//            R.style.AppTheme_Green -> R.color.md_theme_light_tertiaryContainer2
-//            R.style.AppTheme_pink -> R.color.md_theme_light_tertiaryContainer3
-//            R.style.AppTheme_teal -> R.color.md_theme_light_tertiaryContainer4
-//            R.style.AppTheme_purple -> R.color.md_theme_light_tertiaryContainer5
-//            else -> R.color.md_theme_light_tertiaryContainer4
-//        }
-
-        val colorResId2 = when (appThemePref.getInt(Constant.APP_THEME_PREF, R.style.AppTheme_teal)) {
-            R.style.AppTheme -> R.color.md_theme_light_surfaceTint
-            R.style.AppTheme_Green -> R.color.md_theme_light_surfaceTint2
-            R.style.AppTheme_pink -> R.color.md_theme_light_surfaceTint3
-            R.style.AppTheme_teal -> R.color.md_theme_light_surfaceTint4
-            R.style.AppTheme_purple -> R.color.md_theme_light_surfaceTint5
-            else -> R.color.md_theme_light_surfaceTint2
-        }
-
-        //val color = ContextCompat.getColor(requireContext(), colorResId)
-        val color2 = ContextCompat.getColor(requireContext(), colorResId2)
-        horizontalViewSelectedTextColor = color2
-    }
 
 }

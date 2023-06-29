@@ -131,7 +131,6 @@ class PageViewerFragment : Fragment() {
         })
 
         itemTouchHelper.attachToRecyclerView(binding.rvPages)
-
         setClickListeners()
         setIconClickListeners()
         setObserver()
@@ -146,15 +145,19 @@ class PageViewerFragment : Fragment() {
         }
 
         binding.closeButton.setOnClickListener {
-            setSelectModeEnabled(false)
-            adapter.clearSelectedItems()
-            adapter.notifyDataSetChanged()
+            requireActivity().runOnUiThread{
+                adapter.clearSelectedItems()
+                setSelectModeEnabled(false)
+            }
+
+//            setSelectModeEnabled(false)
+//            adapter.clearSelectedItems()
+//            adapter.notifyDataSetChanged()
         }
 
         binding.pdfIcon.setOnClickListener {
-
             findNavController().navigate(PageViewerFragmentDirections.actionPageViewerFragmentToExportDocumentFragment(navArgs.folderId,navArgs.folderName))
-            //createPdfFromAllPages()
+
         }
 
         binding.deleteIcon.setOnClickListener {
@@ -172,16 +175,16 @@ class PageViewerFragment : Fragment() {
         }
     }
 
-    private fun createPdfFromAllPages() {
-        lifecycleScope.launch {
-            val bitmapList = viewModel.allPages.value.map {
-                it.bitmap
-            }
-            PdfUtility.createPdf(requireContext(),bitmapList,navArgs.folderName){
-                 PdfUtility.openPdfFile(requireContext(),it)
-            }
-        }
-    }
+//    private fun createPdfFromAllPages() {
+//        lifecycleScope.launch {
+//            val bitmapList = viewModel.allPages.value.map {
+//                it.bitmap
+//            }
+//            PdfUtility.createPdf(requireContext(),bitmapList,navArgs.folderName){
+//                 PdfUtility.openPdfFile(requireContext(),it)
+//            }
+//        }
+//    }
 
 
     private fun showDeleteAllDialog() {
@@ -274,7 +277,7 @@ class PageViewerFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-       // val pageBitmap = drawableToBitmap(ContextCompat.getDrawable(requireContext(),R.drawable.page_image))
+
         val pageBitmap = ContextCompat.getDrawable(requireContext(), R.drawable.page_image)
             ?.toBitmap(1024,1833,Bitmap.Config.ARGB_8888)
         binding.fabImagePicker.setOnClickListener {
@@ -314,7 +317,6 @@ class PageViewerFragment : Fragment() {
         binding.backButton.isVisible = !isEnabled
         binding.fabImagePicker.isVisible = !isEnabled
         binding.closeButton.isVisible = isEnabled
-
         adapter.notifyDataSetChanged()
     }
 }

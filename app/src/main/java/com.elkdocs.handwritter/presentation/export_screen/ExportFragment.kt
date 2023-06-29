@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
@@ -13,12 +12,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,10 +25,9 @@ import androidx.navigation.fragment.navArgs
 import com.elkdocs.handwritter.R
 import com.elkdocs.handwritter.databinding.FragmentExportDocumentBinding
 import com.elkdocs.handwritter.presentation.folder_screen.FolderViewModel
-import com.elkdocs.handwritter.util.Constant
-import com.elkdocs.handwritter.util.FileUriUtils
 import com.elkdocs.handwritter.util.PdfUtility.createFiles
 import com.elkdocs.handwritter.util.PdfUtility.generatePdfs
+import com.elkdocs.handwritter.util.PdfUtility.getSizeOfListOfBitmapsInKb
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -39,21 +35,17 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Named
 
 @AndroidEntryPoint
 class ExportFragment : Fragment() {
     private lateinit var binding: FragmentExportDocumentBinding
     private val viewModel: ExportViewModel by viewModels()
     private val navArgs: ExportFragmentArgs by navArgs()
-
-
     private lateinit var popupMenuFileSize: PopupMenu
     private var documentType = "PDF"
     private lateinit var mProgressDialog: Dialog
 
-    private var actualSize = 100
+
     private var actualSizeType = "Kb"
     private var largeSizeType = "Kb"
     private var mediumSizeType = "Kb"
@@ -251,9 +243,9 @@ class ExportFragment : Fragment() {
 
     private suspend fun calculateBitmapSizes(bitmapList: List<Bitmap>): Triple<Int, Int, Int> {
         return withContext(Dispatchers.Default) {
-            val actualSize = FileUriUtils.getSizeOfListOfBitmapsInKb(bitmapList, 100)
-            val largeSize = FileUriUtils.getSizeOfListOfBitmapsInKb(bitmapList, 75)
-            val mediumSize = FileUriUtils.getSizeOfListOfBitmapsInKb(bitmapList, 50)
+            val actualSize = getSizeOfListOfBitmapsInKb(bitmapList, 100)
+            val largeSize = getSizeOfListOfBitmapsInKb(bitmapList, 75)
+            val mediumSize = getSizeOfListOfBitmapsInKb(bitmapList, 50)
             Triple(actualSize, largeSize, mediumSize)
         }
     }

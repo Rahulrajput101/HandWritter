@@ -76,6 +76,9 @@ class FolderAdapter(
 
     fun clearSelectedItems() {
         selectedItems.clear()
+        folderListWithPages.forEach {
+            it.isSelected = false
+        }
     }
 
     fun toggleSelectAll(){

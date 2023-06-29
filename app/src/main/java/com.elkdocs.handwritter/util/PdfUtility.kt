@@ -1,12 +1,14 @@
 package com.elkdocs.handwritter.util
 
 import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
@@ -34,7 +36,6 @@ object PdfUtility {
     }
 
     private fun createPdfFile(context: Context,folderName: String?): File {
-
         val fileName = "${folderName}_pdf.pdf"
         val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File(dir, fileName)
@@ -60,10 +61,10 @@ object PdfUtility {
             image.setAbsolutePosition(0f, 0f)
             document.add(image)
         }
-
         document.close()
         writer.close()
     }
+
     fun generatePdfs(context: Context,pdfFile: DocumentFile, bitmaps: List<Bitmap>, quality: Int) {
         val outputStream = context.contentResolver.openOutputStream(pdfFile.uri)
         outputStream.use { stream ->
@@ -71,7 +72,6 @@ object PdfUtility {
                 val document = Document()
                 val writer = PdfWriter.getInstance(document, stream)
                 document.open()
-
                 for (bitmap in bitmaps) {
                     val byteArrayOutputStream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
@@ -82,22 +82,27 @@ object PdfUtility {
                     image.setAbsolutePosition(0f, 0f)
                     document.add(image)
                 }
-
                 document.close()
                 writer.close()
             } else {
-                Toast.makeText(context, "Failed to create PDF file", Toast.LENGTH_SHORT).show()
+               Log.v("Tag","Failed to create pdf")
             }
         }
     }
 
-     fun openPdfFile(context: Context, pdfFile: File) {
-        val uri = FileProvider.getUriForFile(context, "com.elkdocs.handwriter.fileprovider", pdfFile)
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(uri, "application/pdf")
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+     fun openPdfFile(context: Context, pdfFile: File) : Boolean {
+         return try{
+             val uri = FileProvider.getUriForFile(context, "com.elkdocs.handwriter.fileprovider", pdfFile)
+             val intent = Intent(Intent.ACTION_VIEW)
+             intent.setDataAndType(uri, "application/pdf")
+             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+             context.startActivity(intent)
+             true
+         }catch ( e : ActivityNotFoundException){
+             e.printStackTrace()
+             false
+         }
     }
 
 
@@ -110,44 +115,20 @@ object PdfUtility {
         context.startActivity(Intent.createChooser(shareIntent, "Share PDF"))
     }
 
+    fun getSizeOfListOfBitmapsInKb(myBitmapList: List<Bitmap>, quality: Int): Int {
+        var totalSize = 0
 
+        // Loop through the bitmaps and calculate the size
+        for (bitmap in myBitmapList) {
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
 
-    fun downloadPdfToGallery(context: Context, pdfFile: File): Boolean {
-        val sourceFile = File(pdfFile.path)
-        val fileName = pdfFile.name
-
-        val destinationDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val destinationFile = File(destinationDir, fileName)
-
-        return try {
-            sourceFile.copyTo(destinationFile, overwrite = true)
-
-            // Trigger media scan to make the downloaded file visible in the gallery app
-            MediaScannerConnection.scanFile(context, arrayOf(destinationFile.path), null, null)
-
-            true // PDF saved successfully
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false // Failed to save PDF
+            totalSize += outputStream.size()
         }
+
+        return totalSize / 1024
     }
 
-//    fun downloadPdf(context: Context, pdfFile: File): Boolean {
-//        val fileName = pdfFile.name
-//
-//        val destinationDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-//        val destinationFile = File(destinationDir, fileName)
-//
-//        return try {
-//            pdfFile.copyTo(destinationFile, overwrite = true)
-//
-//            // Trigger media scan to make the downloaded file visible in the gallery app
-//            MediaScannerConnection.scanFile(context, arrayOf(destinationFile.path), null, null)
-//
-//            true // PDF saved successfully
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            false // Failed to save PDF
-//        }
-//    }
+
+
 }

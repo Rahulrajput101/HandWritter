@@ -44,7 +44,6 @@ import com.elkdocs.handwritter.presentation.page_edit_screen.PageEditEvent
 import com.elkdocs.handwritter.util.Constant.APP_THEME_PREF
 import com.elkdocs.handwritter.util.Constant.IS_LINEAR
 import com.elkdocs.handwritter.util.PdfUtility.createPdf
-import com.elkdocs.handwritter.util.PdfUtility.downloadPdfToGallery
 import com.elkdocs.handwritter.util.PdfUtility.openPdfFile
 import com.elkdocs.handwritter.util.PdfUtility.sharePdf
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -64,7 +63,7 @@ import javax.inject.Named
 
 @AndroidEntryPoint
 class MainFragment : Fragment(),MenuProvider {
-    
+
     private lateinit var binding: FragmentMainBinding
     private lateinit var adapter: FolderAdapter
     private lateinit var toggle : ActionBarDrawerToggle
@@ -81,7 +80,7 @@ class MainFragment : Fragment(),MenuProvider {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        
+
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(layoutInflater)
         setIconColorByTheme()
@@ -118,7 +117,6 @@ class MainFragment : Fragment(),MenuProvider {
         binding.navigationView.setNavigationItemSelectedListener {
 
 
-
             when(it.itemId){
                 R.id.item1 -> {
                     findNavController().navigate(MainFragmentDirections.actionMainFragmentToAboutFragment())
@@ -135,7 +133,7 @@ class MainFragment : Fragment(),MenuProvider {
 
         binding.addFolderImageView.setOnClickListener {addFolderAndNavigate()}
         binding.fabMain.setOnClickListener {addFolderAndNavigate()}
-        
+
         setObservers()
 
         binding.gridImageView.setOnClickListener {
@@ -163,7 +161,6 @@ class MainFragment : Fragment(),MenuProvider {
         setClickListeners()
         handleRenameEvent()
 
-        
         return binding.root
     }
 
@@ -177,21 +174,6 @@ class MainFragment : Fragment(),MenuProvider {
 
         dialogBinding.itemDownload.setOnClickListener {
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
-//            getPdfFile(id, folderName) { pdfFile ->
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    val isSuccessful = downloadPdfToGallery(requireContext(), pdfFile)
-//
-//                    withContext(Dispatchers.Main) {
-//                        if (isSuccessful) {
-//                            Toast.makeText(requireContext(), "PDF downloaded ", Toast.LENGTH_SHORT)
-//                                .show()
-//                        } else {
-//                            Toast.makeText(requireContext(), "Failed to PDF", Toast.LENGTH_SHORT)
-//                                .show()
-//                        }
-//                    }
-//                }
-//            }
             bottomSheetDialog.dismiss()
         }
 
@@ -205,7 +187,12 @@ class MainFragment : Fragment(),MenuProvider {
         dialogBinding.itemPdf.setOnClickListener {
            // findNavController().navigate(MainFragmentDirections.actionMainFragmentToExportDocumentFragment(id,folderName))
             getPdfFile(id, folderName) {
-                openPdfFile(requireContext(), it)
+                val successful = openPdfFile(requireContext(), it)
+                if(!successful){
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(),"You don't have any app to open this file",Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             bottomSheetDialog.dismiss()
         }
@@ -373,6 +360,10 @@ class MainFragment : Fragment(),MenuProvider {
                     is FolderViewModel.RenameFolderName.Error -> {
                         nameExistDialog(event.folderName,event.folderId)
                     }
+
+                    else -> {
+                        return@collectLatest
+                    }
                 }
             }
         }
@@ -448,13 +439,11 @@ class MainFragment : Fragment(),MenuProvider {
         binding.checkFolderImageView.isVisible = !isEnabled
         binding.gridImageView.isVisible = !isEnabled
         binding.addFolderImageView.isVisible = !isEnabled
-//        binding.allDocsHeadingTextView.isVisible = !isEnabled
         binding.fabMain.isVisible = !isEnabled
         binding.menuIcon.isVisible = !isEnabled
         binding.leftBack.isVisible = isEnabled
         binding.folderDeleteImageView.isVisible = isEnabled
         binding.selectAllImageView.isVisible = isEnabled
-       // binding.closeImageView.isVisible = isEnabled
         adapter.notifyDataSetChanged()
     }
 
@@ -484,52 +473,7 @@ class MainFragment : Fragment(),MenuProvider {
 
     }
 
-    //    private fun setIconColorByTheme(){
-//        when(appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme)){
-//            R.style.AppTheme -> {
-//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer))
-//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer))
-//
-//
-//            }
-//            R.style.AppTheme_Green -> {
-//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer2))
-//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer2))
-//
-//            }
-//            R.style.AppTheme_pink -> {
-//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer3))
-//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer3))
-//
-//            }
-//            R.style.AppTheme_teal -> {
-//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer4))
-//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer4))
-//
-//            }
-//
-//            R.style.AppTheme_purple -> {
-//                binding.checkFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-//                binding.gridImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-//                binding.addFolderImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-//                binding.menuIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_light_tertiaryContainer5))
-//                binding.selectAllImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.md_theme_light_tertiaryContainer5))
-//            }
-//
-//        }
-    //  }
+
     private fun setIconColorByTheme() {
 
         val colorResId = when (appThemePref.getInt(APP_THEME_PREF, R.style.AppTheme_Green)) {
@@ -544,11 +488,7 @@ class MainFragment : Fragment(),MenuProvider {
         val color = ContextCompat.getColor(requireContext(), colorResId)
 
         with(binding) {
-          //  checkFolderImageView.setColorFilter(color)
-           // gridImageView.setColorFilter(color)
-            //addFolderImageView.setColorFilter(color)
             menuIcon.setColorFilter(color)
-            //selectAllImageView.setColorFilter(color)
             leftBack.setColorFilter(color)
         }
     }
