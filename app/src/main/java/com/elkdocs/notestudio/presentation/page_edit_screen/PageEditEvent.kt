@@ -1,7 +1,8 @@
 package com.elkdocs.notestudio.presentation.page_edit_screen
 
 import android.graphics.Bitmap
-
+import android.graphics.Canvas
+import com.elkdocs.handwritter.domain.model.MyPageModel
 
 sealed interface PageEditEvent{
         object UpdatePage : PageEditEvent
@@ -29,5 +30,5 @@ sealed interface PageEditEvent{
         data class UpdateHeading(val heading : String) : PageEditEvent
         data class UpdateDateTextPosition(val dateTextViewX : Float , val dateTextViewY : Float) : PageEditEvent
         data class UpdateHeadingTextPosition(val headingTextViewX : Float , val headingTextViewY : Float) : PageEditEvent
-
+        data class DrawLine(val canvas: Canvas) : PageEditEvent
 }

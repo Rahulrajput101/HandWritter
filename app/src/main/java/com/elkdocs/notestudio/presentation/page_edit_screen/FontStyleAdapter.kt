@@ -1,7 +1,6 @@
 package com.elkdocs.notestudio.presentation.page_edit_screen
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
@@ -31,15 +30,15 @@ class FontStyleAdapter(
 
     private fun applyFont(view: View, position: Int) {
         val fontResourceId = fontMap[getItem(position)]
-        if (view is TextView) {
-            try {
-                val typeface = fontResourceId?.let { ResourcesCompat.getFont(context, it) }
-                    ?: ResourcesCompat.getFont(context, R.font.caveat_variablefont_wght)
+        if (view is TextView ) {
+            if(fontResourceId != null){
+                val typeface = ResourcesCompat.getFont(context, fontResourceId)
                 view.typeface = typeface
-            } catch (e: Resources.NotFoundException) {
-                // Fallback to a default font
-                view.typeface = Typeface.DEFAULT
+            }else{
+                val typeface = ResourcesCompat.getFont(context, R.font.caveat_variablefont_wght)
+                view.typeface = typeface
             }
+
         }
     }
 }

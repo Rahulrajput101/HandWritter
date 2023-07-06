@@ -63,7 +63,6 @@ class PageViewerAdapter(
 
     fun clearSelectedItems() {
         selectedItems.clear()
-        pageList.forEach { it.isSelected = false }
         notifyDataSetChanged()
     }
 
@@ -89,11 +88,10 @@ class PageViewerAdapter(
             onDeleteClick: (myPageModel: MyPageModel) -> Unit,
             isSelectModeEnabled: Boolean
         ) {
-
             val bitmapDrawable = BitmapDrawable(context.resources, page.bitmap)
             binding.imageView.background = bitmapDrawable
-              binding.checkBox.isChecked = page.isSelected
-            binding.checkBox.isChecked = page.isSelected && selectedItems.contains(page)
+            binding.checkBox.isChecked = page.isSelected
+
             if (isSelectModeEnabled) {
                 binding.checkBox.visibility = View.VISIBLE
             } else {
@@ -109,6 +107,14 @@ class PageViewerAdapter(
                 }
             }
 
+//            binding.checkBox.setOnClickListener {
+//                if (binding.checkBox.isChecked) {
+//                    if (!selectedItems.any { it.pageId == page.pageId })
+//                        selectedItems.add(page)
+//                } else {
+//                    selectedItems.remove(page)
+//                }
+//            }
         }
     }
 }

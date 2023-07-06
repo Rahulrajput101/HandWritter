@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_rename"
+        android:icon="@drawable/baseline_drive_file_rename_outline_24"
+        android:title="Rename"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/item_share"
+        android:icon="@drawable/ic_share_24"
+        android:title="Share"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/item_pdf"
+        android:icon="@drawable/ic_pdf_convertor24"
+        android:title="Pdf"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/item_download"
+        android:icon="@drawable/baseline_file_download_24"
+        android:title="Download"
+        app:showAsAction="always"/>
+</menu>
