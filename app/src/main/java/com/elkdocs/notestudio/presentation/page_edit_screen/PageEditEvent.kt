@@ -2,7 +2,6 @@ package com.elkdocs.notestudio.presentation.page_edit_screen
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.elkdocs.handwritter.domain.model.MyPageModel
 
 sealed interface PageEditEvent{
         object UpdatePage : PageEditEvent

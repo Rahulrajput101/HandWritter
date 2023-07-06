@@ -23,7 +23,6 @@ import javax.inject.Inject
 class ExportViewModel @Inject constructor(
     private val updateFolderTitle: UpdateFolderTitle,
     private val getAllPages: GetAllPages,
-    private val repository: MyRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

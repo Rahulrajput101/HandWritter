@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Environment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
@@ -16,7 +17,6 @@ import android.widget.TextView
 import java.lang.Math.min
 
 object OtherUtility {
-
     fun provideBackgroundColorPrimary(context: Context): Int {
         val primaryColorAttr = android.R.attr.colorPrimary
         val primaryColorValue = TypedValue()
@@ -42,37 +42,14 @@ object OtherUtility {
         return bitmap
     }
 
-    fun createBitmapFromCanvas(canvas: Canvas): Bitmap {
-        val bitmap = Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888)
-        val canvasBitmap = Canvas(bitmap)
-        canvasBitmap.drawBitmap(bitmap, 0f, 0f, null)
-        return bitmap
+
+
+
+    fun spToPx(sp: Float, context: Context): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
     }
 
-    private fun isExternalStorageWritable(): Boolean {
-        val state = Environment.getExternalStorageState()
-        return Environment.MEDIA_MOUNTED == state
-    }
 
-  fun spToPx(sp: Float, context: Context): Int {
-      return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
-  }
-
-    private fun pickDate(callback: (dateTime: String) -> Unit,context: Context) {
-        val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val datePickerDialog = DatePickerDialog(context, { _, year, month, day ->
-            val selectedCalendar = Calendar.getInstance()
-            selectedCalendar.set(year, month, day)
-            val dateTime = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(selectedCalendar.time)
-            callback(dateTime) // call the callback function after completing the work
-        }, currentYear, currentMonth, currentDay)
-
-        datePickerDialog.show()
-    }
 
     fun updateTextPosition(view: View, x: Float, y: Float) {
         if (x != 0f || y != 0f) {
@@ -90,49 +67,7 @@ object OtherUtility {
 
 
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun TextTouchListener(
-        view: View,
-        parentView: View,
-        updatePositionCallback: (Float, Float) -> Unit
-    ){
-        var offsetX = 0f
-        var offsetY = 0f
 
-        view.setOnTouchListener { v, event ->
-            when(event.action){
-                MotionEvent.ACTION_DOWN -> {
-                    offsetX = event.rawX - v.x
-                    offsetY = event.rawY - v.y
-                   val startX = v.x
-                   val startY = v.y
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val newX = event.rawX - offsetX
-                    val newY = event.rawY - offsetY
-
-                    // Calculate the boundaries based on the parent view's dimensions
-                    val minX = 0f
-                    val maxX = parentView.width - v.width
-                    val minY = 0f
-                    val maxY = parentView.height - v.height
-
-                    // Constrain the new coordinates within the boundaries
-                    val constrainedX = newX.coerceIn(minX, maxX.toFloat())
-                    val constrainedY = newY.coerceIn(minY, maxY.toFloat())
-
-                    v.x = constrainedX
-                    v.y = constrainedY
-                }
-                MotionEvent.ACTION_UP -> {
-
-                    updatePositionCallback(v.x + 50f,v.y)
-                    // Implement any additional logic after dragging ends
-                }
-            }
-            true
-        }
-    }
     fun updateHeadingUnderlineEditText(text: String, underline: Boolean, length: Int, spanString : (SpannableString) -> Unit) {
         val spannableString = SpannableString(text)
         val underlineSpans = spannableString.getSpans(0, length, UnderlineSpan::class.java)
@@ -152,9 +87,9 @@ object OtherUtility {
     // Function to convert dp to pixels
 
 
-   fun setTypeface(textView: TextView, typeface: Typeface?) {
+    fun setTypeface(textView: TextView, typeface: Typeface?) {
         textView.typeface = typeface
-   }
+    }
 
 
     /* Scale factor is a number by which the size of any geometrical figure or shape
@@ -192,17 +127,4 @@ object OtherUtility {
         return fontStyleMap.entries.associate { (key, value) -> value to key }
     }
 
-    fun zoomBitmap(bitmap: Bitmap, zoomFactor: Float): Bitmap {
-        // Calculate the new dimensions of the zoomed bitmap
-        val newWidth = (bitmap.width * zoomFactor).toInt()
-        val newHeight = (bitmap.height * zoomFactor).toInt()
-
-        // Create a scaled version of the bitmap using a Matrix
-        val matrix = Matrix()
-        matrix.postScale(zoomFactor, zoomFactor)
-        val zoomedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-        // Resize the zoomed bitmap to the desired dimensions
-        return Bitmap.createScaledBitmap(zoomedBitmap, newWidth, newHeight, true)
-    }
 }

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/light_gre2" /> <!-- Replace "your_checkbox_color" with the desired color -->
-    <corners android:radius="20dp" /> <!-- Adjust the radius value to make the checkbox more or less circular -->
-</shape>
