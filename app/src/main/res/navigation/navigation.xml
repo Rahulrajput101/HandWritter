@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.elkdocs.handwritter.presentation.folder_screen.MainFragment"
+        android:name="com.elkdocs.notestudio.presentation.folder_screen.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/pageViewerFragment"
-        android:name="com.elkdocs.handwritter.presentation.page_viewer_screen.PageViewerFragment"
+        android:name="com.elkdocs.notestudio.presentation.page_viewer_screen.PageViewerFragment"
         android:label="fragment_page_viewer"
         tools:layout="@layout/fragment_page_viewer" >
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/pageEditFragment"
-        android:name="com.elkdocs.handwritter.presentation.page_edit_screen.PageEditFragment"
+        android:name="com.elkdocs.notestudio.presentation.page_edit_screen.PageEditFragment"
         android:label="fragment_page_edit"
         tools:layout="@layout/fragment_page_edit" >
         <argument
@@ -56,11 +56,11 @@
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="com.elkdocs.handwritter.presentation.about_screen.AboutFragment"
+        android:name="com.elkdocs.notestudio.presentation.about_screen.AboutFragment"
         android:label="AboutFragment" />
     <fragment
         android:id="@+id/exportDocumentFragment"
-        android:name="com.elkdocs.handwritter.presentation.export_screen.ExportFragment"
+        android:name="com.elkdocs.notestudio.presentation.export_screen.ExportFragment"
         android:label="fragment_export_document"
         tools:layout="@layout/fragment_export_document" >
 

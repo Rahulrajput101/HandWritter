@@ -98,6 +98,7 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </com.google.android.material.appbar.MaterialToolbar>
 
         </FrameLayout>
@@ -105,19 +106,24 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/white"
             >
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_gre2"
+                android:layout_gravity="start"
+                />
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:padding="4dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_pages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:visibility="visible"
                     tools:listitem="@layout/item_page_viewer" />
             </androidx.core.widget.NestedScrollView>
