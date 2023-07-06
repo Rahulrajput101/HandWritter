@@ -29,7 +29,7 @@
             app:cardCornerRadius="4dp"
             android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="@color/light_grey"
-            app:cardElevation="0dp">
+            app:cardElevation="4dp">
 
             <ImageView
                 android:id="@+id/pageColorItemImageView"
